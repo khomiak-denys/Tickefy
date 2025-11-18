@@ -1,0 +1,6 @@
+@Tickefy.API_HostAddress = http://localhost:5193
+
+GET {{Tickefy.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
