@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
-using Tickefy.API.ErrorHandling.ExceptionMapper;
 using Tickefy.Application.Exceptions;
 
-public class ExceptionProblemDetailsMapper : IExceptionProblemDetailsMapper
+namespace Tickefy.API.ErrorHandling.ExceptionMapper
 {
-    private readonly Dictionary<Type, Func<Exception, ProblemDetails>> _mappings;
-
-    public ExceptionProblemDetailsMapper()
+    public class ExceptionProblemDetailsMapper : IExceptionProblemDetailsMapper
     {
-        _mappings = new()
+        private readonly Dictionary<Type, Func<Exception, ProblemDetails>> _mappings;
+
+        public ExceptionProblemDetailsMapper()
+        {
+            _mappings = new()
         {
             {
                 typeof(NotFoundException),
@@ -21,7 +21,7 @@ public class ExceptionProblemDetailsMapper : IExceptionProblemDetailsMapper
                     Type = "https://httpstatuses.io/404"
                 }
             },
-            { 
+            {
                 typeof(AlreadyExistsException),
                 ex => new ProblemDetails
                 {
@@ -31,7 +31,7 @@ public class ExceptionProblemDetailsMapper : IExceptionProblemDetailsMapper
                     Type = "https://httpstatuses.io/409"
                 }
             },
-            { 
+            {
                 typeof(InvalidArgumentException),
                 ex => new ProblemDetails
                 {
@@ -42,19 +42,20 @@ public class ExceptionProblemDetailsMapper : IExceptionProblemDetailsMapper
                 }
             }
         };
-    }
+        }
 
-    public ProblemDetails Map(Exception exception)
-    {
-        if (_mappings.TryGetValue(exception.GetType(), out var factory))
-            return factory(exception);
-
-        return new ProblemDetails
+        public ProblemDetails Map(Exception exception)
         {
-            Status = StatusCodes.Status500InternalServerError,
-            Title = "Internal Server Error",
-            Detail = "An unexpected error occurred",
-            Type = "https://httpstatuses.io/500"
-        };
+            if (_mappings.TryGetValue(exception.GetType(), out var factory))
+                return factory(exception);
+
+            return new ProblemDetails
+            {
+                Status = StatusCodes.Status500InternalServerError,
+                Title = "Internal Server Error",
+                Detail = "An unexpected error occurred",
+                Type = "https://httpstatuses.io/500"
+            };
+        }
     }
 }

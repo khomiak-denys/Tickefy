@@ -6,4 +6,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Comment\" />
+    <Folder Include="Attachment\" />
+    <Folder Include="ActivityLog\" />
+    <Folder Include="Team\" />
+    <Folder Include="User\" />
+    <Folder Include="Ticket\" />
+  </ItemGroup>
+
 </Project>
