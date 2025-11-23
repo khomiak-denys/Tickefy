@@ -4,5 +4,11 @@
     {
         Finance,
         IT, 
+        Design, 
+        Marketing,
+        HumanResources,
+        Legal,
+        AccessAndSecurity,
+        Other
     }
 }

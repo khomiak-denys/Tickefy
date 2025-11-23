@@ -1,7 +1,9 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tickefy.API.Auth.Requests;
+using Tickefy.API.Auth.Responses;
 
 namespace Tickefy.API.Auth
 {
@@ -10,10 +12,14 @@ namespace Tickefy.API.Auth
     public class AuthController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
 
-        public AuthController(IMediator mediator)
+        public AuthController(
+            IMediator mediator,
+            IMapper mapper)
         {
             _mediator = mediator;
+            _mapper = mapper;
         }
 
         [AllowAnonymous]
@@ -29,7 +35,10 @@ namespace Tickefy.API.Auth
         public async Task<IActionResult> Login([FromBody] LoginUserRequest request)
         {
             var command = request.ToCommand();
-            var response = await _mediator.Send(command);
+            var result = await _mediator.Send(command);
+
+            var response = _mapper.Map<LoginResponse>(result);
+
             return Ok(response);
         }
     }

@@ -1,3 +1,24 @@
+using FluentValidation;
+using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Json;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Text.Json;
+using Tickefy.API.ErrorHandling;
+using Tickefy.API.ErrorHandling.ExceptionMapper;
+using Tickefy.API.Mapping;
+using Tickefy.Application.Abstractions.Data;
+using Tickefy.Application.Abstractions.Repositories;
+using Tickefy.Application.Abstractions.Services;
+using Tickefy.Application.Auth.Login;
+using Tickefy.Application.PipelineBehaviors;
+using Tickefy.Infrastructure.Database;
+using Tickefy.Infrastructure.Options;
+using Tickefy.Infrastructure.Repositories;
+using Tickefy.Infrastructure.Services;
 
 namespace Tickefy.API
 {
@@ -7,16 +28,112 @@ namespace Tickefy.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+
+            builder.Services.AddProblemDetails(configure =>
+            {
+                configure.CustomizeProblemDetails = options =>
+                {
+                    options.ProblemDetails.Extensions.TryAdd("traceId", System.Diagnostics.Activity.Current?.Id);
+                };
+            });
+
+            builder.Services.AddSingleton<IExceptionProblemDetailsMapper, ExceptionProblemDetailsMapper>();
+            builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
+
+            if (builder.Environment.IsDevelopment())
+            {
+                DotNetEnv.Env.Load("../../.env");
+            }
+
+            builder.Services.AddMediatR(cfg =>
+            {
+                cfg.RegisterServicesFromAssemblyContaining<LoginUserCommandHandler>();
+                cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+            });
+
+            builder.Services.AddValidatorsFromAssemblyContaining<LoginUserCommandValidator>();
+
+            builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+
+            builder.Services.AddScoped<ITokenService, TokenService>();
+            builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+
+            builder.Services.AddScoped<IUserRepository, EFUserRepository>();
+
+
+            builder.Services.AddAutoMapper(
+                cfg => { },
+                typeof(LoginMappingProfile).Assembly
+            );
+
+            var postgresConnection =
+                $"Host={Environment.GetEnvironmentVariable("DB_HOST")};" +
+                $"Port={Environment.GetEnvironmentVariable("DB_PORT")};" +
+                $"Database={Environment.GetEnvironmentVariable("DB_NAME")};" +
+                $"Username={Environment.GetEnvironmentVariable("DB_USER")};" +
+                $"Password={Environment.GetEnvironmentVariable("DB_PASSWORD")}";
+
+
+            var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
+            var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER");
+            var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE");
+            var jwtValidityMins = int.Parse((Environment.GetEnvironmentVariable("JWT_VALIDITY_MINS") ?? "30"));
+
+            builder.Services.Configure<JwtSettings>(options =>
+            {
+                options.Key = jwtKey!;
+                options.Issuer = jwtIssuer!;
+                options.Audience = jwtAudience!;
+                options.TokenValiddityMins = jwtValidityMins;
+            });
+
+            builder.Services.AddDbContextFactory<AppDbContext>(options =>
+    options.UseNpgsql(postgresConnection));
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowFrontend", policy =>
+                {
+                    policy.WithOrigins("http://localhost:3000", "http://127.0.0.1:3000")
+                        .WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .WithHeaders("Content-Type", "Authorization")
+                        .AllowCredentials();
+                });
+            });
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidIssuer = jwtIssuer,
+                    ValidAudience = jwtAudience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey!)),
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true
+                };
+            });
+            builder.Services.AddAuthorization();
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            app.UseExceptionHandler();
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -25,9 +142,9 @@ namespace Tickefy.API
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
-
-
+           
             app.MapControllers();
 
             app.Run();

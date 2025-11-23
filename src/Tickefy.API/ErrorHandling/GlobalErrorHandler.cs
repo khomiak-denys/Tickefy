@@ -32,13 +32,7 @@ namespace Tickefy.API.ErrorHandling
             {
                 HttpContext = httpContext,
                 Exception = exception,
-                ProblemDetails = new ProblemDetails
-                {
-                    Type = problemDetailsException.Type,
-                    Title = problemDetailsException.Title,
-                    Status = problemDetailsException.Status,
-                    Detail = problemDetailsException.Detail
-                }
+                ProblemDetails = problemDetailsException
             });
         }
     }

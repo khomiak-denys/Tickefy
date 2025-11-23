@@ -8,16 +8,42 @@ namespace Tickefy.Domain.Ticket
 {
     public class Ticket : EntityBase<TicketId>
     {
-        public required string Title { get; set; }
-        public required UserId RequesterId { get; set; }
-        public required TeamId AssignedTeamId { get; set; }
-        public required UserId AssignedAgentId { get; set; }
-        public Category Category { get; set; }
-        public Priority Priority { get; set; }
-        public Status Status { get; set; } = Status.Created;
-        public DateTime Deadline { get; set; }
-        public required string Description { get; set; }
+        public string Title { get; private set; }
+        public string Description { get; private set; }
 
-        public List<Domain.Attachment.Attachment> Attachments { get; set; }
+        public UserId RequesterId { get; private set; }
+        public Domain.User.User Requester { get; private set; } = null!;
+
+        public TeamId? AssignedTeamId { get; private set; }
+        public Domain.Team.Team? AssignedTeam { get; private set; }
+
+        public UserId? AssignedAgentId { get; private set; }
+        public Domain.User.User? AssignedAgent { get; private set; }
+
+        public Category? Category { get; private set; }
+        public Priority? Priority { get; private set; }
+        public Status Status { get; private set; } = Status.Created;
+
+        public DateTime Deadline { get; private set; }
+
+        public List<Domain.Comment.Comment> Comments { get; private set; } = new();
+        public List<Domain.Attachment.Attachment> Attachments { get; private set; } = new();
+
+        private Ticket() { }
+
+        public static Ticket Create(string title, string description, UserId requesterId, DateTime deadline)
+        {
+            var ticket = new Ticket(title, description, requesterId, deadline);
+            ticket.OnCreate();
+            return ticket;
+        }
+
+        private Ticket(string title, string description, UserId requesterId, DateTime deadline)
+        {
+            Title = title;
+            Description = description;
+            RequesterId = requesterId;
+            Deadline = deadline;
+        }
     }
 }

@@ -12,6 +12,27 @@ namespace Tickefy.API.ErrorHandling.ExceptionMapper
             _mappings = new()
         {
             {
+                typeof(FluentValidation.ValidationException),
+                ex =>
+                {
+                    var validationException = (FluentValidation.ValidationException)ex;
+
+                    return new ValidationProblemDetails(
+                        validationException.Errors
+                            .GroupBy(e => e.PropertyName)
+                            .ToDictionary(
+                                g => g.Key,
+                                g => g.Select(e => e.ErrorMessage).ToArray()
+                            )
+                    )
+                    {
+                        Status = StatusCodes.Status400BadRequest,
+                        Title = "Validation Error",
+                        Type = "https://httpstatuses.io/400"
+                    };
+                }
+            },
+            {
                 typeof(NotFoundException),
                 ex => new ProblemDetails
                 {

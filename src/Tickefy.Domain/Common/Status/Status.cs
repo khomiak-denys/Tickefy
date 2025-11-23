@@ -13,5 +13,6 @@ namespace Tickefy.Domain.Common.Status
         InProgress,
         Created, 
         Assigned,
+        Canceled
     }
 }
