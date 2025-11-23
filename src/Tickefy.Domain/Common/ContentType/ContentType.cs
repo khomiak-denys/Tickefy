@@ -5,6 +5,6 @@
         Photo, 
         Video,
         Archive, 
-        Documnet
+        Document
     }
 }

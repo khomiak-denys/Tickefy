@@ -1,12 +1,9 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using System.Text.Json;
 using Tickefy.API.ErrorHandling;
 using Tickefy.API.ErrorHandling.ExceptionMapper;
 using Tickefy.API.Mapping;
@@ -54,8 +51,6 @@ namespace Tickefy.API
 
             builder.Services.AddValidatorsFromAssemblyContaining<LoginUserCommandValidator>();
 
-            builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-
             builder.Services.AddScoped<ITokenService, TokenService>();
             builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -87,7 +82,7 @@ namespace Tickefy.API
                 options.Key = jwtKey!;
                 options.Issuer = jwtIssuer!;
                 options.Audience = jwtAudience!;
-                options.TokenValiddityMins = jwtValidityMins;
+                options.TokenValidityMins = jwtValidityMins;
             });
 
             builder.Services.AddDbContextFactory<AppDbContext>(options =>

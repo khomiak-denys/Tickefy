@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -21,7 +20,7 @@ namespace Tickefy.Infrastructure.Services
         }
         public async Task<string> GetToken(Guid id, string login, UserRoles role)
         {
-            var expiresIn = DateTime.UtcNow.AddMinutes(_settings.TokenValiddityMins);
+            var expiresIn = DateTime.UtcNow.AddMinutes(_settings.TokenValidityMins);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {

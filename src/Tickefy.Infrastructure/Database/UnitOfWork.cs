@@ -1,12 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Tickefy.Application.Abstractions.Data;
+﻿using Tickefy.Application.Abstractions.Data;
 
 namespace Tickefy.Infrastructure.Database
 {
     public class UnitOfWork : IUnitOfWork
     {
         private readonly AppDbContext _appDbContext;
-
         public UnitOfWork (AppDbContext appDbContext)
         {
             _appDbContext = appDbContext;
