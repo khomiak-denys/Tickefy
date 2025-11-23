@@ -3,10 +3,39 @@ using Tickefy.Domain.Primitives;
 
 namespace Tickefy.Domain.Team
 {
-    public class Team : EntityBase<TeamId> 
+    public class Team : EntityBase<TeamId>
     {
-        public required string Name { get; set; }
-        public string Description { get; set; }
-        public List<UserId> Members { get; set; }
+        public string Name { get; private set; }
+        public string? Description { get; private set; }
+
+        public List<Domain.User.User> Members { get; private set; } = new();
+
+        private Team() { }
+
+        private Team(string name, string? description)
+        {
+            Name = name;
+            Description = description;
+        }
+
+        public static Team Create(string name, string? description)
+        {
+            var team = new Team(name, description);
+            team.OnCreate();
+            return team;
+        }
+        public void AddMember(Domain.User.User user)
+        {
+            if (Members.Any(m => m.Id == user.Id))
+                return;
+
+            Members.Add(user);
+            OnModify();
+        }
+        public void RemoveMember(Domain.User.User user)
+        {
+            Members.Remove(user);
+            OnModify();
+        }
     }
 }

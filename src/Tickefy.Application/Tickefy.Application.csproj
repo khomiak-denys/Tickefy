@@ -7,12 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="ActivityLog\Create\" />
     <Folder Include="Comment\" />
     <Folder Include="Attachment\" />
-    <Folder Include="ActivityLog\" />
     <Folder Include="Team\" />
-    <Folder Include="User\" />
     <Folder Include="Ticket\" />
+    <Folder Include="User\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="12.1.0" />
+    <PackageReference Include="MediatR" Version="13.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Tickefy.Domain\Tickefy.Domain.csproj" />
   </ItemGroup>
 
 </Project>
