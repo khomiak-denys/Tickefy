@@ -2,7 +2,9 @@ using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 using Tickefy.API.ErrorHandling;
 using Tickefy.API.ErrorHandling.ExceptionMapper;
@@ -12,10 +14,13 @@ using Tickefy.Application.Abstractions.Repositories;
 using Tickefy.Application.Abstractions.Services;
 using Tickefy.Application.Auth.Login;
 using Tickefy.Application.PipelineBehaviors;
+using Tickefy.Application.Ticket.AI;
+using Tickefy.Domain.Ticket;
 using Tickefy.Infrastructure.Database;
 using Tickefy.Infrastructure.Options;
 using Tickefy.Infrastructure.Repositories;
 using Tickefy.Infrastructure.Services;
+using Tickefy.Infrastructure.Services.AI;
 
 namespace Tickefy.API
 {
@@ -54,9 +59,18 @@ namespace Tickefy.API
             builder.Services.AddScoped<ITokenService, TokenService>();
             builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
+            builder.Services.AddScoped<IAiService, AiService>();
+            builder.Services.AddScoped<IAiResponseParser, AiResponseParser>();
 
             builder.Services.AddScoped<IUserRepository, EFUserRepository>();
+            builder.Services.AddScoped<ITicketRepository, EFTicketRepository>();
+
+
+            builder.Services.AddSingleton(sp =>
+            {
+                var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY");
+                return new Google.GenAI.Client(apiKey: apiKey);
+            });
 
 
             builder.Services.AddAutoMapper(
@@ -122,8 +136,34 @@ namespace Tickefy.API
             builder.Services.AddAuthorization();
 
             builder.Services.AddControllers();
+            builder.Services.AddHttpContextAccessor();
+
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+
+
+            builder.Services.AddSwaggerGen(options =>
+            {
+                var jwtSecurityScheme = new OpenApiSecurityScheme
+                {
+                    BearerFormat = "JWT",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = JwtBearerDefaults.AuthenticationScheme,
+                    Description = "Enter your JWT access token",
+                    Reference = new OpenApiReference
+                    {
+                        Id = JwtBearerDefaults.AuthenticationScheme,
+                        Type = ReferenceType.SecurityScheme
+                    }
+                };
+
+                options.AddSecurityDefinition("Bearer", jwtSecurityScheme);
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    { jwtSecurityScheme, Array.Empty<string>() }
+                });
+            });
 
             var app = builder.Build();
 

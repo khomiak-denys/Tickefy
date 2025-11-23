@@ -1,6 +1,11 @@
 ﻿namespace Tickefy.Domain.Ticket
 {
-    internal interface ITicketRepository
+    public interface ITicketRepository
     {
+        IEnumerable<Ticket> GetAll();
+        Task<Ticket> GetByIdAsync(Guid id, CancellationToken cancellationToken); 
+        void Add(Ticket ticket);
+        void Update(Ticket ticket);
+        void Delete(Ticket ticket);
     }
 }

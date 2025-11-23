@@ -38,8 +38,18 @@ namespace Tickefy.Domain.Ticket
             return ticket;
         }
 
+        public void SetCategory(Category category)
+        {
+            Category = category;
+        }
+        public void SetPriority(Priority priority)
+        {
+            Priority = priority;
+        }
+
         private Ticket(string title, string description, UserId requesterId, DateTime deadline)
         {
+            Id = new TicketId();
             Title = title;
             Description = description;
             RequesterId = requesterId;
