@@ -26,14 +26,6 @@ namespace Tickefy.Infrastructure.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
-            modelBuilder.Ignore<ActivityLogId>();
-            modelBuilder.Ignore<AttachmentId>();
-            modelBuilder.Ignore<CommentId>();
-            modelBuilder.Ignore<TeamId>();
-            modelBuilder.Ignore<TicketId>();
-            modelBuilder.Ignore<UserId>();
-
             modelBuilder.Entity<ActivityLog>().HasKey(a => a.Id);
             modelBuilder.Entity<Attachment>().HasKey(a => a.Id);
             modelBuilder.Entity<Comment>().HasKey(a => a.Id);
@@ -42,10 +34,13 @@ namespace Tickefy.Infrastructure.Database
             modelBuilder.Entity<User>().HasKey(a => a.Id);
 
             modelBuilder.Entity<ActivityLog>().HasStronglyTypedIdConversion(a => a.Id);
+
             modelBuilder.Entity<Attachment>().HasStronglyTypedIdConversion(a => a.Id);
             modelBuilder.Entity<Comment>().HasStronglyTypedIdConversion(a => a.Id);
+
             modelBuilder.Entity<Team>().HasStronglyTypedIdConversion(a => a.Id);
             modelBuilder.Entity<Ticket>().HasStronglyTypedIdConversion(a => a.Id);
+
             modelBuilder.Entity<User>().HasStronglyTypedIdConversion(a => a.Id);
 
             //ACTIVITY LOG
@@ -119,12 +114,6 @@ namespace Tickefy.Infrastructure.Database
                    .WithMany()
                    .HasForeignKey(t => t.AssignedAgentId)
                    .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Ticket>()
-                   .HasMany(t => t.Comments)
-                   .WithOne()
-                   .HasForeignKey(c => c.TicketId)
-                   .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Ticket>()
                    .HasMany(t => t.Attachments)

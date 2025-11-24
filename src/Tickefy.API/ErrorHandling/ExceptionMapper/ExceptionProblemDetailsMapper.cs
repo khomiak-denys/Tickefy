@@ -43,6 +43,16 @@ namespace Tickefy.API.ErrorHandling.ExceptionMapper
                 }
             },
             {
+                typeof(ForbiddenException),
+                ex => new ProblemDetails
+                {
+                    Status = StatusCodes.Status403Forbidden,
+                    Title = "Forbidden",
+                    Detail = ex.Message,
+                    Type = "https://httpstatuses.io/403"
+                }
+            },
+            {
                 typeof(AlreadyExistsException),
                 ex => new ProblemDetails
                 {
