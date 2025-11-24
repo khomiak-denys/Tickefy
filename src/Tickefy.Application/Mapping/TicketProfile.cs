@@ -23,8 +23,12 @@ namespace Tickefy.Application.Common.Mapping
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.Value))
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId.Value));
 
+            CreateMap<Domain.Attachment.Attachment, AttachmentResult>()
+                .ForMember(dest => dest.ContentType, opt => opt.MapFrom(src => src.ContentType.ToString()));
+
             CreateMap<Domain.Ticket.Ticket, TicketDetailsResult>();
             CreateMap<Domain.Ticket.Ticket, TicketResult>();
+
         }
     }
 
