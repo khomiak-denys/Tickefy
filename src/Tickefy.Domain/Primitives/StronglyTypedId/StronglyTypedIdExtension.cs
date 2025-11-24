@@ -10,7 +10,7 @@ namespace Tickefy.Domain.Primitives.StronglyTypedId
         public static PropertyBuilder<TId> HasStronglyTypedIdConversion<TEntity, TId>(
             this EntityTypeBuilder<TEntity> builder,
             Expression<Func<TEntity, TId>> propertySelector)
-            where TEntity : EntityBase<TId>
+            where TEntity : class
             where TId : StronglyTypedId<TId>
         {
 

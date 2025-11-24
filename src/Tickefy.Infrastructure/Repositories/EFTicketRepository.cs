@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Tickefy.Domain.Primitives;
 using Tickefy.Domain.Ticket;
 using Tickefy.Infrastructure.Database;
 
@@ -23,14 +24,22 @@ namespace Tickefy.Infrastructure.Repositories
             _dbContext.Tickets.Remove(ticket);
         }
 
-        public IEnumerable<Ticket> GetAll()
+        public async Task<IEnumerable<Ticket>> GetAll()
         {
-            return _dbContext.Tickets.ToList();
+            return await _dbContext.Tickets.AsNoTracking().ToListAsync();
         }
 
-        public async Task<Ticket> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<Ticket?> GetByIdAsync(TicketId id, CancellationToken cancellationToken)
         {
-            return await _dbContext.Tickets.FirstOrDefaultAsync(t => t.Id.Value == id, cancellationToken);
+            return await _dbContext.Tickets
+                .Include(t => t.Comments)
+                .Include(t => t.Attachments)
+                .FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
+        }
+
+        public async Task<List<Ticket>> GetByUserId(UserId id)
+        {
+            return await _dbContext.Tickets.Where(t => t.RequesterId == id).AsNoTracking().ToListAsync();
         }
 
         public void Update(Ticket ticket)

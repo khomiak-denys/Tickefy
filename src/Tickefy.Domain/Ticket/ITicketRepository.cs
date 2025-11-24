@@ -1,9 +1,12 @@
-﻿namespace Tickefy.Domain.Ticket
+﻿using Tickefy.Domain.Primitives;
+
+namespace Tickefy.Domain.Ticket
 {
     public interface ITicketRepository
     {
-        IEnumerable<Ticket> GetAll();
-        Task<Ticket> GetByIdAsync(Guid id, CancellationToken cancellationToken); 
+        Task<IEnumerable<Ticket>> GetAll();
+        Task<Ticket?> GetByIdAsync(TicketId id, CancellationToken cancellationToken);
+        Task<List<Ticket>> GetByUserId(UserId id);
         void Add(Ticket ticket);
         void Update(Ticket ticket);
         void Delete(Ticket ticket);

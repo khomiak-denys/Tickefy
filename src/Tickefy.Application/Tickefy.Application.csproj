@@ -8,13 +8,13 @@
 
   <ItemGroup>
     <Folder Include="ActivityLog\Create\" />
-    <Folder Include="Comment\" />
     <Folder Include="Attachment\" />
     <Folder Include="Team\" />
     <Folder Include="User\" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="15.1.0" />
     <PackageReference Include="FluentValidation" Version="12.1.0" />
     <PackageReference Include="MediatR" Version="13.1.0" />
   </ItemGroup>

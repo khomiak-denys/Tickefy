@@ -47,6 +47,11 @@ namespace Tickefy.Domain.Ticket
             Priority = priority;
         }
 
+        public void AddComment(Domain.Comment.Comment comment)
+        {
+            Comments.Add(comment);
+        }
+
         private Ticket(string title, string description, UserId requesterId, DateTime deadline)
         {
             Id = new TicketId();

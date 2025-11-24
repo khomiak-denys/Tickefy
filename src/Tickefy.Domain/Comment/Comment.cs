@@ -24,6 +24,7 @@ namespace Tickefy.Domain.Comment
 
         private Comment(UserId userId, TicketId ticketId, string content)
         {
+            Id = new CommentId();
             UserId = userId;
             TicketId = ticketId;
             Content = content;

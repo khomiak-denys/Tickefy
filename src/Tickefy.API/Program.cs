@@ -13,6 +13,7 @@ using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Repositories;
 using Tickefy.Application.Abstractions.Services;
 using Tickefy.Application.Auth.Login;
+using Tickefy.Application.Common.Mapping;
 using Tickefy.Application.PipelineBehaviors;
 using Tickefy.Application.Ticket.AI;
 using Tickefy.Domain.Ticket;
@@ -74,8 +75,16 @@ namespace Tickefy.API
 
 
             builder.Services.AddAutoMapper(
-                cfg => { },
-                typeof(LoginMappingProfile).Assembly
+                cfg => 
+                {
+                    cfg.AllowNullCollections = true;
+                },
+                new[]
+                {
+                    typeof(LoginMappingProfile).Assembly,
+                    typeof(TicketProfile).Assembly 
+
+                }
             );
 
             var postgresConnection =

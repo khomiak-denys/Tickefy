@@ -26,6 +26,8 @@ namespace Tickefy.Infrastructure.Services.AI
 
                  Available Categories: IT, Design, Finance, HR, Legal, Content.
                  Available Priorities: Critical, High, Medium, Low.
+                 Priority should depend on how much time was given to complete the task.
+
 
                  Ticket data:
                  Title: {title}
