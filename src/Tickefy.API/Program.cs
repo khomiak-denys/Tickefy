@@ -15,13 +15,12 @@ using Tickefy.Application.Abstractions.Services;
 using Tickefy.Application.Auth.Login;
 using Tickefy.Application.Common.Mapping;
 using Tickefy.Application.PipelineBehaviors;
-using Tickefy.Application.Ticket.AI;
+using Tickefy.Infrastructure.Services.AI;
 using Tickefy.Domain.Ticket;
 using Tickefy.Infrastructure.Database;
 using Tickefy.Infrastructure.Options;
 using Tickefy.Infrastructure.Repositories;
 using Tickefy.Infrastructure.Services;
-using Tickefy.Infrastructure.Services.AI;
 
 namespace Tickefy.API
 {

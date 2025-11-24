@@ -11,7 +11,7 @@ namespace Tickefy.API.Mapping
         public TicketMappingProfile()
         {
             CreateMap<TicketResult, TicketResponse>();
-            CreateMap<TicketDetailsResult, TicketDetailsResult>();
+            CreateMap<TicketDetailsResult, TicketDetailsResponse>();
             CreateMap<CommentResult, CommentResponse>();
             CreateMap<AttachmentResult, AttachmentResponse>();
         }

@@ -27,11 +27,11 @@ namespace Tickefy.Application.Ticket.GetById
                 throw new NotFoundException(nameof(ticket), query.TicketId);
             }
 
-            var isRequster = ticket.RequesterId == query.UserId;
+            var isRequester = ticket.RequesterId == query.UserId;
             var isAdmin = query.Roles.Contains(UserRoles.Admin.ToString());
             var isAssignedAgent = ticket.AssignedAgentId?.Value == query.UserId.Value;
 
-            if (!isRequster && !isAdmin && !isAssignedAgent) throw new ForbiddenException("Invalid role");
+            if (!isRequester && !isAdmin && !isAssignedAgent) throw new ForbiddenException("Invalid role");
 
             var result = _mapper.Map<TicketDetailsResult>(ticket);
 

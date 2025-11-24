@@ -2,7 +2,7 @@
 
 namespace Tickefy.API.Ticket.Responses
 {
-    public class TicketDetailsResponse(
+    public record TicketDetailsResponse(
         Guid Id,
         string Title,
         string Description,

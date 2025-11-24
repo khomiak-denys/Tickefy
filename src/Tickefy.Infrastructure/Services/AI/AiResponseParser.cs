@@ -3,7 +3,7 @@ using Tickefy.Application.AI.Dtos;
 using Tickefy.Domain.Common.Category;
 using Tickefy.Domain.Common.Priority;
 
-namespace Tickefy.Application.Ticket.AI
+namespace Tickefy.Infrastructure.Services.AI
 {
     public class AiResponseParser : IAiResponseParser
     {

@@ -1,6 +1,5 @@
 ﻿using Google.GenAI;     
 using System.Text.Json;
-using System.Text.RegularExpressions;
 using Tickefy.Application.Abstractions.Services;
 using Tickefy.Application.AI.Dtos;
 
@@ -24,7 +23,7 @@ namespace Tickefy.Infrastructure.Services.AI
                  Your task is to analyze the ticket details and assign a Category and Priority. 
                  Only return a JSON object.
 
-                 Available Categories: IT, Design, Finance, HR, Legal, Content.
+                 Available Categories: Finance, IT, Design, Marketing, HumanResources, Legal, AccessAndSecurity, Other
                  Available Priorities: Critical, High, Medium, Low.
                  Priority should depend on how much time was given to complete the task.
 
@@ -46,10 +45,15 @@ namespace Tickefy.Infrastructure.Services.AI
                 model: "gemini-2.0-flash",
                 contents: prompt
             );
-           
-            var json = response.Candidates[0].Content.Parts[0].Text;
 
-           // var clean = Regex.Replace(json, "```.*?```", "", RegexOptions.Singleline);
+
+            var parts = response?.Candidates?
+                .SelectMany(c => c.Content.Parts)
+                .ToList();
+
+            var json = string.Join("", parts
+                .Where(p => p.Text != null)
+                .Select(p => p.Text));
 
             if (string.IsNullOrWhiteSpace(json))
                 throw new InvalidOperationException("AI returned empty response.");
