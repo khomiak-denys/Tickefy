@@ -13,18 +13,20 @@ namespace Tickefy.Application.Ticket.Create
     {
         private readonly IUnitOfWork _uow;
         private readonly ITicketRepository _ticketRepository;
-        
+        private readonly IActivityLogRepository _logRepository;
         private readonly IAiService _aiService;
         private readonly IAiResponseParser _responseParser;
 
         public CreateTicketCommandHandler(
             IUnitOfWork uow, 
             ITicketRepository ticketRepository,
+            IActivityLogRepository logRepository,
             IAiService aiService,
             IAiResponseParser responseParser)
         {
             _uow = uow;
             _ticketRepository = ticketRepository;
+            _logRepository = logRepository;
             _aiService = aiService;
             _responseParser = responseParser;
         }
@@ -50,8 +52,10 @@ namespace Tickefy.Application.Ticket.Create
             }
 
             _ticketRepository.Add(ticket);
-            
 
+            var log = ActivityLog.Create(ticket.Id, command.UserId, EventType.RequestCreated, "Created request");
+            _logRepository.Add(log);
+            
             await _uow.SaveChangesAsync(cancellationToken);
         }
     }

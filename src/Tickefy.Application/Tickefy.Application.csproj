@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="ActivityLog\Create\" />
     <Folder Include="Attachment\" />
     <Folder Include="Team\" />
     <Folder Include="User\" />

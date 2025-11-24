@@ -25,6 +25,7 @@ namespace Tickefy.Domain.ActivityLog
 
         private ActivityLog(TicketId ticketId, UserId userId, EventType eventType, string description)
         {
+            Id = new ActivityLogId();
             TicketId = ticketId;
             UserId = userId;
             EventType = eventType;
