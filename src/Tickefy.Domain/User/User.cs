@@ -37,5 +37,15 @@ namespace Tickefy.Domain.User
         {
             Role = role;
         }
+        public void Update(string firstName, string lastName)
+        {
+            FirstName = firstName;
+            LastName = lastName;
+        }
+
+        public void UpdatePassword(string password)
+        {
+            PasswordHash = password;
+        }
     }
 }

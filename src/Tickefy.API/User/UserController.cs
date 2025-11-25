@@ -76,5 +76,23 @@ namespace Tickefy.API.User
             return Ok();
         }
 
+        [HttpPatch]
+        [Authorize]
+        [Route("update-profile")]
+        public async Task<IActionResult> UpdateProfile(UpdateProfileRequest request)
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+            {
+                return Unauthorized("User ID is missing or invalid");
+            }
+
+            var command = request.ToCommand(new UserId(userId));
+
+            await _mediator.Send(command);
+
+            return Ok();
+        }
     }
 }

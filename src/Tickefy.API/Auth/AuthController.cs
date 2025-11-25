@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Tickefy.API.Auth.Requests;
 using Tickefy.API.Auth.Responses;
+using Tickefy.Domain.Primitives;
 
 namespace Tickefy.API.Auth
 {
@@ -43,6 +44,26 @@ namespace Tickefy.API.Auth
             var response = _mapper.Map<LoginResponse>(result);
 
             return Ok(response);
+        }
+
+        [Authorize]
+        [HttpPatch("password")]
+        [SwaggerOperation(Summary = "Handles request to reset user password")]
+        public async Task<IActionResult> SetPassword([FromBody] SetPasswordRequest request)
+        {
+
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+            {
+                return Unauthorized("User ID is missing or invalid");
+            }
+
+            var command = request.ToCommand(new UserId(userId));
+
+            await _mediator.Send(command);
+
+            return Ok();
         }
     }
 }
