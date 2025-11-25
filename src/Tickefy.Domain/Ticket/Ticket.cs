@@ -64,7 +64,7 @@ namespace Tickefy.Domain.Ticket
             Description = description;
             RequesterId = requesterId;
             Deadline = deadline;
-            Status = Status.Created;
+           // Status = Status.Created;
         }
     }
 }

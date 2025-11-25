@@ -22,7 +22,6 @@ using Tickefy.Infrastructure.Options;
 using Tickefy.Infrastructure.Repositories;
 using Tickefy.Infrastructure.Services;
 using Tickefy.Domain.ActivityLog;
-using Microsoft.OpenApi;
 
 namespace Tickefy.API
 {

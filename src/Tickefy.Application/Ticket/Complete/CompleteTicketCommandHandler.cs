@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Tickefy.Application.Abstractions.Data;
+﻿using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Exceptions;
 using Tickefy.Domain.ActivityLog;
@@ -45,12 +44,12 @@ namespace Tickefy.Application.Ticket.Complete
                 }
                 else
                 {
-                    throw new ForbiddenException("Invalid ticket status");
+                    throw new ForbiddenException($"Ticket status must be 'Assigned' to complete. Current status {ticket.Status}");
                 }
             }
             else
             {
-                throw new ForbiddenException("Invalid role");
+                throw new ForbiddenException("Only admin or assigned agent can complete tickets");
             }
         }   
     }
