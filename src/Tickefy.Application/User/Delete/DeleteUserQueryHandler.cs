@@ -1,10 +1,7 @@
-﻿using AutoMapper;
-using Tickefy.Application.Abstractions.Data;
+﻿using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Abstractions.Repositories;
 using Tickefy.Application.Exceptions;
-using Tickefy.Domain.ActivityLog;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Tickefy.Application.User.Delete
 {
@@ -12,20 +9,17 @@ namespace Tickefy.Application.User.Delete
     {
         private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _uow;
-        private readonly IMapper _mapper;
 
         public DeleteUserCommandHandler(
             IUserRepository userRepository,
-            IUnitOfWork uow,
-            IMapper mapper)
+            IUnitOfWork uow)
         {
             _userRepository = userRepository;
             _uow = uow;
-            _mapper = mapper;
         }
         public async Task Handle(DeleteUserCommand command, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetById(command.UserId);
+            var user = await _userRepository.GetByIdAsync(command.UserId);
             if (user == null) throw new NotFoundException(nameof(user), command.UserId.ToString());
 
             _userRepository.Delete(user);

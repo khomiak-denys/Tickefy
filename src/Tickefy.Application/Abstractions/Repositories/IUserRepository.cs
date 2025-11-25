@@ -6,7 +6,7 @@ namespace Tickefy.Application.Abstractions.Repositories
     {
         public void Add(Domain.User.User user);
         public Task<List<Domain.User.User>> GetAll();
-        public Task<Domain.User.User?> GetById(UserId id);
+        public Task<Domain.User.User?> GetByIdAsync(UserId id);
         public void Delete(Domain.User.User user);
         public Task<Domain.User.User?> GetByLoginAsync(string login, CancellationToken cancellationToken);
     }

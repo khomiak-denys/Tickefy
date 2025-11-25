@@ -4,11 +4,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tickefy.API.User.Requests;
 using Tickefy.API.User.Responses;
-using Tickefy.Application.Ticket.GetAll;
 using Tickefy.Application.User.Delete;
 using Tickefy.Application.User.GetAll;
 using Tickefy.Application.User.GetById;
-using Tickefy.Application.User.SetRole;
 using Tickefy.Domain.Primitives;
 
 namespace Tickefy.API.User
@@ -19,15 +17,12 @@ namespace Tickefy.API.User
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         public UserController(
             IMediator mediator,
-            IMapper mapper,
-            IHttpContextAccessor httpContextAccessor)
+            IMapper mapper)
         {
             _mediator = mediator;
             _mapper = mapper;
-            _httpContextAccessor = httpContextAccessor;
         }
 
 

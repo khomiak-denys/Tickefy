@@ -29,11 +29,6 @@ namespace Tickefy.Infrastructure.Repositories
             return await _dbContext.Users.AsNoTracking().ToListAsync();
         }
 
-        public async Task<User?> GetById(UserId id)
-        {
-            return await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
-        }
-
         public async Task<User?> GetByIdAsync(UserId id)
         {
             return await _dbContext.Users.FirstOrDefaultAsync(t => t.Id == id); 

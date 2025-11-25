@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Abstractions.Repositories;
-using Tickefy.Application.Ticket.Common;
 using Tickefy.Application.User.Common;
-using Tickefy.Domain.Ticket;
 
 namespace Tickefy.Application.User.GetAll
 {
