@@ -31,14 +31,14 @@ namespace Tickefy.Infrastructure.Database
             modelBuilder.Entity<Comment>().HasKey(a => a.Id);
             modelBuilder.Entity<Team>().HasKey(a => a.Id);
             modelBuilder.Entity<Ticket>().HasKey(a => a.Id);
-            modelBuilder.Entity<User>().HasKey(a => a.Id);
+          //  modelBuilder.Entity<User>().HasKey(a => a.Id);
 
             modelBuilder.Entity<ActivityLog>().HasStronglyTypedIdConversion(a => a.Id);
             modelBuilder.Entity<Attachment>().HasStronglyTypedIdConversion(a => a.Id);
             modelBuilder.Entity<Comment>().HasStronglyTypedIdConversion(a => a.Id);
             modelBuilder.Entity<Team>().HasStronglyTypedIdConversion(a => a.Id);
             modelBuilder.Entity<Ticket>().HasStronglyTypedIdConversion(a => a.Id);
-            modelBuilder.Entity<User>().HasStronglyTypedIdConversion(a => a.Id);
+           // modelBuilder.Entity<User>().HasStronglyTypedIdConversion(a => a.Id);
 
             //ACTIVITY LOG
             modelBuilder.Entity<ActivityLog>()
@@ -113,12 +113,82 @@ namespace Tickefy.Infrastructure.Database
                    .OnDelete(DeleteBehavior.Restrict);
 
             //USER
-            modelBuilder.Entity<User>().HasIndex(u => u.Login).IsUnique();
+            /*modelBuilder.Entity<User>().HasIndex(u => u.Login).IsUnique();
             modelBuilder.Entity<User>()
                    .HasOne(u => u.Team)
                    .WithMany(t => t.Members)
                    .HasForeignKey(u => u.TeamId)
-                   .OnDelete(DeleteBehavior.SetNull);
+                   .OnDelete(DeleteBehavior.SetNull);*/
+
+
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.ToTable("Users");
+
+                entity.Metadata.SetIsTableExcludedFromMigrations(true);
+
+                entity.HasKey(u => u.Id);
+
+                entity.Property(u => u.Id)
+                    .HasConversion(
+                        id => id.Value,             
+                        guid => new UserId(guid)     
+                    )
+                    .HasColumnName("Id");
+
+                // ---- USER FIELDS ----
+
+                entity.Property(u => u.FirstName)
+                    .HasColumnName("FirstName")
+                    .HasMaxLength(255)
+                    .IsRequired();
+
+                entity.Property(u => u.LastName)
+                    .HasColumnName("LastName")
+                    .HasMaxLength(255)
+                    .IsRequired();
+
+                entity.Property(u => u.Login)
+                    .HasColumnName("Login")
+                    .HasMaxLength(255)
+                    .IsRequired();
+
+                entity.Property(u => u.PasswordHash)
+                    .HasColumnName("PasswordHash")
+                    .HasMaxLength(255)
+                    .IsRequired();
+
+                // Enum UserRoles <-> int
+                entity.Property(u => u.Role)
+                    .HasColumnName("Role")
+                    .HasConversion<int>()
+                    .IsRequired();
+
+                // ---- TEAM FK ----
+
+                entity.Property(u => u.TeamId)
+                    .HasColumnName("TeamId")
+                    .HasConversion(
+                        id => id.Value,   
+                        guid => new TeamId(guid)  
+                    );
+
+                entity.HasOne(u => u.Team)
+                    .WithMany(t => t.Members)
+                    .HasForeignKey(u => u.TeamId)
+                    .OnDelete(DeleteBehavior.SetNull);
+
+                // ---- BASE ENTITY FIELDS (Created, Modified) ----
+
+                entity.Property<DateTime>("Created")
+                    .HasColumnName("Created")
+                    .IsRequired();
+
+                entity.Property<DateTime?>("Modified")
+                    .HasColumnName("Modified")
+                    .IsRequired(false);
+            });
+
         }
     }
 }
