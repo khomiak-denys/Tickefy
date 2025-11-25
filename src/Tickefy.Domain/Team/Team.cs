@@ -1,4 +1,5 @@
-﻿using Tickefy.Domain.Common.EntityBase;
+﻿using Tickefy.Domain.Common.Category;
+using Tickefy.Domain.Common.EntityBase;
 using Tickefy.Domain.Primitives;
 
 namespace Tickefy.Domain.Team
@@ -7,7 +8,7 @@ namespace Tickefy.Domain.Team
     {
         public string Name { get; private set; }
         public string? Description { get; private set; }
-
+        public Category Category { get; private set; }
         public List<Domain.User.User> Members { get; private set; } = new();
 
         private Team() { }

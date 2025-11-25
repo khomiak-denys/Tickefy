@@ -53,7 +53,7 @@ namespace Tickefy.Application.Ticket.Create
 
             _ticketRepository.Add(ticket);
 
-            var log = ActivityLog.Create(ticket.Id, command.UserId, EventType.RequestCreated, "Created request");
+            var log = Domain.ActivityLog.ActivityLog.Create(ticket.Id, command.UserId, EventType.RequestCreated, "Created request");
             _logRepository.Add(log);
             
             await _uow.SaveChangesAsync(cancellationToken);

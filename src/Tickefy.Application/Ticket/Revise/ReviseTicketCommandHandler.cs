@@ -38,7 +38,7 @@ namespace Tickefy.Application.Ticket.Revise
                 if (ticket.Status == Status.Completed)
                 {
                     ticket.Revise();
-                    var log = ActivityLog.Create(ticket.Id, command.UserId, EventType.StatusChanged, "Ticket revised");
+                    var log = Domain.ActivityLog.ActivityLog.Create(ticket.Id, command.UserId, EventType.StatusChanged, "Ticket revised");
                     _logRepository.Add(log);
                     await _uow.SaveChangesAsync();
                 }

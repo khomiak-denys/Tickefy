@@ -38,7 +38,7 @@ namespace Tickefy.Application.Ticket.Complete
                 if (ticket.Status == Status.Assigned)
                 {
                     ticket.Complete();
-                    var log = ActivityLog.Create(ticket.Id, command.UserId, EventType.StatusChanged, "Ticket completed");
+                    var log = Domain.ActivityLog.ActivityLog.Create(ticket.Id, command.UserId, EventType.StatusChanged, "Ticket completed");
                     _logRepository.Add(log);
                     await _uow.SaveChangesAsync();
                 }
