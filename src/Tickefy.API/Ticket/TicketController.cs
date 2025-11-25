@@ -6,6 +6,7 @@ using Swashbuckle.AspNetCore.Annotations;
 using System.Security.Claims;
 using Tickefy.API.Ticket.Requests;
 using Tickefy.API.Ticket.Responses;
+using Tickefy.Application.Ticket.Cancel;
 using Tickefy.Application.Ticket.Complete;
 using Tickefy.Application.Ticket.GetAll;
 using Tickefy.Application.Ticket.GetById;
@@ -128,7 +129,7 @@ namespace Tickefy.API.Ticket
             return Created();
         }
 
-        [HttpPost]
+        [HttpPut]
         [Authorize(Roles = "Agent, Admin")]
         [Route("{ticketId}/complete")]
         [SwaggerOperation(Summary = "Handles request to complete ticket")]
@@ -158,7 +159,7 @@ namespace Tickefy.API.Ticket
             return Ok();
         }
 
-        [HttpPost]
+        [HttpPut]
         [Authorize(Roles = "Requester, Admin")]
         [Route("{ticketId}/revise")]
         [SwaggerOperation(Summary = "Handles request to revise ticket")]
@@ -177,6 +178,36 @@ namespace Tickefy.API.Ticket
                 .ToList();
 
             var command = new ReviseTicketCommand
+            {
+                UserId = new UserId(userId),
+                Roles = roles,
+                TicketId = new TicketId(ticketId)
+            };
+
+            await _mediator.Send(command);
+
+            return Ok();
+        }
+
+        [HttpPut]
+        [Authorize(Roles = "Requester, Admin")]
+        [Route("{ticketId}/cancel")]
+        [SwaggerOperation(Summary = "Handles request to cancel ticket")]
+        public async Task<IActionResult> CancelTicketAsync(Guid ticketId)
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+            {
+                return Unauthorized("User ID is missing or invalid");
+            }
+
+            var roles = User.Claims
+                .Where(c => c.Type == ClaimTypes.Role)
+                .Select(c => c.Value)
+                .ToList();
+
+            var command = new CancelTicketCommand
             {
                 UserId = new UserId(userId),
                 Roles = roles,
