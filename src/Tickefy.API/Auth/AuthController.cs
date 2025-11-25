@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using Tickefy.API.Auth.Requests;
 using Tickefy.API.Auth.Responses;
 
@@ -24,6 +25,7 @@ namespace Tickefy.API.Auth
 
         [AllowAnonymous]
         [HttpPost("register")]
+        [SwaggerOperation(Summary = "Handles request to register user")]
         public async Task<IActionResult> Register([FromBody] RegisterUserRequest request)
         {
             var command = request.ToCommand();
@@ -32,6 +34,7 @@ namespace Tickefy.API.Auth
         }
         [AllowAnonymous]
         [HttpPost("login")]
+        [SwaggerOperation(Summary = "Handles request to login user")]
         public async Task<IActionResult> Login([FromBody] LoginUserRequest request)
         {
             var command = request.ToCommand();

@@ -10,7 +10,6 @@ namespace Tickefy.Domain.Common.Status
     {
         Completed,
         Failed,
-        InProgress,
         Created, 
         Assigned,
         Canceled

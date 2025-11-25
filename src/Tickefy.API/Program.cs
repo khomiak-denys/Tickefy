@@ -86,7 +86,7 @@ namespace Tickefy.API
                     typeof(TicketProfile).Assembly 
 
                 }
-            );
+            ); 
 
             var postgresConnection =
                 $"Host={Environment.GetEnvironmentVariable("DB_HOST")};" +
@@ -169,6 +169,7 @@ namespace Tickefy.API
                 };
 
                 options.AddSecurityDefinition("Bearer", jwtSecurityScheme);
+                options.EnableAnnotations();
                 options.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     { jwtSecurityScheme, Array.Empty<string>() }
