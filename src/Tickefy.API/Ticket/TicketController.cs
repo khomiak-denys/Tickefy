@@ -192,7 +192,7 @@ namespace Tickefy.API.Ticket
         [HttpPut]
         [Authorize(Roles = "Requester, Admin")]
         [Route("{ticketId}/cancel")]
-        [SwaggerOperation(Summary = "Handles request to revise ticket")]
+        [SwaggerOperation(Summary = "Handles request to cancel ticket")]
         public async Task<IActionResult> CancelTicketAsync(Guid ticketId)
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
