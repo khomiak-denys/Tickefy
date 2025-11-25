@@ -22,6 +22,7 @@ using Tickefy.Infrastructure.Options;
 using Tickefy.Infrastructure.Repositories;
 using Tickefy.Infrastructure.Services;
 using Tickefy.Domain.ActivityLog;
+using Microsoft.OpenApi;
 
 namespace Tickefy.API
 {
@@ -86,7 +87,7 @@ namespace Tickefy.API
                     typeof(TicketProfile).Assembly 
 
                 }
-            );
+            ); 
 
             var postgresConnection =
                 $"Host={Environment.GetEnvironmentVariable("DB_HOST")};" +
@@ -169,6 +170,7 @@ namespace Tickefy.API
                 };
 
                 options.AddSecurityDefinition("Bearer", jwtSecurityScheme);
+                options.EnableAnnotations();
                 options.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     { jwtSecurityScheme, Array.Empty<string>() }
