@@ -60,6 +60,10 @@ namespace Tickefy.Domain.Ticket
         {
             Status = Status.Assigned;
         }
+        public void Cancel()
+        {
+            Status = Status.Canceled;
+        }
 
         private Ticket(string title, string description, UserId requesterId, DateTime deadline)
         {

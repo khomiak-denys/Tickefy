@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Tickefy.Domain.Common.Status;
 using Tickefy.Domain.Primitives;
 using Tickefy.Domain.Ticket;
 using Tickefy.Infrastructure.Database;
@@ -39,7 +40,7 @@ namespace Tickefy.Infrastructure.Repositories
 
         public async Task<List<Ticket>> GetByUserId(UserId id)
         {
-            return await _dbContext.Tickets.Where(t => t.RequesterId == id).AsNoTracking().ToListAsync();
+            return await _dbContext.Tickets.Where(t => t.RequesterId == id && t.Status != Status.Canceled).AsNoTracking().ToListAsync();
         }
 
         public void Update(Ticket ticket)
