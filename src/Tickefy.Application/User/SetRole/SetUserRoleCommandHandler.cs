@@ -19,7 +19,7 @@ namespace Tickefy.Application.User.SetRole
         }
         public async Task Handle(SetUserRoleCommand command, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetById(command.UserId);
+            var user = await _userRepository.GetByIdAsync(command.UserId);
             if (user == null) throw new NotFoundException(nameof(user), command.UserId.ToString());
 
             UserRoles role;

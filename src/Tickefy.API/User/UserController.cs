@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using Tickefy.API.User.Requests;
 using Tickefy.API.User.Responses;
 using Tickefy.Application.User.Delete;
@@ -28,6 +29,7 @@ namespace Tickefy.API.User
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
+        [SwaggerOperation(Summary = "Handles request to retrieve all users (ONLY ADMIN)")]
         public async Task<IActionResult> GetAllAsync()
         {
             var query = new GetAllUsersQuery();
@@ -40,6 +42,7 @@ namespace Tickefy.API.User
         [HttpGet]
         [Authorize(Roles = "Admin")]
         [Route("{userId}")]
+        [SwaggerOperation(Summary = "Handles request to retrieve user by id (ONLY ADMIN)")]
         public async Task<IActionResult> GetByIdAsync(Guid userId)
         {
             var query = new GetUserByIdQuery(new UserId(userId));
@@ -52,6 +55,7 @@ namespace Tickefy.API.User
         [HttpDelete]
         [Authorize(Roles = "Admin")]
         [Route("{userId}")]
+        [SwaggerOperation(Summary = "Handles request to delete user by id (ONLY ADMIN)")]
         public async Task<IActionResult> DeleteUserAsync(Guid userId)
         {
             var query = new DeleteUserCommand(new UserId(userId));
@@ -63,6 +67,7 @@ namespace Tickefy.API.User
         [HttpPatch]
         [Authorize(Roles = "Admin")]
         [Route("{userId}")]
+        [SwaggerOperation(Summary = "Handles request to set user role (ONLY ADMIN)")]
         public async Task<IActionResult> SetUserRoleAsync(Guid userId, [FromBody] SetUserRoleRequest request)
         {
             var command = request.ToCommand(new UserId(userId));
@@ -74,6 +79,7 @@ namespace Tickefy.API.User
         [HttpPatch]
         [Authorize]
         [Route("update-profile")]
+        [SwaggerOperation(Summary = "Handles request to update user profile")]
         public async Task<IActionResult> UpdateProfile(UpdateProfileRequest request)
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
