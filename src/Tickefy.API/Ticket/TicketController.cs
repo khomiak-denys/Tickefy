@@ -10,6 +10,7 @@ using Tickefy.Application.Ticket.Complete;
 using Tickefy.Application.Ticket.GetAll;
 using Tickefy.Application.Ticket.GetById;
 using Tickefy.Application.Ticket.GetMy;
+using Tickefy.Application.Ticket.Revise;
 using Tickefy.Domain.Primitives;
 
 namespace Tickefy.API.Ticket
@@ -157,6 +158,35 @@ namespace Tickefy.API.Ticket
             return Ok();
         }
 
+        [HttpPost]
+        [Authorize(Roles = "Requester, Admin")]
+        [Route("{ticketId}/revise")]
+        [SwaggerOperation(Summary = "Handles request to revise ticket")]
+        public async Task<IActionResult> ReviseTicketAsync(Guid ticketId)
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+            {
+                return Unauthorized("User ID is missing or invalid");
+            }
+
+            var roles = User.Claims
+                .Where(c => c.Type == ClaimTypes.Role)
+                .Select(c => c.Value)
+                .ToList();
+
+            var command = new ReviseTicketCommand
+            {
+                UserId = new UserId(userId),
+                Roles = roles,
+                TicketId = new TicketId(ticketId)
+            };
+
+            await _mediator.Send(command);
+
+            return Ok();
+        }
     }
 }
 

@@ -56,6 +56,10 @@ namespace Tickefy.Domain.Ticket
         {
             Status = Status.Completed;
         }
+        public void Revise()
+        {
+            Status = Status.Assigned;
+        }
 
         private Ticket(string title, string description, UserId requesterId, DateTime deadline)
         {
@@ -64,7 +68,6 @@ namespace Tickefy.Domain.Ticket
             Description = description;
             RequesterId = requesterId;
             Deadline = deadline;
-           // Status = Status.Created;
         }
     }
 }
