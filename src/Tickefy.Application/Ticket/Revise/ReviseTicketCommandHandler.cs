@@ -1,7 +1,6 @@
 ﻿using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Exceptions;
-using Tickefy.Application.Ticket.Complete;
 using Tickefy.Domain.ActivityLog;
 using Tickefy.Domain.Common.Event;
 using Tickefy.Domain.Common.Status;
@@ -31,10 +30,10 @@ namespace Tickefy.Application.Ticket.Revise
 
             if (ticket == null) throw new NotFoundException(nameof(ticket), command.TicketId);
 
-            var isRequster = command.Roles.Contains(UserRoles.Requester.ToString()) && (ticket.RequesterId.Value == command.UserId.Value);
+            var isRequester = command.Roles.Contains(UserRoles.Requester.ToString()) && (ticket.RequesterId.Value == command.UserId.Value);
             var isAdmin = command.Roles.Contains(UserRoles.Admin.ToString());
 
-            if (isAdmin || isRequster)
+            if (isAdmin || isRequester)
             {
                 if (ticket.Status == Status.Completed)
                 {
@@ -50,7 +49,7 @@ namespace Tickefy.Application.Ticket.Revise
             }
             else
             {
-                throw new ForbiddenException("Only admin or assigned agent can complete tickets");
+                throw new ForbiddenException("Only admin or requester agent can revise tickets");
             }
         }
     }
