@@ -30,7 +30,7 @@ namespace Tickefy.Application.Auth.Register
                 throw new AlreadyExistsException("User", command.Login);
             }
             var passwordHash = _passwordHasher.HashPassword(command.Password);
-            var user = User.Create(command.FirstName, command.LastName, command.Login, passwordHash);
+            var user = Domain.User.User.Create(command.FirstName, command.LastName, command.Login, passwordHash);
 
             _userRepository.Add(user);
             await _uow.SaveChangesAsync(cancellationToken);

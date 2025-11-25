@@ -10,7 +10,6 @@
     <Folder Include="Attachment\" />
     <Folder Include="Team\" />
     <Folder Include="Ticket\Revise\" />
-    <Folder Include="User\" />
   </ItemGroup>
 
   <ItemGroup>
