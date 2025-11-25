@@ -32,5 +32,10 @@ namespace Tickefy.Domain.User
             PasswordHash = passwordHash;
             Role = role;
         }
+
+        public void SetRole(UserRoles role)
+        {
+            Role = role;
+        }
     }
 }

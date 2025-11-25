@@ -2,9 +2,14 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Tickefy.API.User.Requests;
 using Tickefy.API.User.Responses;
 using Tickefy.Application.Ticket.GetAll;
+using Tickefy.Application.User.Delete;
 using Tickefy.Application.User.GetAll;
+using Tickefy.Application.User.GetById;
+using Tickefy.Application.User.SetRole;
+using Tickefy.Domain.Primitives;
 
 namespace Tickefy.API.User
 {
@@ -36,5 +41,40 @@ namespace Tickefy.API.User
             var response = _mapper.Map<List<UserResponse>>(result);
             return Ok(response);
         }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        [Route("{userId}")]
+        public async Task<IActionResult> GetByIdAsync(Guid userId)
+        {
+            var query = new GetUserByIdQuery(new UserId(userId));
+            var result = await _mediator.Send(query);
+
+            var response = _mapper.Map<UserResponse>(result);
+            return Ok(response);
+        }
+
+        [HttpDelete]
+        [Authorize(Roles = "Admin")]
+        [Route("{userId}")]
+        public async Task<IActionResult> DeleteUserAsync(Guid userId)
+        {
+            var query = new DeleteUserCommand(new UserId(userId));
+            await _mediator.Send(query);
+
+            return NoContent();
+        }
+
+        [HttpPatch]
+        [Authorize(Roles = "Admin")]
+        [Route("{userId}")]
+        public async Task<IActionResult> SetUserRoleAsync(Guid userId, [FromBody] SetUserRoleRequest request)
+        {
+            var command = request.ToCommand(new UserId(userId));
+            await _mediator.Send(command);
+
+            return Ok();
+        }
+
     }
 }

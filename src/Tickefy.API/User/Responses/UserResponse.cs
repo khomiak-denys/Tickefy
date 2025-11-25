@@ -7,7 +7,7 @@ namespace Tickefy.API.User.Responses
         string FirstName,
         string LastName,
         string Login,
-        UserRoles Role,
+        string Role,
         Guid? TeamId,
         DateTime Created
         );

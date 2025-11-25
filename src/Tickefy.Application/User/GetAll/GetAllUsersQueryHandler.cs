@@ -19,7 +19,7 @@ namespace Tickefy.Application.User.GetAll
             _userRepository = userRepository;
             _mapper = mapper;
         }
-        public async Task<List<UserResult>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
+        public async Task<List<UserResult>> Handle(GetAllUsersQuery query, CancellationToken cancellationToken)
         {
             var tickets = await _userRepository.GetAll();
             var result = _mapper.Map<List<UserResult>>(tickets);

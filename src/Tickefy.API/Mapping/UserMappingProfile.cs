@@ -8,7 +8,10 @@ namespace Tickefy.API.Mapping
     {
         public UserMappingProfile() 
         {
-            CreateMap<UserResult, UserResponse>();
+            CreateMap<UserResult, UserResponse>()
+                .ForMember(
+                    dest => dest.Role,
+                    opt => opt.MapFrom(src => src.Role.ToString()));
         }
     }
 }
