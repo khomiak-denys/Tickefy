@@ -1,6 +1,7 @@
 ﻿namespace Tickefy.Domain.ActivityLog
 {
-    internal interface IActivityLogRepository
+    public interface IActivityLogRepository
     {
+        void Add(ActivityLog log);
     }
 }

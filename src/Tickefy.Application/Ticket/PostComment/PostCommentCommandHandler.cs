@@ -2,6 +2,8 @@
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Abstractions.Repositories;
 using Tickefy.Application.Exceptions;
+using Tickefy.Domain.ActivityLog;
+using Tickefy.Domain.Common.Event;
 using Tickefy.Domain.Ticket;
 
 namespace Tickefy.Application.Ticket.PostComment
@@ -10,13 +12,16 @@ namespace Tickefy.Application.Ticket.PostComment
     {
         private readonly IUnitOfWork _uow;
         private readonly ITicketRepository _ticketRepository;
+        private readonly IActivityLogRepository _logRepository;
 
         public PostCommentCommandHandler(
             IUnitOfWork uow,
-            ITicketRepository ticketRepository)
+            ITicketRepository ticketRepository,
+              IActivityLogRepository logRepository)
         {
             _uow = uow;
             _ticketRepository = ticketRepository;
+            _logRepository = logRepository;
         }
         public async Task Handle(PostCommentCommand command, CancellationToken cancellationToken)
         {
@@ -35,6 +40,9 @@ namespace Tickefy.Application.Ticket.PostComment
             var comment = Domain.Comment.Comment.Create(command.UserId, command.TicketId, command.Content);
 
             ticket.AddComment(comment);
+
+            var log = ActivityLog.Create(ticket.Id, command.UserId, EventType.CommentAdded, "User added comment");
+            _logRepository.Add(log);
 
             await _uow.SaveChangesAsync();
         }

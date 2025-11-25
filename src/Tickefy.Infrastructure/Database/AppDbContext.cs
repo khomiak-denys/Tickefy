@@ -34,24 +34,21 @@ namespace Tickefy.Infrastructure.Database
             modelBuilder.Entity<User>().HasKey(a => a.Id);
 
             modelBuilder.Entity<ActivityLog>().HasStronglyTypedIdConversion(a => a.Id);
-
             modelBuilder.Entity<Attachment>().HasStronglyTypedIdConversion(a => a.Id);
             modelBuilder.Entity<Comment>().HasStronglyTypedIdConversion(a => a.Id);
-
             modelBuilder.Entity<Team>().HasStronglyTypedIdConversion(a => a.Id);
             modelBuilder.Entity<Ticket>().HasStronglyTypedIdConversion(a => a.Id);
-
             modelBuilder.Entity<User>().HasStronglyTypedIdConversion(a => a.Id);
 
             //ACTIVITY LOG
             modelBuilder.Entity<ActivityLog>()
-                    .HasOne<Ticket>()
+                    .HasOne(a => a.Ticket)
                     .WithMany()
                     .HasForeignKey(a => a.TicketId)
                     .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<ActivityLog>()
-                   .HasOne<User>()
+                   .HasOne(a => a.User)
                    .WithMany()
                    .HasForeignKey(a => a.UserId)
                    .OnDelete(DeleteBehavior.Restrict);
@@ -114,12 +111,6 @@ namespace Tickefy.Infrastructure.Database
                    .WithMany()
                    .HasForeignKey(t => t.AssignedAgentId)
                    .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Ticket>()
-                   .HasMany(t => t.Attachments)
-                   .WithOne()
-                   .HasForeignKey(a => a.TicketId)
-                   .OnDelete(DeleteBehavior.Cascade);
 
             //USER
             modelBuilder.Entity<User>().HasIndex(u => u.Login).IsUnique();

@@ -21,6 +21,7 @@ using Tickefy.Infrastructure.Database;
 using Tickefy.Infrastructure.Options;
 using Tickefy.Infrastructure.Repositories;
 using Tickefy.Infrastructure.Services;
+using Tickefy.Domain.ActivityLog;
 
 namespace Tickefy.API
 {
@@ -64,6 +65,7 @@ namespace Tickefy.API
 
             builder.Services.AddScoped<IUserRepository, EFUserRepository>();
             builder.Services.AddScoped<ITicketRepository, EFTicketRepository>();
+            builder.Services.AddScoped<IActivityLogRepository, EFLogRepository>();
 
 
             builder.Services.AddSingleton(sp =>
