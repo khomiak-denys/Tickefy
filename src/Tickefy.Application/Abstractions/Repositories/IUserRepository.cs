@@ -1,9 +1,9 @@
-﻿using Tickefy.Domain.User;
-namespace Tickefy.Application.Abstractions.Repositories
+﻿namespace Tickefy.Application.Abstractions.Repositories
 {
     public interface IUserRepository
     {
-        public void Add(User user);
-        public Task<User?> GetByLoginAsync(string login, CancellationToken cancellationToken);
+        public void Add(Domain.User.User user);
+        public Task<List<Domain.User.User>> GetAll();
+        public Task<Domain.User.User?> GetByLoginAsync(string login, CancellationToken cancellationToken);
     }
 }
