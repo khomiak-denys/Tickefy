@@ -24,7 +24,6 @@ namespace Tickefy.Infrastructure.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
             modelBuilder.Ignore(typeof(Tickefy.Domain.Primitives.ActivityLogId)); 
             modelBuilder.Ignore(typeof(Tickefy.Domain.Primitives.AttachmentId));
             modelBuilder.Ignore(typeof(Tickefy.Domain.Primitives.CommentId));

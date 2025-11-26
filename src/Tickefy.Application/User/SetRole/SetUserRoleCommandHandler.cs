@@ -24,9 +24,16 @@ namespace Tickefy.Application.User.SetRole
 
             UserRoles role;
 
-            Enum.TryParse<UserRoles>(command.Role, ignoreCase: true, out role);
+            var result = Enum.TryParse<UserRoles>(command.Role, ignoreCase: true, out role);
+
+            if (!result)
+            {
+                role = UserRoles.Requester;
+            }
 
             if (user.Role == UserRoles.Admin) throw new ForbiddenException("Admin role cant be changed");
+
+
 
             user.SetRole(role);
 

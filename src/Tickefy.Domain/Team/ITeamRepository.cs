@@ -6,7 +6,9 @@ namespace Tickefy.Domain.Team
     {
         void Add(Team team);
         void Delete(Team team);
+        Task<List<Team>> GetAll();
         Task<Team?> GetByIdAsync(TeamId teamId);
         Task<Team?> GetByManagerIdAsync(UserId managerId);
+        Task<Team?> GetByNameAsync(string name);
     }
 }

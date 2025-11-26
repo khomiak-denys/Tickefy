@@ -1,16 +1,13 @@
-﻿using System.Data;
-using Tickefy.Application.Abstractions.Data;
+﻿using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Abstractions.Repositories;
 using Tickefy.Application.Exceptions;
 using Tickefy.Domain.Common.UserRole;
-using Tickefy.Domain.Primitives;
 using Tickefy.Domain.Team;
-using Tickefy.Domain.User;
+
 
 namespace Tickefy.Application.Team.Create
 {
-    // Припускаємо, що команда повертає TeamId
     public class CreateTeamCommandHandler : ICommandHandler<CreateTeamCommand>
     {
         private readonly IUserRepository _userRepository;
@@ -35,6 +32,9 @@ namespace Tickefy.Application.Team.Create
             {
                 throw new NotFoundException("User (Manager) not found.");
             }
+
+            var existingTeam = await _teamRepository.GetByNameAsync(command.Name);
+            if (existingTeam is not null) throw new AlreadyExistsException(existingTeam.Name);
 
             var team = Domain.Team.Team.Create(
                 name: command.Name,

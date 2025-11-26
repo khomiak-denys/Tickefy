@@ -10,6 +10,8 @@ using Tickefy.Application.Team.Delete;
 using Tickefy.Application.Team.AddMember;
 using Tickefy.Application.Team.RemoveMember;
 using Tickefy.Application.Team.GetById;
+using Tickefy.Application.Team.GetAll;
+using Tickefy.Application.Team.GetMy;
 
 namespace Tickefy.API.Team
 {
@@ -117,18 +119,56 @@ namespace Tickefy.API.Team
 
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Manager")]
         [Route("{teamId}")]
         [SwaggerOperation(Summary = "Handles request to retrieve team by id")]
         public async Task<IActionResult> GetTeamByIdAsync(Guid teamId)
         {
-            var query = new GetTeamByIdQuery(new TeamId(teamId));
+            var query = new GetMyTeamQuery(new TeamId(teamId));
 
             var result = await _mediator.Send(query);
 
-            var response = _mapper.Map<TeamResponse>(result);
+            var response = _mapper.Map<TeamDetailResponse>(result);
 
             return Ok(response);
         }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        [SwaggerOperation(Summary = "Handles request to all teams")]
+        public async Task<IActionResult> GetAllTeamsAsync()
+        {
+            var query = new GetAllTeamsQuery();
+
+            var result = await _mediator.Send(query);
+
+            var response = _mapper.Map<List<TeamResponse>>(result);
+
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin, Manager")]
+        [Route("my")]
+        [SwaggerOperation(Summary = "Handles request to retrieve team by id")]
+        public async Task<IActionResult> GetMyTeamAsync()
+        {
+            var leaderIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(leaderIdClaim) || !Guid.TryParse(leaderIdClaim, out var leaderGuid))
+            {
+                return Unauthorized("User ID is missing or invalid");
+            }
+
+            var query = new GetTeamByUserIdQuery(new UserId(leaderGuid));
+
+            var result = await _mediator.Send(query);
+
+            var response = _mapper.Map<TeamDetailResponse>(result);
+
+            return Ok(response);
+        }
+
+
     }
 }

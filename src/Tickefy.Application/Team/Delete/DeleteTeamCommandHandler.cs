@@ -31,6 +31,14 @@ namespace Tickefy.Application.Team.Delete
             var user = await _userRepository.GetByIdAsync(command.ManagerId);
             if (user == null) throw new NotFoundException(nameof(user), command.ManagerId);
 
+            foreach (var usr in team.Members)
+            {
+                if (usr.Role != Domain.Common.UserRole.UserRoles.Admin)
+                {
+                    usr.SetRole(Domain.Common.UserRole.UserRoles.Requester);
+                }
+            }
+
             _teamRepository.Delete(team);
 
             await _uow.SaveChangesAsync();

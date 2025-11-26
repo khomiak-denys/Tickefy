@@ -52,6 +52,26 @@ namespace Tickefy.API.User
             return Ok(response);
         }
 
+        [HttpGet]
+        [Authorize]
+        [Route("me")]
+        [SwaggerOperation(Summary = "Handles request to retrieve current user ")]
+        public async Task<IActionResult> GetCurrentUser()
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+            {
+                return Unauthorized("User ID is missing or invalid");
+            }
+
+            var query = new GetUserByIdQuery(new UserId(userId));
+            var result = await _mediator.Send(query);
+
+            var response = _mapper.Map<UserResponse>(result);
+            return Ok(response);
+        }
+
         [HttpDelete]
         [Authorize(Roles = "Admin")]
         [Route("{userId}")]

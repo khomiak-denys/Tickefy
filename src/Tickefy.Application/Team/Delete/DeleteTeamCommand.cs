@@ -1,5 +1,4 @@
-﻿
-using Tickefy.Application.Abstractions.Messaging;
+﻿using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Domain.Primitives;
 
 namespace Tickefy.Application.Team.Delete

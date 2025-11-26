@@ -6,7 +6,7 @@ using Tickefy.Domain.Team;
 
 namespace Tickefy.Application.Team.GetById
 {
-    public class GetTeamByIdQueryHandler : IQueryHandler<GetTeamByIdQuery, TeamDetailsResult>
+    public class GetTeamByIdQueryHandler : IQueryHandler<GetMyTeamQuery, TeamDetailsResult>
     {
         private readonly ITeamRepository _teamRepository;
         private readonly IMapper _mapper;
@@ -18,7 +18,7 @@ namespace Tickefy.Application.Team.GetById
             _mapper = mapper;
         }
 
-        public async Task<TeamDetailsResult> Handle(GetTeamByIdQuery query, CancellationToken cancellationToken)
+        public async Task<TeamDetailsResult> Handle(GetMyTeamQuery query, CancellationToken cancellationToken)
         {
             var team = await _teamRepository.GetByIdAsync(query.TeamId);
             if (team == null) throw new NotFoundException(nameof(team), query.TeamId);

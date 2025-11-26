@@ -4,11 +4,11 @@ using Tickefy.Domain.Primitives;
 
 namespace Tickefy.Application.Team.GetById
 {
-    public class GetTeamByIdQuery : IQuery<TeamDetailsResult>
+    public class GetMyTeamQuery : IQuery<TeamDetailsResult>
     {
         public TeamId TeamId { get; init; }
 
-        public GetTeamByIdQuery(TeamId teamId)
+        public GetMyTeamQuery(TeamId teamId)
         {
             TeamId = teamId;
         }
