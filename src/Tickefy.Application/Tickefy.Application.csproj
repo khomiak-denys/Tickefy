@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <Folder Include="Attachment\" />
-    <Folder Include="Team\" />
+    <Folder Include="Team\GetAll\" />
     <Folder Include="Ticket\Revise\" />
   </ItemGroup>
 

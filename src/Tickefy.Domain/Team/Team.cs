@@ -9,6 +9,7 @@ namespace Tickefy.Domain.Team
         public string Name { get; private set; }
         public string? Description { get; private set; }
         public Category Category { get; private set; }
+        public UserId ManagerId { get; private set; }
         public List<Domain.User.User> Members { get; private set; } = new();
 
         private Team() { }
@@ -37,6 +38,16 @@ namespace Tickefy.Domain.Team
         {
             Members.Remove(user);
             OnModify();
+        }
+
+        public void SetCategory(Category category)
+        {
+            Category = category;
+        }
+
+        public void SetManager(UserId id)
+        {
+            ManagerId = id;
         }
     }
 }
