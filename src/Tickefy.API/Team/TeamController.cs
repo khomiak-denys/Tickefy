@@ -48,8 +48,8 @@ namespace Tickefy.API.Team
         }
 
         [HttpPatch]
-        [Authorize(Roles = "TeamLeader")]
-        [Route("{teamId}/members/{userId}")]
+        [Authorize(Roles = "Admin, Manager")]
+        [Route("{teamId}/members/{memberId}")]
         [SwaggerOperation(Summary = "Handles request to add a member to the team (ONLY TEAM LEADER)")]
         public async Task<IActionResult> AddMemberAsync(Guid teamId, Guid memberId)
         {
@@ -97,7 +97,7 @@ namespace Tickefy.API.Team
         }
 
         [HttpDelete]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Manager")]
         [Route("{teamId}")]
         [SwaggerOperation(Summary = "Handles request to delete the team by id (ONLY TEAM LEADER OR ADMIN)")]
         public async Task<IActionResult> DeleteTeamAsync(Guid teamId)

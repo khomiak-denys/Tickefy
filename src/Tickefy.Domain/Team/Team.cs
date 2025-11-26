@@ -10,12 +10,14 @@ namespace Tickefy.Domain.Team
         public string? Description { get; private set; }
         public Category Category { get; private set; }
         public UserId ManagerId { get; private set; }
+        public Domain.User.User Manager {  get; private set; }
         public List<Domain.User.User> Members { get; private set; } = new();
 
         private Team() { }
 
         private Team(string name, string? description)
         {
+            Id = new TeamId();
             Name = name;
             Description = description;
         }

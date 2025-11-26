@@ -30,7 +30,7 @@ namespace Tickefy.Infrastructure.Repositories
 
         public async Task<Team?> GetByManagerIdAsync(UserId managerId)
         {
-            return await _dbContext.Teams.Where(t => t.ManagerId == managerId).FirstOrDefaultAsync();
+            return await _dbContext.Teams.Where(t => t.ManagerId.Value == managerId.Value).FirstOrDefaultAsync();
         }
     }
 }
