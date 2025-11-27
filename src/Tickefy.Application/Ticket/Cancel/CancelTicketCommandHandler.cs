@@ -38,7 +38,7 @@ namespace Tickefy.Application.Ticket.Cancel
                 if (ticket.Status == Status.Created)
                 {
                     ticket.Cancel();
-                    var log = ActivityLog.Create(ticket.Id, command.UserId, EventType.StatusChanged, "Ticket canceled");
+                    var log = Domain.ActivityLog.ActivityLog.Create(ticket.Id, command.UserId, EventType.StatusChanged, "Ticket canceled");
                     _logRepository.Add(log);
                     await _uow.SaveChangesAsync();
                 }

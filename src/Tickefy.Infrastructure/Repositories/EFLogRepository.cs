@@ -1,4 +1,6 @@
-﻿using Tickefy.Domain.ActivityLog;
+﻿using Microsoft.EntityFrameworkCore;
+using Tickefy.Domain.ActivityLog;
+using Tickefy.Domain.Primitives;
 using Tickefy.Infrastructure.Database;
 
 namespace Tickefy.Infrastructure.Repositories
@@ -14,6 +16,16 @@ namespace Tickefy.Infrastructure.Repositories
         public void Add(ActivityLog log)
         {
             _dbContext.ActivityLogs.Add(log);
+        }
+
+        public async Task<List<ActivityLog>> GetAllAsync(int page, int pageSize)
+        {
+            return await _dbContext.ActivityLogs.AsNoTracking().Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+        }
+
+        public async Task<List<ActivityLog>> GetByTicketIdAsync(TicketId ticketId)
+        {
+            return await _dbContext.ActivityLogs.Where(l => l.TicketId == ticketId).ToListAsync();
         }
     }
 }

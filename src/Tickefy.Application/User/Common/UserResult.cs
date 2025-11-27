@@ -8,7 +8,7 @@ namespace Tickefy.Application.User.Common
         string FirstName,
         string LastName,
         string Login,
-        UserRoles Role,
+        string Role,
         Guid? TeamId,
         DateTime Created
         );

@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Tickefy.Domain.ActivityLog;
 using Tickefy.Domain.Attachment;
 using Tickefy.Domain.Comment;
-using Tickefy.Domain.Primitives;
 using Tickefy.Domain.Primitives.StronglyTypedId;
 using Tickefy.Domain.Team;
 using Tickefy.Domain.Ticket;
@@ -26,6 +24,14 @@ namespace Tickefy.Infrastructure.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Ignore(typeof(Tickefy.Domain.Primitives.ActivityLogId)); 
+            modelBuilder.Ignore(typeof(Tickefy.Domain.Primitives.AttachmentId));
+            modelBuilder.Ignore(typeof(Tickefy.Domain.Primitives.CommentId));
+            modelBuilder.Ignore(typeof(Tickefy.Domain.Primitives.TeamId)); 
+            modelBuilder.Ignore(typeof(Tickefy.Domain.Primitives.TicketId));
+            modelBuilder.Ignore(typeof(Tickefy.Domain.Primitives.UserId));
+
+
             modelBuilder.Entity<ActivityLog>().HasKey(a => a.Id);
             modelBuilder.Entity<Attachment>().HasKey(a => a.Id);
             modelBuilder.Entity<Comment>().HasKey(a => a.Id);
@@ -92,6 +98,12 @@ namespace Tickefy.Infrastructure.Database
 
             //TEAM
             modelBuilder.Entity<Team>().HasIndex(t => t.Name).IsUnique();
+
+            modelBuilder.Entity<Team>()
+                .HasOne(t => t.Manager) 
+                .WithMany()
+                .HasForeignKey(t => t.ManagerId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             //TICKET
             modelBuilder.Entity<Ticket>()

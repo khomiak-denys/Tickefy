@@ -41,7 +41,7 @@ namespace Tickefy.Application.Ticket.PostComment
 
             ticket.AddComment(comment);
 
-            var log = ActivityLog.Create(ticket.Id, command.UserId, EventType.CommentAdded, "User added comment");
+            var log = Domain.ActivityLog.ActivityLog.Create(ticket.Id, command.UserId, EventType.CommentAdded, "User added comment");
             _logRepository.Add(log);
 
             await _uow.SaveChangesAsync();

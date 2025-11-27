@@ -129,11 +129,17 @@ namespace Tickefy.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
+                    b.Property<int>("Category")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
+
+                    b.Property<Guid>("ManagerId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime?>("Modified")
                         .HasColumnType("timestamp with time zone");
@@ -143,6 +149,8 @@ namespace Tickefy.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ManagerId");
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -291,6 +299,17 @@ namespace Tickefy.Infrastructure.Migrations
                     b.Navigation("Ticket");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Tickefy.Domain.Team.Team", b =>
+                {
+                    b.HasOne("Tickefy.Domain.User.User", "Manager")
+                        .WithMany()
+                        .HasForeignKey("ManagerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Manager");
                 });
 
             modelBuilder.Entity("Tickefy.Domain.Ticket.Ticket", b =>

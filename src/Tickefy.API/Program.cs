@@ -2,7 +2,6 @@ using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -22,6 +21,7 @@ using Tickefy.Infrastructure.Options;
 using Tickefy.Infrastructure.Repositories;
 using Tickefy.Infrastructure.Services;
 using Tickefy.Domain.ActivityLog;
+using Tickefy.Domain.Team;
 
 namespace Tickefy.API
 {
@@ -66,6 +66,7 @@ namespace Tickefy.API
             builder.Services.AddScoped<IUserRepository, EFUserRepository>();
             builder.Services.AddScoped<ITicketRepository, EFTicketRepository>();
             builder.Services.AddScoped<IActivityLogRepository, EFLogRepository>();
+            builder.Services.AddScoped<ITeamRepository, EFTeamRepository>();
 
 
             builder.Services.AddSingleton(sp =>
