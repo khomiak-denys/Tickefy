@@ -1,4 +1,5 @@
-﻿using Tickefy.Domain.Primitives;
+﻿using Tickefy.Domain.Common.Category;
+using Tickefy.Domain.Primitives;
 
 namespace Tickefy.Domain.Ticket
 {
@@ -10,5 +11,6 @@ namespace Tickefy.Domain.Ticket
         void Add(Ticket ticket);
         void Update(Ticket ticket);
         void Delete(Ticket ticket);
+        Task<List<Ticket>> GetCreatedByCategory(Category category);
     }
 }

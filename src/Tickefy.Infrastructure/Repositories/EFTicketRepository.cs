@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Google.GenAI.Types;
+using Microsoft.EntityFrameworkCore;
+using Tickefy.Domain.Common.Category;
 using Tickefy.Domain.Common.Status;
 using Tickefy.Domain.Primitives;
 using Tickefy.Domain.Ticket;
@@ -41,6 +43,13 @@ namespace Tickefy.Infrastructure.Repositories
         public async Task<List<Ticket>> GetByUserId(UserId id)
         {
             return await _dbContext.Tickets.Where(t => t.RequesterId == id && t.Status != Status.Canceled).AsNoTracking().ToListAsync();
+        }
+
+        public async Task<List<Ticket>> GetCreatedByCategory(Category category)
+        {
+            return await _dbContext.Tickets
+                .Where(t => t.Category == category && t.Status == Status.Created)
+                .ToListAsync();
         }
 
         public void Update(Ticket ticket)
