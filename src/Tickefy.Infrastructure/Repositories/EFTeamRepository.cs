@@ -25,12 +25,15 @@ namespace Tickefy.Infrastructure.Repositories
 
         public async Task<List<Team>> GetAll()
         {
-            return await _dbContext.Teams.ToListAsync();
+            return await _dbContext.Teams
+                .Include(t => t.Manager)
+                .ToListAsync();
         }
 
         public async Task<Team?> GetByIdAsync(TeamId teamId)
         {
             return await _dbContext.Teams.Where(t => t.Id == teamId)
+                .Include(t => t.Manager)
                 .Include(t => t.Members)
                 .FirstOrDefaultAsync();
         }
@@ -38,13 +41,17 @@ namespace Tickefy.Infrastructure.Repositories
         public async Task<Team?> GetByManagerIdAsync(UserId managerId)
         {
             return await _dbContext.Teams.Where(t => t.ManagerId == managerId)
+                .Include(t => t.Manager)
                 .Include(t => t.Members)
                 .FirstOrDefaultAsync();
         }
 
         public async Task<Team?> GetByNameAsync(string name)
         {
-            return await _dbContext.Teams.Where(t => t.Name == name).FirstOrDefaultAsync();
+            return await _dbContext.Teams.Where(t => t.Name == name)
+                .Include(t => t.Manager)
+                .Include(t => t.Members)
+                .FirstOrDefaultAsync();
         }
     }
 }
