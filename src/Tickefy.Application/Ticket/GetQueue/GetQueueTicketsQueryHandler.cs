@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using Tickefy.Application.Abstractions.Messaging;
-using Tickefy.Application.Abstractions.Repositories;
 using Tickefy.Application.Exceptions;
 using Tickefy.Application.Ticket.Common;
 using Tickefy.Domain.Common.UserRole;
 using Tickefy.Domain.Team;
 using Tickefy.Domain.Ticket;
+using Tickefy.Domain.User;
 
 namespace Tickefy.Application.Ticket.GetQueue
 {

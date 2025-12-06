@@ -1,13 +1,12 @@
 ﻿using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
-using Tickefy.Application.Abstractions.Repositories;
 using Tickefy.Application.Exceptions;
 using Tickefy.Domain.ActivityLog;
 using Tickefy.Domain.Common.Status;
 using Tickefy.Domain.Common.UserRole;
 using Tickefy.Domain.Team;
 using Tickefy.Domain.Ticket;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using Tickefy.Domain.User;
 
 namespace Tickefy.Application.Ticket.Take
 {
