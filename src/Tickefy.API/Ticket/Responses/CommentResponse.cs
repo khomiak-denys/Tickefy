@@ -1,8 +1,10 @@
-﻿namespace Tickefy.API.Ticket.Responses
+﻿using Tickefy.API.User.Responses;
+
+namespace Tickefy.API.Ticket.Responses
 {
     public record CommentResponse(
         Guid Id,
-        Guid UserId,
+        MinimalUserResponse User,
         string Content,
         DateTime Created
         );

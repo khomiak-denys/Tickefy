@@ -27,12 +27,20 @@ namespace Tickefy.Infrastructure.Repositories
 
         public async Task<IEnumerable<Ticket>> GetAll()
         {
-            return await _dbContext.Tickets.AsNoTracking().ToListAsync();
+            return await _dbContext.Tickets
+                  .Include(t => t.Requester)
+                  .Include(t => t.AssignedAgent)
+                  .Include(t => t.AssignedTeam)
+                  .AsNoTracking()
+                  .ToListAsync();
         }
 
         public async Task<Ticket?> GetByIdAsync(TicketId id, CancellationToken cancellationToken)
         {
             return await _dbContext.Tickets
+                .Include(t => t.Requester)
+                .Include(t => t.AssignedAgent)
+                .Include(t => t.AssignedTeam)
                 .Include(t => t.Comments)
                 .Include(t => t.Attachments)
                 .FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
@@ -40,7 +48,13 @@ namespace Tickefy.Infrastructure.Repositories
 
         public async Task<List<Ticket>> GetByUserId(UserId id)
         {
-            return await _dbContext.Tickets.Where(t => t.RequesterId == id && t.Status != Status.Canceled).AsNoTracking().ToListAsync();
+            return await _dbContext.Tickets
+                .Where(t => t.RequesterId == id && t.Status != Status.Canceled)
+                .Include(t => t.Requester)
+                .Include(t => t.AssignedAgent)
+                .Include(t => t.AssignedTeam)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public void Update(Ticket ticket)

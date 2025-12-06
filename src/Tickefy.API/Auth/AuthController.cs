@@ -15,18 +15,20 @@ namespace Tickefy.API.Auth
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
+        private readonly ILogger<AuthController> _logger;
 
         public AuthController(
             IMediator mediator,
-            IMapper mapper)
+            IMapper mapper,
+            ILogger<AuthController> logger)
         {
             _mediator = mediator;
             _mapper = mapper;
+            _logger = logger;
         }
 
         [AllowAnonymous]
         [HttpPost("register")]
-        [SwaggerOperation(Summary = "Handles request to register user")]
         public async Task<IActionResult> Register([FromBody] RegisterUserRequest request)
         {
             var command = request.ToCommand();
@@ -35,7 +37,6 @@ namespace Tickefy.API.Auth
         }
         [AllowAnonymous]
         [HttpPost("login")]
-        [SwaggerOperation(Summary = "Handles request to login user")]
         public async Task<IActionResult> Login([FromBody] LoginUserRequest request)
         {
             var command = request.ToCommand();
@@ -49,6 +50,10 @@ namespace Tickefy.API.Auth
         [Authorize]
         [HttpPatch("password")]
         [SwaggerOperation(Summary = "Handles request to reset user password")]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> SetPassword([FromBody] SetPasswordRequest request)
         {
 

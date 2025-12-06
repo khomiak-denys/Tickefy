@@ -1,15 +1,8 @@
-﻿using Tickefy.Domain.Common.UserRole;
-using Tickefy.Domain.Primitives;
-
-namespace Tickefy.Application.User.Common
+﻿namespace Tickefy.Application.User.Common
 {
     public record UserResult(
-        Guid id,
+        Guid Id,
         string FirstName,
-        string LastName,
-        string Login,
-        string Role,
-        Guid? TeamId,
-        DateTime Created
+        string LastName
         );
 }

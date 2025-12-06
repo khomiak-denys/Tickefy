@@ -1,5 +1,6 @@
 using FluentValidation;
 using MediatR;
+using Serilog;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -9,7 +10,6 @@ using Tickefy.API.ErrorHandling;
 using Tickefy.API.ErrorHandling.ExceptionMapper;
 using Tickefy.API.Mapping;
 using Tickefy.Application.Abstractions.Data;
-using Tickefy.Application.Abstractions.Repositories;
 using Tickefy.Application.Abstractions.Services;
 using Tickefy.Application.Auth.Login;
 using Tickefy.Application.Common.Mapping;
@@ -22,6 +22,8 @@ using Tickefy.Infrastructure.Repositories;
 using Tickefy.Infrastructure.Services;
 using Tickefy.Domain.ActivityLog;
 using Tickefy.Domain.Team;
+using Serilog.Sinks.Elasticsearch;
+using Tickefy.Domain.User;
 
 namespace Tickefy.API
 {
@@ -31,6 +33,18 @@ namespace Tickefy.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            /*builder.Host.UseSerilog((context, services, configuration) => configuration
+            .ReadFrom.Configuration(context.Configuration)
+            .ReadFrom.Services(services)
+            .Enrich.FromLogContext()
+            .WriteTo.Console()
+            .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(
+                "http://localhost:9200"))
+            {
+                AutoRegisterTemplate = true,
+                IndexFormat = $"tickefy-logs-{context.HostingEnvironment.EnvironmentName.ToLower()}-{DateTime.UtcNow:yyyy-MM}"
+            })
+            );*/
 
             builder.Services.AddProblemDetails(configure =>
             {
@@ -117,12 +131,13 @@ namespace Tickefy.API
             {
                 options.AddPolicy("AllowFrontend", policy =>
                 {
-                    policy.WithOrigins("http://localhost:3000", "http://127.0.0.1:3000")
-                        .WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .WithHeaders("Content-Type", "Authorization")
-                        .AllowCredentials();
+                    policy.WithOrigins("http://localhost:4200", "http://192.168.31.211:4200", "http://192.168.31.98:4200")
+                          .WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                          .WithHeaders("Content-Type", "Authorization")
+                          .AllowCredentials();
                 });
             });
+
 
             builder.Services.AddAuthentication(options =>
             {
@@ -150,7 +165,6 @@ namespace Tickefy.API
             builder.Services.AddHttpContextAccessor();
 
             builder.Services.AddEndpointsApiExplorer();
-
 
             builder.Services.AddSwaggerGen(options =>
             {
@@ -187,6 +201,7 @@ namespace Tickefy.API
                 app.UseSwaggerUI();
             }
 
+            app.UseCors("AllowFrontend");
             app.UseHttpsRedirection();
 
             app.UseAuthentication();

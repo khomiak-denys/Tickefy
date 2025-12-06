@@ -1,11 +1,13 @@
-﻿namespace Tickefy.Application.Ticket.Common
+﻿using Tickefy.Application.User.Common;
+
+namespace Tickefy.Application.Ticket.Common
 {
     public record TicketResult(
         Guid Id,
         string Title,
-        Guid RequesterId,
-        Guid? AssignedTeamId,
-        Guid? AssignedAgentId,
+        UserResult Requester,
+        TeamResult? AssignedTeam,
+        UserResult? AssignedAgent,
         string Category,
         string Priority,
         string Status,

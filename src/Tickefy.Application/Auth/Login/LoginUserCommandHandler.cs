@@ -1,5 +1,4 @@
 ﻿using Tickefy.Application.Abstractions.Messaging;
-using Tickefy.Application.Abstractions.Repositories;
 using Tickefy.Application.Abstractions.Services;
 using Tickefy.Application.Auth.Common;
 using Tickefy.Application.Exceptions;

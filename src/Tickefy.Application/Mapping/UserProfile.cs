@@ -9,11 +9,7 @@ namespace Tickefy.Application.Mapping
     {
         public UserProfile() 
         {
-            CreateMap<UserId, Guid>().ConvertUsing(src => src.Value);
-            CreateMap<TeamId, Guid>().ConvertUsing(src => src.Value);
-
-            CreateMap<UserRoles, string>().ConvertUsing(src => src.ToString());
-
+            CreateMap<Domain.User.User, UserDetailsResult>();
             CreateMap<Domain.User.User, UserResult>();
         }
     }

@@ -9,6 +9,6 @@ namespace Tickefy.Application.Team.Common
         string Description,
         string Category,
         Guid ManagerId,
-        List<UserResult> Members
+        List<UserDetailsResult> Members
     );
 }

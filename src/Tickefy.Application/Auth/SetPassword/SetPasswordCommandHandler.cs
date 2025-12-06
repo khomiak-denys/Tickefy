@@ -1,9 +1,8 @@
 ﻿using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
-using Tickefy.Application.Abstractions.Repositories;
 using Tickefy.Application.Abstractions.Services;
 using Tickefy.Application.Exceptions;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using Tickefy.Domain.User;
 
 namespace Tickefy.Application.Auth.SetPassword
 {

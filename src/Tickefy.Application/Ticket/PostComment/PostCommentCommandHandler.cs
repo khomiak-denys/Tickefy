@@ -1,6 +1,5 @@
 ﻿using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
-using Tickefy.Application.Abstractions.Repositories;
 using Tickefy.Application.Exceptions;
 using Tickefy.Domain.ActivityLog;
 using Tickefy.Domain.Common.Event;
@@ -17,7 +16,7 @@ namespace Tickefy.Application.Ticket.PostComment
         public PostCommentCommandHandler(
             IUnitOfWork uow,
             ITicketRepository ticketRepository,
-              IActivityLogRepository logRepository)
+            IActivityLogRepository logRepository)
         {
             _uow = uow;
             _ticketRepository = ticketRepository;

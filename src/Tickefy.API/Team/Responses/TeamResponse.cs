@@ -1,10 +1,12 @@
-﻿namespace Tickefy.API.Team.Responses
+﻿using Tickefy.API.User.Responses;
+
+namespace Tickefy.API.Team.Responses
 {
     public record TeamResponse
     (
         Guid Id,
         string Name,
         string Category,
-        Guid ManagerId
+        MinimalUserResponse Manager
     );
 }

@@ -2,7 +2,7 @@
 {
     public record CommentResult(
          Guid Id ,
-         Guid UserId, 
+         UserResult UserId, 
          string Content, 
          DateTime Created 
     );

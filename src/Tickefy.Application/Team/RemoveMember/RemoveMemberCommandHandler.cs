@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
-using Tickefy.Application.Abstractions.Repositories;
 using Tickefy.Application.Exceptions;
 using Tickefy.Domain.Common.UserRole;
 using Tickefy.Domain.Team;
+using Tickefy.Domain.User;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Tickefy.Application.Team.RemoveMember

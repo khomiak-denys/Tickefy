@@ -2,6 +2,7 @@
 using Tickefy.Domain.ActivityLog;
 using Tickefy.Domain.Attachment;
 using Tickefy.Domain.Comment;
+using Tickefy.Domain.Primitives;
 using Tickefy.Domain.Primitives.StronglyTypedId;
 using Tickefy.Domain.Team;
 using Tickefy.Domain.Ticket;

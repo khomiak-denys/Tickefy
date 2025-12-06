@@ -1,7 +1,7 @@
 ﻿using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
-using Tickefy.Application.Abstractions.Repositories;
 using Tickefy.Application.Exceptions;
+using Tickefy.Domain.User;
 
 namespace Tickefy.Application.User.Delete
 {

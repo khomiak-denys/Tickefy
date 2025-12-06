@@ -4,7 +4,7 @@ using Tickefy.Domain.Primitives;
 
 namespace Tickefy.Application.User.GetById
 {
-    public class GetUserByIdQuery : IQuery<UserResult>
+    public class GetUserByIdQuery : IQuery<UserDetailsResult>
     { 
         public UserId UserId { get; init; }
 

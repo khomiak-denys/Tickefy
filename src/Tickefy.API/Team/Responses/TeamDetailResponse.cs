@@ -1,4 +1,5 @@
-﻿using Tickefy.Application.User.Common;
+﻿using Tickefy.API.User.Responses;
+using Tickefy.Application.User.Common;
 
 namespace Tickefy.API.Team.Responses
 {
@@ -8,7 +9,7 @@ namespace Tickefy.API.Team.Responses
         string Name,
         string Description,
         string Category,
-        Guid ManagerId,
-        List<UserResult> Members
+        MinimalUserResponse Manager,
+        List<MinimalUserResponse> Members
     );
 }
