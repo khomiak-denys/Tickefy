@@ -1,7 +1,7 @@
 ﻿namespace Tickefy.API.User.Responses
 {
     public record MinimalUserResponse(
-        Guid id,
+        Guid Id,
         string FirstName,
         string LastName
         );

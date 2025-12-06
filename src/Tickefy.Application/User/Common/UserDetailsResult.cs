@@ -5,7 +5,7 @@ using Tickefy.Domain.Primitives;
 namespace Tickefy.Application.User.Common
 {
     public record UserDetailsResult(
-        Guid id,
+        Guid Id,
         string FirstName,
         string LastName,
         string Login,

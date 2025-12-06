@@ -3,7 +3,7 @@
 namespace Tickefy.API.User.Responses
 {
     public record UserResponse(
-        Guid id,
+        Guid Id,
         string FirstName,
         string LastName,
         string Login,
