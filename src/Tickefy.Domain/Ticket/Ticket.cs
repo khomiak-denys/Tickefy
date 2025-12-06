@@ -52,6 +52,14 @@ namespace Tickefy.Domain.Ticket
             Comments.Add(comment);
         }
 
+        public void Assign(UserId userId, TeamId teamId)
+        {
+            AssignedAgentId = userId;
+            AssignedTeamId = teamId;
+            Status = Status.Assigned;
+        }
+
+
         public void Complete()
         {
             Status = Status.Completed;

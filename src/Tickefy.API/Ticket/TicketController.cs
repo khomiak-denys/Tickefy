@@ -11,7 +11,9 @@ using Tickefy.Application.Ticket.Complete;
 using Tickefy.Application.Ticket.GetAll;
 using Tickefy.Application.Ticket.GetById;
 using Tickefy.Application.Ticket.GetMy;
+using Tickefy.Application.Ticket.GetQueue;
 using Tickefy.Application.Ticket.Revise;
+using Tickefy.Application.Ticket.Take;
 using Tickefy.Domain.Primitives;
 
 namespace Tickefy.API.Ticket
@@ -34,7 +36,7 @@ namespace Tickefy.API.Ticket
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Requester")]
         [SwaggerOperation(Summary = "Handles request to create ticket")]
         public async Task<IActionResult> CreateAsync(CreateTicketRequest request)
         {
@@ -110,6 +112,27 @@ namespace Tickefy.API.Ticket
             return Ok(response);
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Agent")]
+        [Route("queue")]
+        [SwaggerOperation(Summary = "Handles request to retrieve all tickets for agent")]
+        public async Task<IActionResult> GetQueueTicketsAsync()
+        {
+
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+            {
+                return Unauthorized("User ID is missing or invalid");
+            }
+
+            var query = new GetQueueTicketsQuery(new UserId(userId));
+            var result = await _mediator.Send(query);
+
+            var response = _mapper.Map<List<TicketDetailsResponse>>(result);
+            return Ok(response);
+        }
+
         [HttpPost]
         [Authorize(Roles = "Requester, Agent")]
         [Route("{ticketId}/comment")]
@@ -127,6 +150,36 @@ namespace Tickefy.API.Ticket
 
             await _mediator.Send(command);
             return Created();
+        }
+
+        [HttpPut]
+        [Authorize(Roles = "Agent, Admin")]
+        [Route("{ticketId}/take")]
+        [SwaggerOperation(Summary = "Handles request to complete ticket")]
+        public async Task<IActionResult> TakeTicketAsync(Guid ticketId)
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+            {
+                return Unauthorized("User ID is missing or invalid");
+            }
+
+            var roles = User.Claims
+                .Where(c => c.Type == ClaimTypes.Role)
+                .Select(c => c.Value)
+                .ToList();
+
+            var command = new TakeTicketCommand
+            {
+                UserId = new UserId(userId),
+                Roles = roles,
+                TicketId = new TicketId(ticketId)
+            };
+
+            await _mediator.Send(command);
+
+            return Ok();
         }
 
         [HttpPut]
