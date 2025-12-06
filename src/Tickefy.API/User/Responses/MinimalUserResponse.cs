@@ -1,6 +1,6 @@
-﻿namespace Tickefy.Application.User.Common
+﻿namespace Tickefy.API.User.Responses
 {
-    public record UserResult(
+    public record MinimalUserResponse(
         Guid Id,
         string FirstName,
         string LastName

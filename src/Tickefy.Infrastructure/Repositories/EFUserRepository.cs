@@ -1,5 +1,4 @@
-﻿using Tickefy.Application.Abstractions.Repositories;
-using Tickefy.Domain.User;
+﻿using Tickefy.Domain.User;
 using Tickefy.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Tickefy.Domain.Primitives;

@@ -1,4 +1,5 @@
-﻿using Tickefy.Application.Ticket.Common;
+﻿using Tickefy.API.Team.Responses;
+using Tickefy.API.User.Responses;
 
 namespace Tickefy.API.Ticket.Responses
 {
@@ -6,15 +7,14 @@ namespace Tickefy.API.Ticket.Responses
         Guid Id,
         string Title,
         string Description,
-        Guid RequesterId,
-        Guid? AssignedTeamId,
-        Guid? AssignedAgentId,
+        MinimalUserResponse Requester,
+        TeamResponse? AssignedTeam,
+        MinimalUserResponse? AssignedAgent,
         string Category,
         string Priority,
         string Status,
         DateTime Deadline,
         List<CommentResponse> Comments,
         List<AttachmentResponse> Attachments
-        );
-    
+    );
 }

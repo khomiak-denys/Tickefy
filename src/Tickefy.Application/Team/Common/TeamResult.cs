@@ -1,10 +1,12 @@
-﻿namespace Tickefy.Application.Team.Common
+﻿using Tickefy.Application.User.Common;
+
+namespace Tickefy.Application.Team.Common
 {
     public record TeamResult
      (
          Guid Id,
          string Name,
          string Category,
-         Guid ManagerId
+         UserResult Manager
      );
 }

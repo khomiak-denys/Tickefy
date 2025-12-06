@@ -1,12 +1,14 @@
-﻿namespace Tickefy.API.User.Responses
+﻿using Tickefy.API.Team.Responses;
+
+namespace Tickefy.API.User.Responses
 {
     public record UserResponse(
-        Guid id,
+        Guid Id,
         string FirstName,
         string LastName,
         string Login,
         string Role,
-        Guid? TeamId,
+        TeamResponse? Team,
         DateTime Created
         );
 }

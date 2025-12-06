@@ -1,4 +1,4 @@
-﻿namespace Tickefy.Domain.Common.ContentType
+﻿namespace Tickefy.Domain.Common.Content
 {
     public enum ContentType
     {
