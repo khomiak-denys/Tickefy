@@ -1,9 +1,11 @@
-﻿namespace Tickefy.Application.ActivityLog.Common
+﻿using Tickefy.Application.User.Common;
+
+namespace Tickefy.Application.ActivityLog.Common
 {
     public record LogResult(
         Guid Id,
         Guid TicketId,
-        Guid UserId,
+        UserResult User,
         string EventType,
         string Description,
         DateTime Created
