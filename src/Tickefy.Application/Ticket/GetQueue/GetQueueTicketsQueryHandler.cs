@@ -9,7 +9,7 @@ using Tickefy.Domain.User;
 
 namespace Tickefy.Application.Ticket.GetQueue
 {
-    public class GetQueueTicketsQueryHandler : IQueryHandler<GetQueueTicketsQuery, List<TicketDetailsResult>>
+    public class GetQueueTicketsQueryHandler : IQueryHandler<GetQueueTicketsQuery, List<TicketResult>>
     {
         private readonly IUserRepository _userRepository;
         private readonly ITeamRepository _teamRepository;
@@ -27,7 +27,7 @@ namespace Tickefy.Application.Ticket.GetQueue
             _ticketRepository = ticketRepository;
             _mapper = mapper;
         }
-        public async Task<List<TicketDetailsResult>> Handle(GetQueueTicketsQuery query, CancellationToken cancellationToken)
+        public async Task<List<TicketResult>> Handle(GetQueueTicketsQuery query, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetByIdAsync(query.UserId);
             if (user == null) throw new NotFoundException(nameof(user), query.UserId);
@@ -41,7 +41,7 @@ namespace Tickefy.Application.Ticket.GetQueue
 
             var tickets = await _ticketRepository.GetCreatedByCategory(team.Category);
 
-            return _mapper.Map<List<TicketDetailsResult>>(tickets);
+            return _mapper.Map<List<TicketResult>>(tickets);
         }
     }
 }

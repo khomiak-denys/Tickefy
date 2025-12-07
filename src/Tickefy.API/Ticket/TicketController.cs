@@ -24,7 +24,6 @@ namespace Tickefy.API.Ticket
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         public TicketController(
             IMediator mediator,
             IMapper mapper,
@@ -32,13 +31,12 @@ namespace Tickefy.API.Ticket
         {
             _mediator = mediator;
             _mapper = mapper;
-            _httpContextAccessor = httpContextAccessor;
         }
 
         [HttpPost]
         [Authorize(Roles = "Requester")]
         [SwaggerOperation(Summary = "Handles request to create ticket")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -90,7 +88,7 @@ namespace Tickefy.API.Ticket
         [Authorize]
         [Route("{TicketId}")]
         [SwaggerOperation(Summary = "Handles request to retrieve ticket by id")]
-        [ProducesResponseType(typeof(TicketResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(TicketDetailsResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -159,7 +157,7 @@ namespace Tickefy.API.Ticket
             var query = new GetQueueTicketsQuery(new UserId(userId));
             var result = await _mediator.Send(query);
 
-            var response = _mapper.Map<List<TicketDetailsResponse>>(result);
+            var response = _mapper.Map<List<TicketResponse>>(result);
             return Ok(response);
         }
 
@@ -167,7 +165,7 @@ namespace Tickefy.API.Ticket
         [Authorize(Roles = "Requester, Agent")]
         [Route("{ticketId}/comment")]
         [SwaggerOperation(Summary = "Handles request to create comment")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
