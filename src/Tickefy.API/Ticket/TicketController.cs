@@ -20,6 +20,7 @@ namespace Tickefy.API.Ticket
 {
     [ApiController]
     [Route("api/v1/tickets")]
+    [Produces("application/json")]
     public class TicketController : ControllerBase
     {
         private readonly IMediator _mediator;

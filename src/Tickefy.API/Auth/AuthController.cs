@@ -11,6 +11,7 @@ namespace Tickefy.API.Auth
 {
     [ApiController]
     [Route("api/v1/auth")]
+    [Produces("application/json")]
     public class AuthController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -26,17 +27,26 @@ namespace Tickefy.API.Auth
             _mapper = mapper;
             _logger = logger;
         }
-
+        
         [AllowAnonymous]
         [HttpPost("register")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Register([FromBody] RegisterUserRequest request)
         {
             var command = request.ToCommand();
             await _mediator.Send(command);
             return Created();
         }
+        
         [AllowAnonymous]
         [HttpPost("login")]
+        [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Login([FromBody] LoginUserRequest request)
         {
             var command = request.ToCommand();
@@ -46,17 +56,17 @@ namespace Tickefy.API.Auth
 
             return Ok(response);
         }
-
+        
         [Authorize]
         [HttpPatch("password")]
         [SwaggerOperation(Summary = "Handles request to reset user password")]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> SetPassword([FromBody] SetPasswordRequest request)
         {
-
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
             if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))

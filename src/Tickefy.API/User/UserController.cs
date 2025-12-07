@@ -14,105 +14,111 @@ namespace Tickefy.API.User
 {
     [ApiController]
     [Route("api/v1/users")]
+    [Produces("application/json")]
     public class UserController : ControllerBase 
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
-        public UserController(
-            IMediator mediator,
-            IMapper mapper)
+        public UserController(IMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
             _mapper = mapper;
         }
 
-
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        [SwaggerOperation(Summary = "Handles request to retrieve all users (ONLY ADMIN)")]
+        [SwaggerOperation(Summary = "Retrieve all users (Admin only)")]
+        [ProducesResponseType(typeof(List<UserResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllAsync()
         {
             var query = new GetAllUsersQuery();
             var result = await _mediator.Send(query);
-
             var response = _mapper.Map<List<UserResponse>>(result);
             return Ok(response);
         }
 
-        [HttpGet]
+        [HttpGet("{userId}")]
         [Authorize(Roles = "Admin")]
-        [Route("{userId}")]
-        [SwaggerOperation(Summary = "Handles request to retrieve user by id (ONLY ADMIN)")]
+        [SwaggerOperation(Summary = "Retrieve user by id (Admin only)")]
+        [ProducesResponseType(typeof(UserResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetByIdAsync(Guid userId)
         {
             var query = new GetUserByIdQuery(new UserId(userId));
             var result = await _mediator.Send(query);
-
             var response = _mapper.Map<UserResponse>(result);
             return Ok(response);
         }
 
-        [HttpGet]
+        [HttpGet("me")]
         [Authorize]
-        [Route("me")]
-        [SwaggerOperation(Summary = "Handles request to retrieve current user ")]
+        [SwaggerOperation(Summary = "Retrieve current user profile")]
+        [ProducesResponseType(typeof(UserResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetCurrentUser()
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-
             if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
-            {
                 return Unauthorized("User ID is missing or invalid");
-            }
 
             var query = new GetUserByIdQuery(new UserId(userId));
             var result = await _mediator.Send(query);
-
             var response = _mapper.Map<UserResponse>(result);
             return Ok(response);
         }
 
-        [HttpDelete]
+        [HttpDelete("{userId}")]
         [Authorize(Roles = "Admin")]
-        [Route("{userId}")]
-        [SwaggerOperation(Summary = "Handles request to delete user by id (ONLY ADMIN)")]
+        [SwaggerOperation(Summary = "Delete user by id (Admin only)")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteUserAsync(Guid userId)
         {
-            var query = new DeleteUserCommand(new UserId(userId));
-            await _mediator.Send(query);
-
+            var command = new DeleteUserCommand(new UserId(userId));
+            await _mediator.Send(command);
             return NoContent();
         }
 
-        [HttpPatch]
+        [HttpPatch("{userId}")]
         [Authorize(Roles = "Admin")]
-        [Route("{userId}")]
-        [SwaggerOperation(Summary = "Handles request to set user role (ONLY ADMIN)")]
+        [SwaggerOperation(Summary = "Set user role (Admin only)")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> SetUserRoleAsync(Guid userId, [FromBody] SetUserRoleRequest request)
         {
             var command = request.ToCommand(new UserId(userId));
             await _mediator.Send(command);
-
             return Ok();
         }
 
-        [HttpPatch]
+        [HttpPatch("update-profile")]
         [Authorize]
-        [Route("update-profile")]
-        [SwaggerOperation(Summary = "Handles request to update user profile")]
-        public async Task<IActionResult> UpdateProfile(UpdateProfileRequest request)
+        [SwaggerOperation(Summary = "Update current user profile")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-
             if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
-            {
                 return Unauthorized("User ID is missing or invalid");
-            }
 
             var command = request.ToCommand(new UserId(userId));
-
             await _mediator.Send(command);
-
             return Ok();
         }
     }
