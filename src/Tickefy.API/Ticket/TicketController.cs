@@ -26,8 +26,7 @@ namespace Tickefy.API.Ticket
         private readonly IMapper _mapper;
         public TicketController(
             IMediator mediator,
-            IMapper mapper,
-            IHttpContextAccessor httpContextAccessor)
+            IMapper mapper)
         {
             _mediator = mediator;
             _mapper = mapper;
