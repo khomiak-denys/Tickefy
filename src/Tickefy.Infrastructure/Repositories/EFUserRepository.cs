@@ -25,7 +25,11 @@ namespace Tickefy.Infrastructure.Repositories
 
         public async Task<List<User>> GetAll()
         {
-            return await _dbContext.Users.AsNoTracking().ToListAsync();
+            return await _dbContext.Users
+                .Include(u => u.Team)
+                .ThenInclude(t => t.Manager)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<User?> GetByIdAsync(UserId id)

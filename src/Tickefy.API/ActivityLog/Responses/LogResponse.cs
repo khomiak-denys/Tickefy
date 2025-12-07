@@ -5,7 +5,7 @@ namespace Tickefy.API.ActivityLog.Responses
     public record LogResponse(
         Guid Id,
         Guid TicketId,
-        UserResponse User,
+        MinimalUserResponse User,
         string EventType,
         string Description,
         DateTime Created

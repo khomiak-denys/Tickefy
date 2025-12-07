@@ -12,13 +12,13 @@ namespace Tickefy.API.ActivityLog
 {
     [ApiController]
     [Route("api/v1/logs")]
+    [Produces("application/json")]
     public class ActivityLogController : ControllerBase
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
-        public ActivityLogController(
-            IMediator mediator,
-            IMapper mapper)
+
+        public ActivityLogController(IMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
             _mapper = mapper;
@@ -26,26 +26,32 @@ namespace Tickefy.API.ActivityLog
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
+        [ProducesResponseType(typeof(List<LogResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllAsync([FromQuery] GetAllLogsRequest request)
         {
             var query = request.ToQuery();
-            
             var result = await _mediator.Send(query);
-
             var response = _mapper.Map<List<LogResponse>>(result);
 
             return Ok(response);
         }
 
-        [HttpGet]
+        [HttpGet("ticket/{ticketId}")]
         [Authorize(Roles = "Admin")]
-        [Route("ticket/{ticketId}")]
+        [ProducesResponseType(typeof(List<LogResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetByIdAsync(Guid ticketId)
         {
             var query = new GetLogsByTicketIdQuery(new TicketId(ticketId));
-
             var result = await _mediator.Send(query);
-
             var response = _mapper.Map<List<LogResponse>>(result);
 
             return Ok(response);

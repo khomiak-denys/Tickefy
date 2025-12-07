@@ -20,7 +20,12 @@ namespace Tickefy.Infrastructure.Repositories
 
         public async Task<List<ActivityLog>> GetAllAsync(int page, int pageSize)
         {
-            return await _dbContext.ActivityLogs.AsNoTracking().Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+            return await _dbContext.ActivityLogs
+                .Include(l => l.User)
+                .AsNoTracking()
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
         }
 
         public async Task<List<ActivityLog>> GetByTicketIdAsync(TicketId ticketId)
