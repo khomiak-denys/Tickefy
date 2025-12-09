@@ -8,7 +8,7 @@ namespace Tickefy.Domain.Team
         void Delete(Team team);
         Task<List<Team>> GetAll();
         Task<Team?> GetByIdAsync(TeamId teamId);
-        Task<List<Team>> GetByMemberIdAsync(UserId managerId);
+        Task<List<Team>> GetByMemberIdAsync(UserId memberId);
         Task<Team?> GetByNameAsync(string name);
     }
 }

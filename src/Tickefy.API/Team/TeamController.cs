@@ -145,8 +145,8 @@ namespace Tickefy.API.Team
 
         [HttpGet("my")]
         [Authorize(Roles = "Agent, Manager")]
-        [SwaggerOperation(Summary = "Retrieve team of the current user")]
-        [ProducesResponseType(typeof(TeamDetailResponse), StatusCodes.Status200OK)]
+        [SwaggerOperation(Summary = "Retrieve teams of the current user")]
+        [ProducesResponseType(typeof(List<TeamResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
