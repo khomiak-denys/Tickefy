@@ -18,9 +18,9 @@ namespace Tickefy.Application.Team.GetMy
             var user = await userRepository.GetByIdAsync(query.UserId);
             if (user == null) throw new NotFoundException(nameof(user), query.UserId);
 
-            var team = await teamRepository.GetByMemberIdAsync(query.UserId);
+            var teams = await teamRepository.GetByMemberIdAsync(query.UserId);
 
-            return mapper.Map<List<TeamResult>>(team);
+            return mapper.Map<List<TeamResult>>(teams);
         }
     }
 }
