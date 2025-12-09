@@ -23,7 +23,7 @@ namespace Tickefy.Application.Auth.Register
         }
         public async Task<Guid> Handle(RegisterUserCommand command, CancellationToken cancellationToken)
         {
-            var existingUser = await _userRepository.GetByLoginAsync(command.Login, cancellationToken);
+            var existingUser = await _userRepository.GetByLoginAsync(command.Login);
             if (existingUser != null)
             {
                 throw new AlreadyExistsException("User", command.Login);

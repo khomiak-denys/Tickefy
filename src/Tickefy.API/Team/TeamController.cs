@@ -30,7 +30,7 @@ namespace Tickefy.API.Team
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin, Requester")]
         [SwaggerOperation(Summary = "Handles request to create a new team")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
@@ -144,7 +144,7 @@ namespace Tickefy.API.Team
         }
 
         [HttpGet("my")]
-        [Authorize(Roles = "Admin, Manager")]
+        [Authorize(Roles = "Agent, Manager")]
         [SwaggerOperation(Summary = "Retrieve team of the current user")]
         [ProducesResponseType(typeof(TeamDetailResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]

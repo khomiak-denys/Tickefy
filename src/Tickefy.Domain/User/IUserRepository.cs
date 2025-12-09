@@ -8,6 +8,6 @@ namespace Tickefy.Domain.User
         public Task<List<User>> GetAll();
         public Task<User?> GetByIdAsync(UserId id);
         public void Delete(User user);
-        public Task<User?> GetByLoginAsync(string login, CancellationToken cancellationToken);
+        public Task<User?> GetByLoginAsync(string login);
     }
 }

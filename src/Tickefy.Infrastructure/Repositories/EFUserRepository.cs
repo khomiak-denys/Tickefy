@@ -37,9 +37,9 @@ namespace Tickefy.Infrastructure.Repositories
             return await _dbContext.Users.FirstOrDefaultAsync(t => t.Id == id); 
         }
 
-        public async Task<User?> GetByLoginAsync(string login, CancellationToken cancellationToken)
+        public async Task<User?> GetByLoginAsync(string login)
         {
-            return await _dbContext.Users.FirstOrDefaultAsync(u => u.Login == login, cancellationToken);
+            return await _dbContext.Users.FirstOrDefaultAsync(u => u.Login == login);
         }
     }
 }

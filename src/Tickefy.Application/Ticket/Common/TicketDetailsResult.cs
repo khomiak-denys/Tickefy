@@ -13,6 +13,7 @@ namespace Tickefy.Application.Ticket.Common
         string Category,
         string Priority,
         string Status,
+        DateTime Created,
         DateTime Deadline,
         List<CommentResult> Comments,
         List<AttachmentResult> Attachments

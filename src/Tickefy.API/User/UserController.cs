@@ -8,6 +8,7 @@ using Tickefy.API.User.Responses;
 using Tickefy.Application.User.Delete;
 using Tickefy.Application.User.GetAll;
 using Tickefy.Application.User.GetById;
+using Tickefy.Application.User.GetByLogin;
 using Tickefy.Domain.Primitives;
 
 namespace Tickefy.API.User
@@ -39,6 +40,23 @@ namespace Tickefy.API.User
             var response = _mapper.Map<List<UserResponse>>(result);
             return Ok(response);
         }
+
+        [HttpGet("login/{login}")]
+        [Authorize]
+        [SwaggerOperation(Summary = "Retrieve user by login")]
+        [ProducesResponseType(typeof(UserResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetByLoginAsync(string login)
+        {
+            var query = new GetUserByLoginQuery(login);
+            var result = await _mediator.Send(query);
+            var response = _mapper.Map<UserResponse>(result);
+            return Ok(response);
+        }
+        
 
         [HttpGet("{userId}")]
         [Authorize(Roles = "Admin")]
