@@ -38,12 +38,12 @@ namespace Tickefy.Infrastructure.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<Team?> GetByManagerIdAsync(UserId managerId)
+        public async Task<List<Team>> GetByMemberIdAsync(UserId userId)
         {
-            return await _dbContext.Teams.Where(t => t.ManagerId == managerId)
+            return await _dbContext.Teams.Where(t => t.ManagerId == userId || t.Members.Any(m => m.Id == userId))
                 .Include(t => t.Manager)
                 .Include(t => t.Members)
-                .FirstOrDefaultAsync();
+                .ToListAsync();
         }
 
         public async Task<Team?> GetByNameAsync(string name)

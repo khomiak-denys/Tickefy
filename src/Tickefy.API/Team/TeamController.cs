@@ -144,7 +144,7 @@ namespace Tickefy.API.Team
         }
 
         [HttpGet("my")]
-        [Authorize(Roles = "Admin, Manager")]
+        [Authorize(Roles = "Agent, Manager")]
         [SwaggerOperation(Summary = "Retrieve team of the current user")]
         [ProducesResponseType(typeof(TeamDetailResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
@@ -158,7 +158,7 @@ namespace Tickefy.API.Team
 
             var query = new GetTeamByUserIdQuery(new UserId(leaderGuid));
             var result = await _mediator.Send(query);
-            var response = _mapper.Map<TeamDetailResponse>(result);
+            var response = _mapper.Map<List<TeamResponse>>(result);
             return Ok(response);
         }
     }
