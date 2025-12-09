@@ -5,7 +5,7 @@ namespace Tickefy.Application.User.GetByLogin
 {
     public class GetUserByLoginQuery : IQuery<UserDetailsResult>
     {
-        public string Login { get; set; }
+        public string Login { get; init; }
         
         public GetUserByLoginQuery(string login)
         {
