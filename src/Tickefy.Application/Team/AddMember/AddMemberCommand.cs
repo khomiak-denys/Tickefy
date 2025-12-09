@@ -5,13 +5,13 @@ namespace Tickefy.Application.Team.AddMember
 {
     public class AddMemberCommand : ICommand
     {
-        public UserId UserId { get; init; }
+        public string MemberLogin { get; init; }
         public UserId ManagerId { get; init; }  
         public TeamId TeamId { get; init; }
         
-        public AddMemberCommand(UserId userId, UserId managerId, TeamId teamId)
+        public AddMemberCommand(string memberLogin, UserId managerId, TeamId teamId)
         {
-            UserId = userId;
+            MemberLogin = memberLogin;
             ManagerId = managerId;
             TeamId = teamId;
         }

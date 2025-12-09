@@ -24,7 +24,7 @@ namespace Tickefy.Application.Auth.Login
 
         public async Task<LoginResult> Handle(LoginUserCommand command, CancellationToken cancellationToken)
         {
-            var existingUser = await _userRepository.GetByLoginAsync(command.Login, cancellationToken);
+            var existingUser = await _userRepository.GetByLoginAsync(command.Login);
             if (existingUser == null)
             {
                 throw new NotFoundException("User not found");

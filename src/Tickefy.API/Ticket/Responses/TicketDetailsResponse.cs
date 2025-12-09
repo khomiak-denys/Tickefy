@@ -13,6 +13,7 @@ namespace Tickefy.API.Ticket.Responses
         string Category,
         string Priority,
         string Status,
+        DateTime Created,
         DateTime Deadline,
         List<CommentResponse> Comments,
         List<AttachmentResponse> Attachments

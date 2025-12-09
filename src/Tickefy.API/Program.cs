@@ -132,7 +132,7 @@ namespace Tickefy.API
                 options.AddPolicy("AllowFrontend", policy =>
                 {
                     policy.WithOrigins("http://localhost:4200", "http://192.168.31.211:4200", "http://192.168.31.98:4200")
-                          .WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                          .WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                           .WithHeaders("Content-Type", "Authorization")
                           .AllowCredentials();
                 });
