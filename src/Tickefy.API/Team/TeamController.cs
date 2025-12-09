@@ -47,7 +47,7 @@ namespace Tickefy.API.Team
             return Created();
         }
 
-        [HttpPatch("{teamId}/members/{memberId}")]
+        [HttpPatch("{teamId}/members/{memberLogin}")]
         [Authorize(Roles = "Admin, Manager")]
         [SwaggerOperation(Summary = "Add a member to the team (ONLY TEAM LEADER)")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -55,14 +55,14 @@ namespace Tickefy.API.Team
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> AddMemberAsync(Guid teamId, Guid memberId)
+        public async Task<IActionResult> AddMemberAsync(Guid teamId, string memberLogin)
         {
             var leaderIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(leaderIdClaim) || !Guid.TryParse(leaderIdClaim, out var leaderGuid))
                 return Unauthorized("User ID is missing or invalid");
 
             var command = new AddMemberCommand(
-                new UserId(memberId),
+                memberLogin,
                 new UserId(leaderGuid),
                 new TeamId(teamId)
             );
