@@ -1,4 +1,5 @@
-﻿using Tickefy.Application.Abstractions.Data;
+﻿using MediatR;
+using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Abstractions.Services;
 using Tickefy.Domain.ActivityLog;
@@ -9,7 +10,7 @@ using Tickefy.Domain.Ticket;
 
 namespace Tickefy.Application.Ticket.Create
 {
-    internal class CreateTicketCommandHandler : ICommandHandler<CreateTicketCommand>
+    internal class CreateTicketCommandHandler : ICommandHandler<CreateTicketCommand, Unit>
     {
         private readonly IUnitOfWork _uow;
         private readonly ITicketRepository _ticketRepository;
@@ -31,7 +32,7 @@ namespace Tickefy.Application.Ticket.Create
             _responseParser = responseParser;
         }
 
-        public async Task Handle(CreateTicketCommand command, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CreateTicketCommand command, CancellationToken cancellationToken)
         {
             var ticket = Domain.Ticket.Ticket.Create(command.Title, command.Description, command.UserId, command.Deadline);
 
@@ -57,6 +58,8 @@ namespace Tickefy.Application.Ticket.Create
             _logRepository.Add(log);
             
             await _uow.SaveChangesAsync(cancellationToken);
+            
+            return Unit.Value;
         }
     }
 }

@@ -1,10 +1,11 @@
-﻿using Tickefy.Application.Abstractions.Messaging;
+﻿using MediatR;
+using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Domain.Primitives;
 using Tickefy.Domain.Team;
 
 namespace Tickefy.Application.Team.RemoveMember
 {
-    public class RemoveMemberCommand : ICommand
+    public class RemoveMemberCommand : ICommand<Unit>
     {
         public UserId MemberId { get; init; }
         public UserId ManagerId { get; init; }

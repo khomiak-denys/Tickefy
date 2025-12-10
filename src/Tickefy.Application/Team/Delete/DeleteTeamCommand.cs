@@ -1,9 +1,10 @@
-﻿using Tickefy.Application.Abstractions.Messaging;
+﻿using MediatR;
+using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Domain.Primitives;
 
 namespace Tickefy.Application.Team.Delete
 {
-    public class DeleteTeamCommand : ICommand
+    public class DeleteTeamCommand : ICommand<Unit>
     {
         public TeamId TeamId { get; init; }
         public UserId ManagerId { get; init; }

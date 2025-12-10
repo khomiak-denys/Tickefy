@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MediatR;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Exceptions;
@@ -9,7 +10,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Tickefy.Application.Team.RemoveMember
 {
-    public class RemoveMemberCommandHandler : ICommandHandler<RemoveMemberCommand>
+    public class RemoveMemberCommandHandler : ICommandHandler<RemoveMemberCommand, Unit>
     {
         private readonly ITeamRepository _teamRepository;
         private readonly IUserRepository _userRepository;
@@ -23,7 +24,7 @@ namespace Tickefy.Application.Team.RemoveMember
             _userRepository = userRepository;
             _uow = uow;
         }
-        public async Task Handle(RemoveMemberCommand command, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(RemoveMemberCommand command, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetByIdAsync(command.MemberId);
             if (user == null) throw new NotFoundException(nameof(user), command.MemberId.Value);
@@ -41,6 +42,8 @@ namespace Tickefy.Application.Team.RemoveMember
             user.SetRole(UserRoles.Requester);
 
             await _uow.SaveChangesAsync();
+            
+            return Unit.Value;
         }
     }
 }

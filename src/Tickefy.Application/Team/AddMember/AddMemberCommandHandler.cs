@@ -30,7 +30,7 @@ namespace Tickefy.Application.Team.AddMember
             team.AddMember(user);
             user.SetRole(UserRoles.Agent);
 
-            await uow.SaveChangesAsync();
+            await uow.SaveChangesAsync(cancellationToken);
 
             return new Unit();
         }

@@ -1,4 +1,5 @@
-﻿using Tickefy.Application.Abstractions.Data;
+﻿using MediatR;
+using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Exceptions;
 using Tickefy.Domain.Common.UserRole;
@@ -6,7 +7,7 @@ using Tickefy.Domain.User;
 
 namespace Tickefy.Application.User.SetRole
 {
-    public class SetUserRoleCommandHandler : ICommandHandler<SetUserRoleCommand>
+    public class SetUserRoleCommandHandler : ICommandHandler<SetUserRoleCommand, Unit>
     {
         private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _uow;
@@ -17,7 +18,7 @@ namespace Tickefy.Application.User.SetRole
             _userRepository = userRepository;
             _uow = uow;
         }
-        public async Task Handle(SetUserRoleCommand command, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(SetUserRoleCommand command, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetByIdAsync(command.UserId);
             if (user == null) throw new NotFoundException(nameof(user), command.UserId.ToString());
@@ -32,12 +33,12 @@ namespace Tickefy.Application.User.SetRole
             }
 
             if (user.Role == UserRoles.Admin) throw new ForbiddenException("Admin role cant be changed");
-
-
-
+            
             user.SetRole(role);
 
             await _uow.SaveChangesAsync();
+            
+            return Unit.Value;
         }
     }
 }
