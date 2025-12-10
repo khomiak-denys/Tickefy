@@ -1,4 +1,5 @@
-﻿using Tickefy.Application.Abstractions.Data;
+﻿using MediatR;
+using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Exceptions;
 using Tickefy.Domain.Common.UserRole;
@@ -10,9 +11,9 @@ namespace Tickefy.Application.Team.AddMember
     public class AddMemberCommandHandler(
         IUserRepository userRepository, 
         ITeamRepository teamRepository, 
-        IUnitOfWork uow) : ICommandHandler<AddMemberCommand>
+        IUnitOfWork uow) : ICommandHandler<AddMemberCommand, Unit>
     {
-        public async Task Handle(AddMemberCommand command, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(AddMemberCommand command, CancellationToken cancellationToken)
         {
             var user = await  userRepository.GetByLoginAsync(command.MemberLogin);
             if (user == null) throw new NotFoundException(nameof(user), command.MemberLogin);
@@ -30,6 +31,8 @@ namespace Tickefy.Application.Team.AddMember
             user.SetRole(UserRoles.Agent);
 
             await uow.SaveChangesAsync();
+
+            return new Unit();
         }
     }
 }

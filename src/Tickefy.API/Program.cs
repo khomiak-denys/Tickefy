@@ -23,6 +23,7 @@ using Tickefy.Infrastructure.Services;
 using Tickefy.Domain.ActivityLog;
 using Tickefy.Domain.Team;
 using Serilog.Sinks.Elasticsearch;
+using Tickefy.Application.Team.AddMember;
 using Tickefy.Domain.User;
 
 namespace Tickefy.API
@@ -69,7 +70,7 @@ namespace Tickefy.API
                 cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             });
 
-            builder.Services.AddValidatorsFromAssemblyContaining<LoginUserCommandValidator>();
+            builder.Services.AddValidatorsFromAssemblyContaining<AddMemberCommandValidator>();
 
             builder.Services.AddScoped<ITokenService, TokenService>();
             builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
