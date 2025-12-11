@@ -55,6 +55,8 @@ namespace Tickefy.Application.Ticket.Take
             ticket.Assign(user.Id, team.Id);
 
             var log = Domain.ActivityLog.ActivityLog.Create(ticket.Id, user.Id, Domain.Common.Event.EventType.UserAssigned, "Agent assigned");
+            
+            _logRepository.Add(log);
 
             await _uow.SaveChangesAsync();
             
