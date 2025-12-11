@@ -1,4 +1,5 @@
-﻿using Tickefy.Application.Abstractions.Data;
+﻿using MediatR;
+using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Exceptions;
 using Tickefy.Domain.Team;
@@ -6,7 +7,7 @@ using Tickefy.Domain.User;
 
 namespace Tickefy.Application.Team.Delete
 {
-    public class DeleteTeamCommandHandler : ICommandHandler<DeleteTeamCommand>
+    public class DeleteTeamCommandHandler : ICommandHandler<DeleteTeamCommand, Unit>
     {
         private readonly ITeamRepository _teamRepository;
         private readonly IUserRepository _userRepository;
@@ -21,7 +22,7 @@ namespace Tickefy.Application.Team.Delete
             _uow = uow;
         }
 
-        public async Task Handle(DeleteTeamCommand command, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(DeleteTeamCommand command, CancellationToken cancellationToken)
         {
             var team = await _teamRepository.GetByIdAsync(command.TeamId);
             if (team == null) throw new NotFoundException(nameof(team), command.TeamId);
@@ -43,6 +44,7 @@ namespace Tickefy.Application.Team.Delete
 
             await _uow.SaveChangesAsync();
 
+            return Unit.Value;
         }
     }
 }

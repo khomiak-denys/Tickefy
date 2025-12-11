@@ -1,4 +1,5 @@
-﻿using Tickefy.Application.Abstractions.Data;
+﻿using MediatR;
+using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Exceptions;
 using Tickefy.Domain.ActivityLog;
@@ -9,7 +10,7 @@ using Tickefy.Domain.Ticket;
 
 namespace Tickefy.Application.Ticket.Cancel
 {
-    public class CancelTicketCommandHandler : ICommandHandler<CancelTicketCommand>
+    public class CancelTicketCommandHandler : ICommandHandler<CancelTicketCommand, Unit>
     {
         private readonly ITicketRepository _ticketRepository;
         private readonly IActivityLogRepository _logRepository;
@@ -24,7 +25,7 @@ namespace Tickefy.Application.Ticket.Cancel
             _logRepository = logRepository;
             _uow = uow;
         }
-        public async Task Handle(CancelTicketCommand command, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CancelTicketCommand command, CancellationToken cancellationToken)
         {
             var ticket = await _ticketRepository.GetByIdAsync(command.TicketId, cancellationToken);
 
@@ -51,6 +52,8 @@ namespace Tickefy.Application.Ticket.Cancel
             {
                 throw new ForbiddenException("Only admin or requester can cancel tickets");
             }
+
+            return Unit.Value;
         }
     }
 }

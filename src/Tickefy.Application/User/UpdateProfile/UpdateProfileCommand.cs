@@ -1,9 +1,10 @@
-﻿using Tickefy.Application.Abstractions.Messaging;
+﻿using MediatR;
+using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Domain.Primitives;
 
 namespace Tickefy.Application.User.UpdateProfile
 {
-    public class UpdateProfileCommand : ICommand
+    public class UpdateProfileCommand : ICommand<Unit>
     {
         public UserId UserId { get; init; }
         public string FirstName { get; init; }

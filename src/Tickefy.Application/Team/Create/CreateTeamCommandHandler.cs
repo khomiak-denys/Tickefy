@@ -1,4 +1,5 @@
-﻿using Tickefy.Application.Abstractions.Data;
+﻿using MediatR;
+using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Exceptions;
 using Tickefy.Domain.Common.UserRole;
@@ -8,7 +9,7 @@ using Tickefy.Domain.User;
 
 namespace Tickefy.Application.Team.Create
 {
-    public class CreateTeamCommandHandler : ICommandHandler<CreateTeamCommand>
+    public class CreateTeamCommandHandler : ICommandHandler<CreateTeamCommand, Unit>
     {
         private readonly IUserRepository _userRepository;
         private readonly ITeamRepository _teamRepository;
@@ -24,7 +25,7 @@ namespace Tickefy.Application.Team.Create
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Handle(CreateTeamCommand command, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CreateTeamCommand command, CancellationToken cancellationToken)
         {
             var manager = await _userRepository.GetByIdAsync(command.UserId);
 
@@ -51,6 +52,8 @@ namespace Tickefy.Application.Team.Create
             _teamRepository.Add(team);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+            
+            return Unit.Value;
         }
     }
 }

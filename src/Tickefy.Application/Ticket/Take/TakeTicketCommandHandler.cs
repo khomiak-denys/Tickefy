@@ -1,4 +1,5 @@
-﻿using Tickefy.Application.Abstractions.Data;
+﻿using MediatR;
+using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Exceptions;
 using Tickefy.Domain.ActivityLog;
@@ -10,7 +11,7 @@ using Tickefy.Domain.User;
 
 namespace Tickefy.Application.Ticket.Take
 {
-    public class TakeTicketCommandHandler : ICommandHandler<TakeTicketCommand>
+    public class TakeTicketCommandHandler : ICommandHandler<TakeTicketCommand, Unit>
     {
         private readonly ITicketRepository _ticketRepository;
         private readonly IActivityLogRepository _logRepository;
@@ -31,7 +32,7 @@ namespace Tickefy.Application.Ticket.Take
             _useRepository = userRepository;
             _uow = uow;
         }
-        public async Task Handle(TakeTicketCommand command, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(TakeTicketCommand command, CancellationToken cancellationToken)
         {
             var ticket = await _ticketRepository.GetByIdAsync(command.TicketId, cancellationToken);
 
@@ -56,7 +57,8 @@ namespace Tickefy.Application.Ticket.Take
             var log = Domain.ActivityLog.ActivityLog.Create(ticket.Id, user.Id, Domain.Common.Event.EventType.UserAssigned, "Agent assigned");
 
             await _uow.SaveChangesAsync();
-
+            
+            return Unit.Value;
         }
     }
 }

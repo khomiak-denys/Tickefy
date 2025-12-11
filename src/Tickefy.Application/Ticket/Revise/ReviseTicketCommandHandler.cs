@@ -1,4 +1,5 @@
-﻿using Tickefy.Application.Abstractions.Data;
+﻿using MediatR;
+using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Exceptions;
 using Tickefy.Domain.ActivityLog;
@@ -9,7 +10,7 @@ using Tickefy.Domain.Ticket;
 
 namespace Tickefy.Application.Ticket.Revise
 {
-    public class ReviseTicketCommandHandler : ICommandHandler<ReviseTicketCommand>
+    public class ReviseTicketCommandHandler : ICommandHandler<ReviseTicketCommand, Unit>
     {
         private readonly ITicketRepository _ticketRepository;
         private readonly IActivityLogRepository _logRepository;
@@ -24,7 +25,7 @@ namespace Tickefy.Application.Ticket.Revise
             _logRepository = logRepository;
             _uow = uow;
         }
-        public async Task Handle(ReviseTicketCommand command, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(ReviseTicketCommand command, CancellationToken cancellationToken)
         {
             var ticket = await _ticketRepository.GetByIdAsync(command.TicketId, cancellationToken);
 
@@ -51,6 +52,7 @@ namespace Tickefy.Application.Ticket.Revise
             {
                 throw new ForbiddenException("Only admin or requester agent can revise tickets");
             }
+            return Unit.Value;
         }
     }
 }

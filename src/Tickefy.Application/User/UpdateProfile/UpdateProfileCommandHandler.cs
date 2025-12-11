@@ -1,11 +1,12 @@
-﻿using Tickefy.Application.Abstractions.Data;
+﻿using MediatR;
+using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Exceptions;
 using Tickefy.Domain.User;
 
 namespace Tickefy.Application.User.UpdateProfile
 {
-    public class UpdateProfileCommandHandler : ICommandHandler<UpdateProfileCommand>
+    public class UpdateProfileCommandHandler : ICommandHandler<UpdateProfileCommand, Unit>
     {
         private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _uow;
@@ -15,7 +16,7 @@ namespace Tickefy.Application.User.UpdateProfile
             _uow = uow;
         }
 
-        public async Task Handle(UpdateProfileCommand command, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(UpdateProfileCommand command, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetByIdAsync(command.UserId);
             if (user == null) throw new NotFoundException(nameof(user), command.UserId);
@@ -23,6 +24,8 @@ namespace Tickefy.Application.User.UpdateProfile
             user.Update(command.FirstName, command.LastName);
 
             await _uow.SaveChangesAsync();
+            
+            return Unit.Value;
         }
     }
 }

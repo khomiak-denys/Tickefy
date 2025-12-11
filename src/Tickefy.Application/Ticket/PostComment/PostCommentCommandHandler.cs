@@ -1,4 +1,5 @@
-﻿using Tickefy.Application.Abstractions.Data;
+﻿using MediatR;
+using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Exceptions;
 using Tickefy.Domain.ActivityLog;
@@ -7,7 +8,7 @@ using Tickefy.Domain.Ticket;
 
 namespace Tickefy.Application.Ticket.PostComment
 {
-    public class PostCommentCommandHandler : ICommandHandler<PostCommentCommand>
+    public class PostCommentCommandHandler : ICommandHandler<PostCommentCommand, Unit>
     {
         private readonly IUnitOfWork _uow;
         private readonly ITicketRepository _ticketRepository;
@@ -22,7 +23,7 @@ namespace Tickefy.Application.Ticket.PostComment
             _ticketRepository = ticketRepository;
             _logRepository = logRepository;
         }
-        public async Task Handle(PostCommentCommand command, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(PostCommentCommand command, CancellationToken cancellationToken)
         {
             var ticket = await _ticketRepository.GetByIdAsync(command.TicketId, cancellationToken);
 
@@ -44,6 +45,8 @@ namespace Tickefy.Application.Ticket.PostComment
             _logRepository.Add(log);
 
             await _uow.SaveChangesAsync();
+            
+            return Unit.Value;
         }
     }
 }

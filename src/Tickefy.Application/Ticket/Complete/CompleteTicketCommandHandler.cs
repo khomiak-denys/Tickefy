@@ -1,4 +1,5 @@
-﻿using Tickefy.Application.Abstractions.Data;
+﻿using MediatR;
+using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Exceptions;
 using Tickefy.Domain.ActivityLog;
@@ -9,7 +10,7 @@ using Tickefy.Domain.Ticket;
 
 namespace Tickefy.Application.Ticket.Complete
 {
-    public class CompleteTicketCommandHandler : ICommandHandler<CompleteTicketCommand>
+    public class CompleteTicketCommandHandler : ICommandHandler<CompleteTicketCommand, Unit>
     {
         private readonly ITicketRepository _ticketRepository;
         private readonly IActivityLogRepository _logRepository;
@@ -24,7 +25,7 @@ namespace Tickefy.Application.Ticket.Complete
             _logRepository = logRepository;
             _uow = uow;
         }
-        public async Task Handle(CompleteTicketCommand command, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CompleteTicketCommand command, CancellationToken cancellationToken)
         {
             var ticket = await _ticketRepository.GetByIdAsync(command.TicketId, cancellationToken);
 
@@ -51,6 +52,8 @@ namespace Tickefy.Application.Ticket.Complete
             {
                 throw new ForbiddenException("Only admin or assigned agent can complete tickets");
             }
+
+            return Unit.Value;
         }   
     }
 }
