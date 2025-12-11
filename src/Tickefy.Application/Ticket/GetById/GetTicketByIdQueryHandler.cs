@@ -29,7 +29,7 @@ namespace Tickefy.Application.Ticket.GetById
 
             var isRequester = ticket.RequesterId == query.UserId;
             var isAdmin = query.Roles.Contains(UserRoles.Admin.ToString());
-            var isAssignedAgent = ticket.AssignedAgentId?.Value == query.UserId.Value;
+            var isAssignedAgent = ticket.AssignedAgentId?.Value == query.UserId.Value || query.Roles.Contains(UserRoles.Agent.ToString());
 
             if (!isRequester && !isAdmin && !isAssignedAgent) throw new ForbiddenException("Invalid role");
 
