@@ -69,7 +69,7 @@ namespace Tickefy.Infrastructure.Services.AI
             if (parsed == null)
                 throw new InvalidOperationException("Invalid AI JSON format.");
 
-            _logger.LogWarning($"AI Response. Priority: {parsed.Priority}, category: {parsed.Category}");
+            _logger.LogWarning("AI Response. Priority: {Priority}, category: {Category}", parsed.Priority, parsed.Category);
 
             return parsed;
         }
