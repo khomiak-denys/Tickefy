@@ -23,6 +23,7 @@ namespace Tickefy.Infrastructure.Repositories
             return await _dbContext.ActivityLogs
                 .Include(l => l.User)
                 .AsNoTracking()
+                .OrderByDescending(l => l.Created)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
