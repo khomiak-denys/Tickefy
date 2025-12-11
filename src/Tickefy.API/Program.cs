@@ -33,20 +33,14 @@ namespace Tickefy.API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
-            /*builder.Host.UseSerilog((context, services, configuration) => configuration
-            .ReadFrom.Configuration(context.Configuration)
-            .ReadFrom.Services(services)
-            .Enrich.FromLogContext()
-            .WriteTo.Console()
-            .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(
-                "http://localhost:9200"))
-            {
-                AutoRegisterTemplate = true,
-                IndexFormat = $"tickefy-logs-{context.HostingEnvironment.EnvironmentName.ToLower()}-{DateTime.UtcNow:yyyy-MM}"
-            })
-            );*/
-
+            
+            
+            builder.Host.UseSerilog((context, services, configuration) => configuration
+                //.ReadFrom.Configuration(context.Configuration) 
+                .ReadFrom.Services(services)
+                .Enrich.FromLogContext()
+                .WriteTo.Console()); 
+            
             builder.Services.AddProblemDetails(configure =>
             {
                 configure.CustomizeProblemDetails = options =>
