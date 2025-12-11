@@ -66,9 +66,12 @@ namespace Tickefy.Infrastructure.Services.AI
             var parsed = JsonSerializer.Deserialize<AiResponse>(json,
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             
+            if (parsed == null)
+                throw new InvalidOperationException("Invalid AI JSON format.");
+
             _logger.LogWarning($"AI Response. Priority: {parsed.Priority}, category: {parsed.Category}");
 
-            return parsed ?? throw new InvalidOperationException("Invalid AI JSON format.");
+            return parsed;
         }
 
     }
