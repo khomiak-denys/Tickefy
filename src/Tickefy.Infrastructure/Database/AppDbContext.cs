@@ -104,7 +104,7 @@ namespace Tickefy.Infrastructure.Database
                 .HasOne(t => t.Manager) 
                 .WithMany()
                 .HasForeignKey(t => t.ManagerId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.SetNull);
 
             //TICKET
             modelBuilder.Entity<Ticket>()

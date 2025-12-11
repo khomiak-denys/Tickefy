@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Abstractions.Services;
@@ -17,19 +18,22 @@ namespace Tickefy.Application.Ticket.Create
         private readonly IActivityLogRepository _logRepository;
         private readonly IAiService _aiService;
         private readonly IAiResponseParser _responseParser;
+        private readonly ILogger<CreateTicketCommandHandler> _logger;
 
         public CreateTicketCommandHandler(
             IUnitOfWork uow, 
             ITicketRepository ticketRepository,
             IActivityLogRepository logRepository,
             IAiService aiService,
-            IAiResponseParser responseParser)
+            IAiResponseParser responseParser,
+            ILogger<CreateTicketCommandHandler> logger)
         {
             _uow = uow;
             _ticketRepository = ticketRepository;
             _logRepository = logRepository;
             _aiService = aiService;
             _responseParser = responseParser;
+            _logger = logger;
         }
 
         public async Task<Unit> Handle(CreateTicketCommand command, CancellationToken cancellationToken)
@@ -46,8 +50,9 @@ namespace Tickefy.Application.Ticket.Create
                 ticket.SetCategory(category);
                 ticket.SetPriority(priority);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "Failed to analyze ticket with AI. Setting default values.");
                 ticket.SetCategory(Category.Other);
                 ticket.SetPriority(Priority.Medium);
             }

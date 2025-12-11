@@ -41,7 +41,7 @@ namespace Tickefy.Application.Ticket.Revise
                     ticket.Revise();
                     var log = Domain.ActivityLog.ActivityLog.Create(ticket.Id, command.UserId, EventType.StatusChanged, "Ticket revised");
                     _logRepository.Add(log);
-                    await _uow.SaveChangesAsync();
+                    await _uow.SaveChangesAsync(cancellationToken);
                 }
                 else
                 {

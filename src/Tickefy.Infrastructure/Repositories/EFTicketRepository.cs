@@ -51,7 +51,7 @@ namespace Tickefy.Infrastructure.Repositories
         public async Task<List<Ticket>> GetByUserId(UserId id)
         {
             return await _dbContext.Tickets
-                .Where(t => t.RequesterId == id && t.Status != Status.Canceled)
+                .Where(t => (t.RequesterId == id || t.AssignedAgentId == id) && t.Status != Status.Canceled)
                 .Include(t => t.Requester)
                 .Include(t => t.AssignedAgent)
                 .Include(t => t.AssignedTeam)
