@@ -111,7 +111,7 @@ namespace Tickefy.API.Team
         }
 
         [HttpGet("{teamId}")]
-        [Authorize(Roles = "Agent, Manager")]
+        [Authorize(Roles = "Agent, Admin, Manager")]
         [SwaggerOperation(Summary = "Retrieve team by id")]
         [ProducesResponseType(typeof(TeamDetailResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
