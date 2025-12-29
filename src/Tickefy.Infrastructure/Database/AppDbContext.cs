@@ -43,6 +43,7 @@ namespace Tickefy.Infrastructure.Database
             modelBuilder.Entity<Comment>().HasStronglyTypedIdConversion(a => a.Id);
             modelBuilder.Entity<Team>().HasStronglyTypedIdConversion(a => a.Id);
             modelBuilder.Entity<Ticket>().HasStronglyTypedIdConversion(a => a.Id);
+            modelBuilder.Entity<User>().HasStronglyTypedIdConversion(a => a.Id);
 
             //ACTIVITY LOG
             modelBuilder.Entity<ActivityLog>()
