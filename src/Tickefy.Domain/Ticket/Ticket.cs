@@ -35,14 +35,14 @@ namespace Tickefy.Domain.Ticket
 
         public static Ticket Create(string title, string description, UserId requesterId, DateTime deadline)
         {
-            var ticket = new Ticket(title, description, Status.Created,  requesterId, deadline);
+            var ticket = new Ticket(title, description, Status.Created, requesterId, deadline);
             ticket.OnCreate();
             return ticket;
         }
 
         public static Ticket CreateDraft(string title, string description, UserId requesterId, DateTime deadline)
         {
-            var ticket = new Ticket(title, description, Status.Draft,  requesterId, deadline);
+            var ticket = new Ticket(title, description, Status.Draft, requesterId, deadline);
             ticket.OnCreate();
             return ticket;
         }
@@ -91,9 +91,9 @@ namespace Tickefy.Domain.Ticket
             Status = Status.Assigned;
         }
 
-        public void Start()
+        public void StartWork()
         {
-            if (!GetAvailableActions().Contains(TicketAction.Start))
+            if (!GetAvailableActions().Contains(TicketAction.StartWork))
             {
                 throw new ForbiddenException("Invalid action");
             }
@@ -153,10 +153,10 @@ namespace Tickefy.Domain.Ticket
             {
                 Status.Draft => [TicketAction.Publish],
                 Status.Created => [TicketAction.Take, TicketAction.Cancel],
-                Status.Assigned => [TicketAction.Cancel, TicketAction.Start],
+                Status.Assigned => [TicketAction.Cancel, TicketAction.StartWork],
                 Status.InProgress => [TicketAction.Complete, TicketAction.Cancel, TicketAction.Fail],
                 Status.Completed => [TicketAction.Accept, TicketAction.Reopen],
-                Status.Reopened => [TicketAction.Start],
+                Status.Reopened => [TicketAction.StartWork],
                 _ => []
             };
         }

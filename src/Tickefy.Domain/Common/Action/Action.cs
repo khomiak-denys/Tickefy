@@ -1,15 +1,13 @@
-﻿using System.Runtime.InteropServices;
-
-namespace Tickefy.Domain.Common.Action;
+﻿namespace Tickefy.Domain.Common.Action;
 
 public enum TicketAction
 {
     Cancel,
     Take,
-    Start, 
+    StartWork,
     Accept,
     Reopen,
     Publish,
-    Complete, 
+    Complete,
     Fail
 }
