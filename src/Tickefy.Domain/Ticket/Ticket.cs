@@ -112,6 +112,15 @@ namespace Tickefy.Domain.Ticket
             Status = Status.Reopened;
         }
 
+        public void Accept()
+        {
+            if (!GetAvailableActions().Contains(TicketAction.Accept))
+            {
+                throw new ForbiddenException("Invalid action");
+            }
+            Status = Status.Accepted;
+        }
+
         public void Fail()
         {
             if (!GetAvailableActions().Contains(TicketAction.Fail))
