@@ -1,4 +1,7 @@
-﻿using Tickefy.Domain.Common.Category;
+﻿using System.Diagnostics;
+using Tickefy.Application.Exceptions;
+using Tickefy.Domain.Common.Action;
+using Tickefy.Domain.Common.Category;
 using Tickefy.Domain.Common.EntityBase;
 using Tickefy.Domain.Common.Priority;
 using Tickefy.Domain.Common.Status;
@@ -33,7 +36,14 @@ namespace Tickefy.Domain.Ticket
 
         public static Ticket Create(string title, string description, UserId requesterId, DateTime deadline)
         {
-            var ticket = new Ticket(title, description, requesterId, deadline);
+            var ticket = new Ticket(title, description, Status.Created,  requesterId, deadline);
+            ticket.OnCreate();
+            return ticket;
+        }
+
+        public static Ticket CreateDraft(string title, string description, UserId requesterId, DateTime deadline)
+        {
+            var ticket = new Ticket(title, description, Status.Draft,  requesterId, deadline);
             ticket.OnCreate();
             return ticket;
         }
@@ -51,35 +61,87 @@ namespace Tickefy.Domain.Ticket
         {
             Comments.Add(comment);
         }
-
-        public void Assign(UserId userId, TeamId teamId)
-        {
-            AssignedAgentId = userId;
-            AssignedTeamId = teamId;
-            Status = Status.Assigned;
-        }
-
-
-        public void Complete()
-        {
-            Status = Status.Completed;
-        }
-        public void Revise()
-        {
-            Status = Status.Assigned;
-        }
-        public void Cancel()
-        {
-            Status = Status.Canceled;
-        }
-
-        private Ticket(string title, string description, UserId requesterId, DateTime deadline)
+        
+        private Ticket(string title, string description, Status status, UserId requesterId, DateTime deadline)
         {
             Id = new TicketId();
             Title = title;
             Description = description;
+            Status = status;
             RequesterId = requesterId;
             Deadline = deadline;
+        }
+
+        public void Take(UserId agentId, TeamId teamId)
+        {
+            if (!GetAvailableActions().Contains(TicketAction.Take))
+            {
+                throw new ForbiddenException("Invalid action");
+            }
+            AssignedAgentId = agentId;
+            AssignedTeamId = teamId;
+            Status = Status.Assigned;
+        }
+
+        public void Start()
+        {
+            if (!GetAvailableActions().Contains(TicketAction.Start))
+            {
+                throw new ForbiddenException("Invalid action");
+            }
+
+            Status = Status.InProgress;
+        }
+
+        public void Complete()
+        {
+            if (!GetAvailableActions().Contains(TicketAction.Complete))
+            {
+                throw new ForbiddenException("Invalid action");
+                
+            }
+            Status = Status.Completed;
+        }
+
+        public void Reopen()
+        {
+            if (!GetAvailableActions().Contains(TicketAction.Reopen))
+            {
+                throw new ForbiddenException("Invalid action");
+            }
+            Status = Status.Reopened;
+        }
+
+        public void Fail()
+        {
+            if (!GetAvailableActions().Contains(TicketAction.Fail))
+            {
+                throw new ForbiddenException("Invalid action");
+            }
+            Status = Status.Failed;
+        }
+
+        public void Cancel()
+        {
+            if (!GetAvailableActions().Contains(TicketAction.Cancel))
+            {
+                throw new ForbiddenException("Invalid action");
+            }
+            Status = Status.Canceled;
+        }
+
+        public IEnumerable<TicketAction> GetAvailableActions()
+        {
+            return Status switch
+            {
+                Status.Draft => [TicketAction.Publish],
+                Status.Created => [TicketAction.Take, TicketAction.Cancel],
+                Status.Assigned => [TicketAction.Cancel, TicketAction.Start],
+                Status.InProgress => [TicketAction.Complete, TicketAction.Cancel, TicketAction.Fail],
+                Status.Completed => [TicketAction.Accept, TicketAction.Reopen],
+                Status.Reopened => [TicketAction.Start],
+                _ => []
+            };
         }
     }
 }

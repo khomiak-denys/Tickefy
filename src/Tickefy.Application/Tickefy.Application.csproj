@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Attachment\" />
     <Folder Include="Ticket\Revise\" />
   </ItemGroup>
 

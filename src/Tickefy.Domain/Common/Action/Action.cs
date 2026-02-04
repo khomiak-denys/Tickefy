@@ -2,7 +2,7 @@
 
 namespace Tickefy.Domain.Common.Action;
 
-public enum Action
+public enum TicketAction
 {
     Cancel,
     Take,
