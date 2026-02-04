@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Tickefy.Application.Exceptions;
+﻿using Tickefy.Application.Exceptions;
 using Tickefy.Domain.Common.Action;
 using Tickefy.Domain.Common.Category;
 using Tickefy.Domain.Common.EntityBase;
@@ -72,6 +71,15 @@ namespace Tickefy.Domain.Ticket
             Deadline = deadline;
         }
 
+        public void Publish()
+        {
+            if (!GetAvailableActions().Contains(TicketAction.Publish))
+            {
+                throw new ForbiddenException("Invalid action");
+            }
+            Status = Status.Created;
+        }
+        
         public void Take(UserId agentId, TeamId teamId)
         {
             if (!GetAvailableActions().Contains(TicketAction.Take))
