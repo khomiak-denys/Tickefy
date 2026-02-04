@@ -12,6 +12,10 @@ namespace Tickefy.Domain.Common.Status
         Failed,
         Created, 
         Assigned,
-        Canceled
+        Canceled, 
+        Draft, 
+        Accepted, 
+        InProgress,
+        Reopened
     }
 }

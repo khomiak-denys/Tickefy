@@ -52,7 +52,7 @@ namespace Tickefy.Application.Ticket.Take
             var team = await _teamRepository.GetByIdAsync(user.TeamId);
             if (team == null) throw new NotFoundException(nameof(team), user.TeamId);
 
-            ticket.Assign(user.Id, team.Id);
+            ticket.Take(user.Id, team.Id);
 
             var log = Domain.ActivityLog.ActivityLog.Create(ticket.Id, user.Id, Domain.Common.Event.EventType.UserAssigned, "Agent assigned");
             
