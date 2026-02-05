@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tickefy.Domain", "src\Ticke
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tickefy.Infrastructure", "src\Tickefy.Infrastructure\Tickefy.Infrastructure.csproj", "{D891C6FA-8B2D-516C-82CC-6196E4C4C065}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tickefy.Domain.Tests", "tests\Tickefy.Domain.Tests\Tickefy.Domain.Tests.csproj", "{67A3BBAE-C783-47BA-908E-671DCCF01877}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{D891C6FA-8B2D-516C-82CC-6196E4C4C065}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D891C6FA-8B2D-516C-82CC-6196E4C4C065}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D891C6FA-8B2D-516C-82CC-6196E4C4C065}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67A3BBAE-C783-47BA-908E-671DCCF01877}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67A3BBAE-C783-47BA-908E-671DCCF01877}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67A3BBAE-C783-47BA-908E-671DCCF01877}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67A3BBAE-C783-47BA-908E-671DCCF01877}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
