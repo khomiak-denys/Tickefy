@@ -2,7 +2,7 @@ using Tickefy.Domain.Tests.Ticket.Builders;
 
 namespace Tickefy.Domain.Tests.Ticket;
 
-public class TicketStatusPositiveTransitions
+public class TicketStatusPositiveTransitionsTests
 {
     [Fact]
     public void Status_Should_BeCreated_AfterDraft()

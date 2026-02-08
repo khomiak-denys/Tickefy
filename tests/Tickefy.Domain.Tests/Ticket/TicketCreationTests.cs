@@ -5,7 +5,7 @@ namespace Tickefy.Domain.Tests.Ticket;
 public class TicketCreationTests
 {
     [Fact]
-    public void Status_ShouldBe_Draft_WhenCreatingDraft()
+    public void Status_Should_BeDraft_WhenCreatingDraft()
     {
         var ticket = TicketBuilder.New().InDraftState();
         ticket.Status.Should().Be(Status.Draft);

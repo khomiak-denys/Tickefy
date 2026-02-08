@@ -1,5 +1,3 @@
-using Tickefy.Domain.Ticket;
-
 namespace Tickefy.Domain.Tests.Ticket.Builders;
 
 public class TicketBuilder

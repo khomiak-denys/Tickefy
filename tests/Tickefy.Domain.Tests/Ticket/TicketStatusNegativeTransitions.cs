@@ -4,7 +4,7 @@ using Tickefy.Domain.Tests.Ticket.Builders;
 
 namespace Tickefy.Domain.Tests.Ticket;
 
-public class TicketStatusNegativeTransitions
+public class TicketStatusNegativeTransitionsTests
 {
     [Theory]
     [InlineData(TicketAction.Complete)]
