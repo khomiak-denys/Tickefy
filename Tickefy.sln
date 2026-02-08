@@ -11,6 +11,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tickefy.Domain", "src\Ticke
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tickefy.Infrastructure", "src\Tickefy.Infrastructure\Tickefy.Infrastructure.csproj", "{D891C6FA-8B2D-516C-82CC-6196E4C4C065}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tickefy.Domain.Tests", "tests\Tickefy.Domain.Tests\Tickefy.Domain.Tests.csproj", "{67A3BBAE-C783-47BA-908E-671DCCF01877}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{273A9184-1E10-4FB6-87A1-0DBEBFFFCC4E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{ECCA75EF-8B97-465A-939B-F15EC1FD221C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,11 +39,22 @@ Global
 		{D891C6FA-8B2D-516C-82CC-6196E4C4C065}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D891C6FA-8B2D-516C-82CC-6196E4C4C065}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D891C6FA-8B2D-516C-82CC-6196E4C4C065}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67A3BBAE-C783-47BA-908E-671DCCF01877}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67A3BBAE-C783-47BA-908E-671DCCF01877}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67A3BBAE-C783-47BA-908E-671DCCF01877}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67A3BBAE-C783-47BA-908E-671DCCF01877}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1F516B94-A885-420A-9FFC-8D2DC63ACBE2}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{FE42655B-99B0-40C8-1572-7FC052671076} = {273A9184-1E10-4FB6-87A1-0DBEBFFFCC4E}
+		{D891C6FA-8B2D-516C-82CC-6196E4C4C065} = {273A9184-1E10-4FB6-87A1-0DBEBFFFCC4E}
+		{1C984D98-8DAA-11C8-F022-A46291446394} = {273A9184-1E10-4FB6-87A1-0DBEBFFFCC4E}
+		{30B34141-A602-BDAF-9EAF-3399DAC3CEA9} = {273A9184-1E10-4FB6-87A1-0DBEBFFFCC4E}
+		{67A3BBAE-C783-47BA-908E-671DCCF01877} = {ECCA75EF-8B97-465A-939B-F15EC1FD221C}
 	EndGlobalSection
 EndGlobal
