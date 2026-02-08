@@ -46,4 +46,25 @@ public class TicketBuilder
         ticket.Reopen();
         return ticket;
     }
+
+    public Domain.Ticket.Ticket InCanceledState()
+    {
+        var ticket = InCreatedState();
+        ticket.Cancel();
+        return ticket;
+    }
+
+    public Domain.Ticket.Ticket InFailedState()
+    {
+        var ticket = InInProgressState();
+        ticket.Fail();
+        return ticket;
+    }
+
+    public Domain.Ticket.Ticket InAcceptedState()
+    {
+        var ticket = InCompletedState();
+        ticket.Accept();
+        return ticket;
+    }
 }

@@ -1,5 +1,6 @@
 using Tickefy.Application.Exceptions;
 using Tickefy.Domain.Common.Action;
+using Tickefy.Domain.Tests.Ticket.Builders;
 
 namespace Tickefy.Domain.Tests.Ticket;
 
@@ -15,8 +16,7 @@ public class TicketStatusNegativeTransitions
     [InlineData(TicketAction.Fail)]
     public void Action_Should_ThrowException_WhenDraft(TicketAction action)
     {
-        var ticket = Domain.Ticket.Ticket.CreateDraft("some title", "some description", new UserId(), new DateTime());
-
+        var ticket = TicketBuilder.New().InDraftState();
         Invoke(ticket, action).Should().Throw<ForbiddenException>().WithMessage("Invalid action");
     }
     
@@ -29,8 +29,7 @@ public class TicketStatusNegativeTransitions
     [InlineData(TicketAction.Fail)]
     public void Action_Should_ThrowException_WhenCreated(TicketAction action)
     {
-        var ticket = Domain.Ticket.Ticket.Create("some title", "some description", new UserId(), new DateTime());
-
+        var ticket = TicketBuilder.New().InCreatedState();
         Invoke(ticket, action).Should().Throw<ForbiddenException>().WithMessage("Invalid action");
     }
 
@@ -43,9 +42,7 @@ public class TicketStatusNegativeTransitions
     [InlineData(TicketAction.Fail)]
     public void Action_Should_ThrowException_WhenAssigned(TicketAction action)
     {
-        var ticket = Domain.Ticket.Ticket.Create("some title", "some description", new UserId(), new DateTime());
-        ticket.Take(new UserId(), new TeamId());
-
+        var ticket = TicketBuilder.New().InAssignedState();
         Invoke(ticket, action).Should().Throw<ForbiddenException>().WithMessage("Invalid action");
     }
 
@@ -57,10 +54,7 @@ public class TicketStatusNegativeTransitions
     [InlineData(TicketAction.Reopen)]
     public void Action_Should_ThrowException_WhenInProgress(TicketAction action)
     {
-        var ticket = Domain.Ticket.Ticket.Create("some title", "some description", new UserId(), new DateTime());
-        ticket.Take(new UserId(), new TeamId());
-        ticket.StartWork();
-
+        var ticket = TicketBuilder.New().InInProgressState();
         Invoke(ticket, action).Should().Throw<ForbiddenException>().WithMessage("Invalid action");
     }
 
@@ -73,11 +67,7 @@ public class TicketStatusNegativeTransitions
     [InlineData(TicketAction.Fail)]
     public void Action_Should_ThrowException_WhenCompleted(TicketAction action)
     {
-        var ticket = Domain.Ticket.Ticket.Create("some title", "some description", new UserId(), new DateTime());
-        ticket.Take(new UserId(), new TeamId());
-        ticket.StartWork();
-        ticket.Complete();
-
+        var ticket = TicketBuilder.New().InCompletedState();
         Invoke(ticket, action).Should().Throw<ForbiddenException>().WithMessage("Invalid action");
     }
 
@@ -91,12 +81,7 @@ public class TicketStatusNegativeTransitions
     [InlineData(TicketAction.Fail)]
     public void Action_Should_ThrowException_WhenReopened(TicketAction action)
     {
-        var ticket = Domain.Ticket.Ticket.Create("some title", "some description", new UserId(), new DateTime());
-        ticket.Take(new UserId(), new TeamId());
-        ticket.StartWork();
-        ticket.Complete();
-        ticket.Reopen();
-
+        var ticket = TicketBuilder.New().InReopenedState();
         Invoke(ticket, action).Should().Throw<ForbiddenException>().WithMessage("Invalid action");
     }
 
@@ -111,8 +96,7 @@ public class TicketStatusNegativeTransitions
     [InlineData(TicketAction.Fail)]
     public void Action_Should_ThrowException_WhenCanceled(TicketAction action)
     {
-        var ticket = Domain.Ticket.Ticket.Create("some title", "some description", new UserId(), new DateTime());
-        ticket.Cancel();
+        var ticket = TicketBuilder.New().InCanceledState();
         Invoke(ticket, action).Should().Throw<ForbiddenException>().WithMessage("Invalid action");
     }
     
@@ -127,10 +111,7 @@ public class TicketStatusNegativeTransitions
     [InlineData(TicketAction.Fail)]
     public void Action_Should_ThrowException_WhenFailed(TicketAction action)
     {
-        var ticket = Domain.Ticket.Ticket.Create("some title", "some description", new UserId(), new DateTime());
-        ticket.Take(new UserId(), new TeamId());
-        ticket.StartWork();
-        ticket.Fail();
+        var ticket = TicketBuilder.New().InFailedState();
         Invoke(ticket, action).Should().Throw<ForbiddenException>().WithMessage("Invalid action");
     }
     
@@ -145,11 +126,7 @@ public class TicketStatusNegativeTransitions
     [InlineData(TicketAction.Fail)]
     public void Action_Should_ThrowException_WhenAccepted(TicketAction action)
     {
-        var ticket = Domain.Ticket.Ticket.Create("some title", "some description", new UserId(), new DateTime());
-        ticket.Take(new UserId(), new TeamId());
-        ticket.StartWork();
-        ticket.Complete();
-        ticket.Accept();
+        var ticket = TicketBuilder.New().InAcceptedState();
         Invoke(ticket, action).Should().Throw<ForbiddenException>().WithMessage("Invalid action");
     }
 
