@@ -1,15 +1,16 @@
 ﻿using Tickefy.Application.Team.Common;
 using Tickefy.Application.User.Common;
+using Tickefy.Domain.Common.Action;
 
 namespace Tickefy.Application.Ticket.Common
 {
     public record TicketDetailsResult(
         Guid Id,
-        string Title, 
+        string Title,
         string Description,
         UserResult Requester,
         TeamResult? AssignedTeam,
-        UserResult? AssignedAgent, 
+        UserResult? AssignedAgent,
         string Category,
         string Priority,
         string Status,
@@ -17,5 +18,8 @@ namespace Tickefy.Application.Ticket.Common
         DateTime Deadline,
         List<CommentResult> Comments,
         List<AttachmentResult> Attachments
-        );
+    )
+    {
+        public IEnumerable<ActionResult> AvaliableActions { get; set; }
+    }
 }

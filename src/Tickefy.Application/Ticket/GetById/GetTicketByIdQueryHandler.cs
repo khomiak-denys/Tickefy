@@ -2,6 +2,8 @@
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Exceptions;
 using Tickefy.Application.Ticket.Common;
+using Tickefy.Application.Ticket.Common.Helpers;
+using Tickefy.Domain.Common.Action;
 using Tickefy.Domain.Common.UserRole;
 using Tickefy.Domain.Ticket;
 
@@ -27,13 +29,19 @@ namespace Tickefy.Application.Ticket.GetById
                 throw new NotFoundException(nameof(ticket), query.TicketId);
             }
 
+            var isAgent = query.Roles.Contains(nameof(UserRoles.Agent));
             var isRequester = ticket.RequesterId == query.UserId;
-            var isAdmin = query.Roles.Contains(UserRoles.Admin.ToString());
-            var isAssignedAgent = ticket.AssignedAgentId?.Value == query.UserId.Value || query.Roles.Contains(UserRoles.Agent.ToString());
+            var isAdmin = query.Roles.Contains(nameof(UserRoles.Admin));
+            var isAssignedAgent = ticket.AssignedAgentId?.Value == query.UserId.Value || isAgent;
 
             if (!isRequester && !isAdmin && !isAssignedAgent) throw new ForbiddenException("Invalid role");
 
             var result = _mapper.Map<TicketDetailsResult>(ticket);
+
+            result.AvaliableActions = ticket.GetAvailableActions()
+                .Where(act => act.CanExecute(isAdmin, isRequester, isAssignedAgent, isAgent))
+                .Select(act => new ActionResult(act.ToString(), act.RequireReason()));
+                
 
             return result;
         }

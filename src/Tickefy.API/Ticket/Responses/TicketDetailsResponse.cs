@@ -1,5 +1,6 @@
 ﻿using Tickefy.API.Team.Responses;
 using Tickefy.API.User.Responses;
+using Tickefy.Domain.Common.Action;
 
 namespace Tickefy.API.Ticket.Responses
 {
@@ -16,6 +17,7 @@ namespace Tickefy.API.Ticket.Responses
         DateTime Created,
         DateTime Deadline,
         List<CommentResponse> Comments,
-        List<AttachmentResponse> Attachments
+        List<AttachmentResponse> Attachments,
+        IEnumerable<TicketAction> AvailableActions
     );
 }
