@@ -23,9 +23,9 @@ public static class ActionHelper
             TicketAction.Cancel => isAdmin || (ticket.Status == Status.Created && isRequester),
             TicketAction.Take => isAgent,
             TicketAction.StartWork => isAssignedAgent,
-            TicketAction.Reopen => isRequester || isAdmin,
-            TicketAction.Publish => isRequester || isAdmin,
-            TicketAction.Accept => isRequester || isAdmin,
+            TicketAction.Reopen => isRequester,
+            TicketAction.Publish => isRequester,
+            TicketAction.Accept => isRequester,
             TicketAction.Complete => isAssignedAgent,
             TicketAction.Fail => isAdmin,
             _ => false
