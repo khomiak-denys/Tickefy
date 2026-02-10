@@ -18,6 +18,6 @@ namespace Tickefy.API.Ticket.Responses
         DateTime Deadline,
         List<CommentResponse> Comments,
         List<AttachmentResponse> Attachments,
-        IEnumerable<TicketAction> AvailableActions
+        List<ActionResponse> AvailableActions
     );
 }
