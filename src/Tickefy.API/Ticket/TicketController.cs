@@ -110,7 +110,7 @@ namespace Tickefy.API.Ticket
 
             var query = new GetTicketByIdQuery(new UserId(userId), roles, new TicketId(TicketId));
             var result = await _mediator.Send(query);
-
+            
             var response = _mapper.Map<TicketDetailsResponse>(result);
             
             return Ok(response);
