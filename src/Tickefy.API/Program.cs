@@ -12,7 +12,6 @@ using Tickefy.API.Mapping;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Services;
 using Tickefy.Application.Auth.Login;
-using Tickefy.Application.Common.Mapping;
 using Tickefy.Application.PipelineBehaviors;
 using Tickefy.Infrastructure.Services.AI;
 using Tickefy.Domain.Ticket;
@@ -22,7 +21,7 @@ using Tickefy.Infrastructure.Repositories;
 using Tickefy.Infrastructure.Services;
 using Tickefy.Domain.ActivityLog;
 using Tickefy.Domain.Team;
-using Serilog.Sinks.Elasticsearch;
+using Tickefy.Application.Mapping;
 using Tickefy.Application.Team.AddMember;
 using Tickefy.Domain.User;
 
