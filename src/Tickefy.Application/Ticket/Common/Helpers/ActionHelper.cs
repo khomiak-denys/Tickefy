@@ -1,5 +1,5 @@
 using Tickefy.Domain.Common.Action;
-using Tickefy.Domain.Common.UserRole;
+using Tickefy.Domain.Common.Status;
 
 namespace Tickefy.Application.Ticket.Common.Helpers;
 
@@ -16,18 +16,19 @@ public static class ActionHelper
         };
     }
 
-    public static bool CanExecute(this TicketAction action, bool isAdmin, bool isRequester, bool isAssignedAgent, bool isAgent)
+    public static bool CanExecute(this TicketAction action, Domain.Ticket.Ticket ticket, bool isAdmin, bool isRequester, bool isAssignedAgent, bool isAgent)
     {
         return action switch
         {
-            TicketAction.Cancel => isAdmin,
+            TicketAction.Cancel => isAdmin || (ticket.Status == Status.Created && isRequester),
             TicketAction.Take => isAgent,
             TicketAction.StartWork => isAssignedAgent,
-            TicketAction.Reopen => isRequester,
-            TicketAction.Publish => isRequester,
-            TicketAction.Complete => isRequester,
+            TicketAction.Reopen => isRequester || isAdmin,
+            TicketAction.Publish => isRequester || isAdmin,
+            TicketAction.Accept => isRequester || isAdmin,
+            TicketAction.Complete => isAssignedAgent,
             TicketAction.Fail => isAdmin,
-            _ => true
+            _ => false
         };
 
     }
