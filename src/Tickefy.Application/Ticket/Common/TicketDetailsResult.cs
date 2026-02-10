@@ -20,6 +20,6 @@ namespace Tickefy.Application.Ticket.Common
         List<AttachmentResult> Attachments
     )
     {
-        public IEnumerable<ActionResult> AvaliableActions { get; set; }
+        public required IEnumerable<ActionResult> AvailableActions { get; set; }
     }
 }
