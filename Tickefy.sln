@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{273A9184-1E1
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{ECCA75EF-8B97-465A-939B-F15EC1FD221C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tickefy.Application.Tests", "tests\Tickefy.Application.Tests\Tickefy.Application.Tests.csproj", "{9DA02FB0-FD1E-4CC5-8162-24781305CD92}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{67A3BBAE-C783-47BA-908E-671DCCF01877}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67A3BBAE-C783-47BA-908E-671DCCF01877}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67A3BBAE-C783-47BA-908E-671DCCF01877}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DA02FB0-FD1E-4CC5-8162-24781305CD92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DA02FB0-FD1E-4CC5-8162-24781305CD92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DA02FB0-FD1E-4CC5-8162-24781305CD92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DA02FB0-FD1E-4CC5-8162-24781305CD92}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -56,5 +62,6 @@ Global
 		{1C984D98-8DAA-11C8-F022-A46291446394} = {273A9184-1E10-4FB6-87A1-0DBEBFFFCC4E}
 		{30B34141-A602-BDAF-9EAF-3399DAC3CEA9} = {273A9184-1E10-4FB6-87A1-0DBEBFFFCC4E}
 		{67A3BBAE-C783-47BA-908E-671DCCF01877} = {ECCA75EF-8B97-465A-939B-F15EC1FD221C}
+		{9DA02FB0-FD1E-4CC5-8162-24781305CD92} = {ECCA75EF-8B97-465A-939B-F15EC1FD221C}
 	EndGlobalSection
 EndGlobal

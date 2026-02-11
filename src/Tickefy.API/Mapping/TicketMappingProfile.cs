@@ -12,7 +12,7 @@ namespace Tickefy.API.Mapping
             CreateMap<TicketDetailsResult, TicketDetailsResponse>();
             CreateMap<CommentResult, CommentResponse>();
             CreateMap<AttachmentResult, AttachmentResponse>();
-            CreateMap<ActionResult, ActionResponse>();
+            CreateMap<TicketActionResult, TicketActionResponse>();
         }
     }
 }

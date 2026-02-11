@@ -11,4 +11,3 @@ public enum TicketAction
     Complete,
     Fail
 }
-

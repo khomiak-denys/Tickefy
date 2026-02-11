@@ -31,7 +31,7 @@ namespace Tickefy.Application.Ticket.GetById
 
             result.AvailableActions = ticket.GetAvailableActions()
                 .Where(act => act.CanExecute(ticket, isAdmin, isRequester, isAssignedAgent, isAgent))
-                .Select(act => new ActionResult(act.ToString(), act.RequireReason()));
+                .Select(act => new TicketActionResult(act.ToString(), act.RequireReason()));
             
             return result;
         }

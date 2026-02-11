@@ -1,6 +1,5 @@
 ﻿using Tickefy.Application.Team.Common;
 using Tickefy.Application.User.Common;
-using Tickefy.Domain.Common.Action;
 
 namespace Tickefy.Application.Ticket.Common
 {
@@ -20,6 +19,6 @@ namespace Tickefy.Application.Ticket.Common
         List<AttachmentResult> Attachments
     )
     {
-        public required IEnumerable<ActionResult> AvailableActions { get; set; }
+        public required IEnumerable<TicketActionResult> AvailableActions { get; set; }
     }
 }
