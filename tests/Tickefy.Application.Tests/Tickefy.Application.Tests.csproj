@@ -26,6 +26,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\src\Tickefy.Application\Tickefy.Application.csproj" />
       <ProjectReference Include="..\..\src\Tickefy.Domain\Tickefy.Domain.csproj" />
+      <ProjectReference Include="..\Tickefy.Domain.Tests\Tickefy.Domain.Tests.csproj" />
     </ItemGroup>
 
 </Project>
