@@ -1,7 +1,7 @@
 using Tickefy.Application.Ticket.Common.Helpers;
 using Tickefy.Domain.Common.Action;
 
-namespace Tickefy.Application.Tests.TicketActions;
+namespace Tickefy.Application.Tests.Tickets.TicketActions;
 
 public class RequireReasonTests
 {

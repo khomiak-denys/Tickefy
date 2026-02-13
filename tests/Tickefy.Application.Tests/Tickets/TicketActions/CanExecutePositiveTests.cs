@@ -2,7 +2,7 @@ using Tickefy.Application.Ticket.Common.Helpers;
 using Tickefy.Domain.Common.Action;
 using Tickefy.Domain.Tests.Ticket.Builders;
 
-namespace Tickefy.Application.Tests.TicketActions;
+namespace Tickefy.Application.Tests.Tickets.TicketActions;
 
 public class CanExecutePositiveTests
 {
