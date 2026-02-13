@@ -30,6 +30,5 @@ public static class ActionHelper
             TicketAction.Fail => isAdmin,
             _ => false
         };
-
     }
 }

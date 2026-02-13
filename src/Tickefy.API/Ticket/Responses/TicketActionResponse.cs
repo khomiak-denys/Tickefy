@@ -1,6 +1,6 @@
 namespace Tickefy.API.Ticket.Responses;
 
-public record ActionResponse
+public record TicketActionResponse
 (
     string Key,
     bool RequireReason
