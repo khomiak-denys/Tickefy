@@ -41,17 +41,6 @@ public static class ActionHelper
         var isAdmin = roles.Contains(nameof(UserRoles.Admin));
         var isAssignedAgent = ticket.AssignedAgentId?.Value == userId.Value && isAgent;
         
-        return action switch
-        {
-            TicketAction.Cancel => isAdmin || (ticket.Status == Status.Created && isRequester),
-            TicketAction.Take => isAgent,
-            TicketAction.StartWork => isAssignedAgent,
-            TicketAction.Reopen => isRequester,
-            TicketAction.Publish => isRequester,
-            TicketAction.Accept => isRequester,
-            TicketAction.Complete => isAssignedAgent,
-            TicketAction.Fail => isAdmin,
-            _ => false
-        };
+        return action.CanExecute(ticket, isAdmin, isRequester, isAssignedAgent, isAgent);
     }
 }
