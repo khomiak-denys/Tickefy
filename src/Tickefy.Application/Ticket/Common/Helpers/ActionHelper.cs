@@ -1,5 +1,7 @@
 using Tickefy.Domain.Common.Action;
 using Tickefy.Domain.Common.Status;
+using Tickefy.Domain.Common.UserRole;
+using Tickefy.Domain.Primitives;
 
 namespace Tickefy.Application.Ticket.Common.Helpers;
 
@@ -18,6 +20,27 @@ public static class ActionHelper
 
     public static bool CanExecute(this TicketAction action, Domain.Ticket.Ticket ticket, bool isAdmin, bool isRequester, bool isAssignedAgent, bool isAgent)
     {
+        return action switch
+        {
+            TicketAction.Cancel => isAdmin || (ticket.Status == Status.Created && isRequester),
+            TicketAction.Take => isAgent,
+            TicketAction.StartWork => isAssignedAgent,
+            TicketAction.Reopen => isRequester,
+            TicketAction.Publish => isRequester,
+            TicketAction.Accept => isRequester,
+            TicketAction.Complete => isAssignedAgent,
+            TicketAction.Fail => isAdmin,
+            _ => false
+        };
+    }
+    
+    public static bool CanExecute(this TicketAction action, Domain.Ticket.Ticket ticket, UserId userId, IEnumerable<string> roles)
+    {
+        var isAgent = roles.Contains(nameof(UserRoles.Agent));
+        var isRequester = ticket.RequesterId == userId;
+        var isAdmin = roles.Contains(nameof(UserRoles.Admin));
+        var isAssignedAgent = ticket.AssignedAgentId?.Value == userId.Value && isAgent;
+        
         return action switch
         {
             TicketAction.Cancel => isAdmin || (ticket.Status == Status.Created && isRequester),
