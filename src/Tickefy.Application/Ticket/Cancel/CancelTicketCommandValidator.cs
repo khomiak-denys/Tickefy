@@ -19,6 +19,9 @@ namespace Tickefy.Application.Ticket.Cancel
                 .Matches("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$")
                 .WithMessage("Ticket ID must match GUID format.")
                 .When(x => x.TicketId != null);
+
+            RuleFor(x => x.Reason)
+                .MaximumLength(500);
         }
     }
 }
