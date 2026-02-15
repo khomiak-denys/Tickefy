@@ -296,7 +296,7 @@ namespace Tickefy.API.Ticket
 
         [HttpPut]
         [Authorize(Roles = "Requester, Admin")]
-        [Route("{ticketId}/cancel")]
+        [Route("{ticketId:guid}/cancel")]
         [SwaggerOperation(Summary = "Handles request to cancel ticket")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
@@ -304,7 +304,7 @@ namespace Tickefy.API.Ticket
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CancelTicketAsync(Guid ticketId)
+        public async Task<IActionResult> CancelTicketAsync(Guid ticketId, ReasonForTicketActionRequest request)
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
@@ -319,11 +319,12 @@ namespace Tickefy.API.Ticket
                 .ToList();
 
             var command = new CancelTicketCommand
-            {
-                UserId = new UserId(userId),
-                Roles = roles,
-                TicketId = new TicketId(ticketId)
-            };
+            (
+                new UserId(userId),
+                roles,
+                new TicketId(ticketId),
+                request.Reason
+            );
 
             await _mediator.Send(command);
 
