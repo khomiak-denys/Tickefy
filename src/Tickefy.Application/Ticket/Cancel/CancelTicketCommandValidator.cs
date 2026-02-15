@@ -21,7 +21,8 @@ namespace Tickefy.Application.Ticket.Cancel
                 .When(x => x.TicketId != null);
 
             RuleFor(x => x.Reason)
-                .MaximumLength(500);
+                .MaximumLength(500)
+                .NotEmpty();
         }
     }
 }

@@ -260,15 +260,15 @@ namespace Tickefy.API.Ticket
 
         [HttpPut]
         [Authorize(Roles = "Requester, Admin")]
-        [Route("{ticketId}/revise")]
-        [SwaggerOperation(Summary = "Handles request to revise ticket")]
+        [Route("{ticketId}/reopen")]
+        [SwaggerOperation(Summary = "Handles request to reopen ticket")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> ReviseTicketAsync(Guid ticketId)
+        public async Task<IActionResult> ReopenTicketAsync(Guid ticketId)
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
@@ -282,7 +282,7 @@ namespace Tickefy.API.Ticket
                 .Select(c => c.Value)
                 .ToList();
 
-            var command = new ReviseTicketCommand
+            var command = new ReopenTicketCommand
             {
                 UserId = new UserId(userId),
                 Roles = roles,
