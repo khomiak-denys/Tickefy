@@ -37,6 +37,13 @@ namespace Tickefy.Domain.User
         {
             Role = role;
         }
+
+        public void SetTeam(Domain.Team.Team? team)
+        {
+            TeamId = team?.Id ?? null;
+            Team = team;
+            OnModify(); 
+        }
         public void Update(string firstName, string lastName)
         {
             FirstName = firstName;
