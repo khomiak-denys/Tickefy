@@ -1,4 +1,5 @@
-﻿using Tickefy.Domain.Common.Category;
+﻿using Tickefy.Application.Exceptions;
+using Tickefy.Domain.Common.Category;
 using Tickefy.Domain.Common.EntityBase;
 using Tickefy.Domain.Primitives;
 
@@ -34,11 +35,17 @@ namespace Tickefy.Domain.Team
                 return;
 
             Members.Add(user);
+            user.SetTeam(this);
             OnModify();
         }
         public void RemoveMember(Domain.User.User user)
         {
+            if (!Members.Any(m => m.Id == user.Id))
+            {
+                throw new NotFoundException("User not found");
+            }
             Members.Remove(user);
+            user.SetTeam(null);
             OnModify();
         }
 
