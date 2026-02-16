@@ -224,7 +224,7 @@ namespace Tickefy.API.Ticket
 
         [HttpPut]
         [Authorize(Roles = "Agent, Admin")]
-        [Route("{ticketId}/complete")]
+        [Route("{ticketId:guid}/complete")]
         [SwaggerOperation(Summary = "Handles request to complete ticket")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
@@ -260,7 +260,7 @@ namespace Tickefy.API.Ticket
 
         [HttpPut]
         [Authorize(Roles = "Requester, Admin")]
-        [Route("{ticketId}/reopen")]
+        [Route("{ticketId:guid}/reopen")]
         [SwaggerOperation(Summary = "Handles request to reopen ticket")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
@@ -268,7 +268,7 @@ namespace Tickefy.API.Ticket
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> ReopenTicketAsync(Guid ticketId)
+        public async Task<IActionResult> ReopenTicketAsync(Guid ticketId, ReasonForTicketActionRequest request)
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
@@ -286,7 +286,8 @@ namespace Tickefy.API.Ticket
             {
                 UserId = new UserId(userId),
                 Roles = roles,
-                TicketId = new TicketId(ticketId)
+                TicketId = new TicketId(ticketId),
+                Reason =  request.Reason
             };
 
             await _mediator.Send(command);
