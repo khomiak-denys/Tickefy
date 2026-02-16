@@ -40,7 +40,7 @@ namespace Tickefy.Domain.User
 
         public void SetTeam(Domain.Team.Team? team)
         {
-            TeamId = team?.Id ?? null;
+            TeamId = team?.Id;
             Team = team;
             OnModify(); 
         }
