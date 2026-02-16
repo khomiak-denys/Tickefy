@@ -4,6 +4,7 @@ using Tickefy.Application.Exceptions;
 using Tickefy.Application.Ticket.Complete;
 using Tickefy.Domain.ActivityLog;
 using Tickefy.Domain.Common.Event;
+using Tickefy.Domain.Common.UserRole;
 using Tickefy.Domain.Primitives;
 using Tickefy.Domain.Ticket;
 
@@ -48,7 +49,7 @@ public class CompleteTicketHandler
 
         var command = new CompleteTicketCommand {
             UserId = new UserId(), 
-            Roles = ["Requester"], 
+            Roles = [nameof(UserRoles.Requester)], 
             TicketId = new TicketId()
         };
         var func = () => handler.Handle(command, CancellationToken.None);
@@ -78,7 +79,7 @@ public class CompleteTicketHandler
 
         var command = new CompleteTicketCommand {
             UserId = agentId, 
-            Roles = ["Agent"], 
+            Roles = [nameof(UserRoles.Agent)], 
             TicketId = ticketId
         };
         await handler.Handle(command, CancellationToken.None);

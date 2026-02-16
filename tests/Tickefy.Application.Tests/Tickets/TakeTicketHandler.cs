@@ -5,6 +5,7 @@ using Tickefy.Application.Ticket.Cancel;
 using Tickefy.Application.Ticket.Take;
 using Tickefy.Domain.ActivityLog;
 using Tickefy.Domain.Common.Event;
+using Tickefy.Domain.Common.UserRole;
 using Tickefy.Domain.Primitives;
 using Tickefy.Domain.Team;
 using Tickefy.Domain.Ticket;
@@ -53,7 +54,7 @@ public class TakeTicketHandler
         
         var ticketRepository = new Mock<ITicketRepository>();
         ticketRepository.Setup(r => r.GetByIdAsync(It.IsAny<TicketId>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Domain.Ticket.Ticket?)null);
+            .ReturnsAsync(ticket);
 
         var userRepository = new Mock<IUserRepository>();
         var teamRepository = new Mock<ITeamRepository>();
@@ -70,12 +71,12 @@ public class TakeTicketHandler
 
         var command = new TakeTicketCommand {
             UserId = new UserId(), 
-            Roles = new List<string>(), 
+            Roles = [nameof(UserRoles.Requester)], 
             TicketId = new TicketId()
         };
         var func = () => handler.Handle(command, CancellationToken.None);
         
-        await func.Should().ThrowAsync<NotFoundException>();
+        await func.Should().ThrowAsync<ForbiddenException>();
     }
     
 }

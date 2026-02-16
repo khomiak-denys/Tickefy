@@ -5,6 +5,7 @@ using Tickefy.Application.Ticket.Cancel;
 using Tickefy.Application.Ticket.Revise;
 using Tickefy.Domain.ActivityLog;
 using Tickefy.Domain.Common.Event;
+using Tickefy.Domain.Common.UserRole;
 using Tickefy.Domain.Primitives;
 using Tickefy.Domain.Ticket;
 
@@ -36,7 +37,7 @@ public class ReopenTicketHandler
     }
     
     [Fact]
-    public async Task ReopenTicketCommandHandler_Should_Throw_ForBiddenException_On_AgentRole()
+    public async Task ReopenTicketCommandHandler_Should_Throw_ForbiddenException_On_AgentRole()
     {
         var repo = new Mock<ITicketRepository>();
         repo.Setup(r => r.GetByIdAsync(It.IsAny<TicketId>(), It.IsAny<CancellationToken>()))
@@ -49,7 +50,7 @@ public class ReopenTicketHandler
 
         var command = new ReopenTicketCommand {
             UserId = new UserId(), 
-            Roles = ["Agent"], 
+            Roles = [nameof(UserRoles.Agent)], 
             TicketId = new TicketId(), 
             Reason = string.Empty
             
@@ -83,7 +84,7 @@ public class ReopenTicketHandler
 
         var command = new ReopenTicketCommand {
             UserId = userId, 
-            Roles = ["Requester"], 
+            Roles = [nameof(UserRoles.Requester)], 
             TicketId = ticketId, 
             Reason = reason
         };

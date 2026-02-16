@@ -4,6 +4,7 @@ using Tickefy.Application.Exceptions;
 using Tickefy.Application.Ticket.Cancel;
 using Tickefy.Domain.Common.Event;
 using Tickefy.Domain.ActivityLog;
+using Tickefy.Domain.Common.UserRole;
 using Tickefy.Domain.Primitives;
 using Tickefy.Domain.Ticket;
 
@@ -41,7 +42,7 @@ public class CancelTicketHandler
         
         var handler = new CancelTicketCommandHandler(repo.Object, logRepository.Object, uow.Object);
 
-        var command = new CancelTicketCommand(new UserId(), ["Agent"], new TicketId(), string.Empty);
+        var command = new CancelTicketCommand(new UserId(), [nameof(UserRoles.Agent)], new TicketId(), string.Empty);
         var func = () => handler.Handle(command, CancellationToken.None);
         
         await func.Should().ThrowAsync<ForbiddenException>();
@@ -65,7 +66,7 @@ public class CancelTicketHandler
         
         var handler = new CancelTicketCommandHandler(repo.Object, logRepository.Object, uow.Object);
 
-        var command = new CancelTicketCommand(userId, ["Admin"], ticketId, reason);
+        var command = new CancelTicketCommand(userId, [nameof(UserRoles.Admin)], ticketId, reason);
         await handler.Handle(command, CancellationToken.None);
 
         logRepository.Verify(repo => repo.Add(It.Is<Domain.ActivityLog.ActivityLog>(log =>
