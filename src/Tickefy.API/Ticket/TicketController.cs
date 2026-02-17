@@ -13,6 +13,7 @@ using Tickefy.Application.Ticket.GetById;
 using Tickefy.Application.Ticket.GetMy;
 using Tickefy.Application.Ticket.GetQueue;
 using Tickefy.Application.Ticket.Revise;
+using Tickefy.Application.Ticket.StartWork;
 using Tickefy.Application.Ticket.Take;
 using Tickefy.Domain.Primitives;
 
@@ -287,7 +288,7 @@ namespace Tickefy.API.Ticket
                 UserId = new UserId(userId),
                 Roles = roles,
                 TicketId = new TicketId(ticketId),
-                Reason =  request.Reason
+                Reason = request.Reason
             };
 
             await _mediator.Send(command);
@@ -329,6 +330,42 @@ namespace Tickefy.API.Ticket
 
             await _mediator.Send(command);
 
+            return Ok();
+        }
+
+        [HttpPut]
+        [Authorize(Roles = "Agent, Admin")]
+        [Route("{ticketId:guid}/start-work")]
+        [SwaggerOperation(Summary = "Handles request to start work on ticket")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> StartWorkAsync(Guid ticketId)
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+            {
+                return Unauthorized("User ID is missing or invalid");
+            }
+
+            var roles = User.Claims
+                .Where(c => c.Type == ClaimTypes.Role)
+                .Select(c => c.Value)
+                .ToList();
+
+            var command = new StartWorkTicketCommand
+            {
+                UserId = new UserId(userId),
+                Roles = roles,
+                TicketId = new TicketId(ticketId)
+            };
+            
+            await _mediator.Send(command);
+            
             return Ok();
         }
     }
