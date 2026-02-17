@@ -70,13 +70,19 @@ namespace Tickefy.Domain.Ticket
             RequesterId = requesterId;
             Deadline = deadline;
         }
+        
+        
 
-        public void Publish()
+        public void Publish(string title, string description, DateTime deadline)
         {
             if (!GetAvailableActions().Contains(TicketAction.Publish))
             {
                 throw new ForbiddenException("Invalid action");
             }
+            Title = title;
+            Description = description;
+            Deadline = deadline;
+            
             Status = Status.Created;
         }
         

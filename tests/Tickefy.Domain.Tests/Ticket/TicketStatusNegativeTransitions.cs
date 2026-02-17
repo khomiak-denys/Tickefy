@@ -139,7 +139,7 @@ public class TicketStatusNegativeTransitionsTests
             TicketAction.StartWork => () => ticket.StartWork(),
             TicketAction.Accept => () => ticket.Accept(),
             TicketAction.Reopen => () => ticket.Reopen(),
-            TicketAction.Publish => () => ticket.Publish(),
+            TicketAction.Publish => () => ticket.Publish(string.Empty, string.Empty, new DateTime()),
             TicketAction.Complete => () => ticket.Complete(),
             TicketAction.Fail => () => ticket.Fail(),
             _ => throw new ArgumentOutOfRangeException(nameof(action), action, null)

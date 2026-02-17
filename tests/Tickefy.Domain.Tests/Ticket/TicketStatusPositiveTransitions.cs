@@ -8,7 +8,7 @@ public class TicketStatusPositiveTransitionsTests
     public void Status_Should_BeCreated_AfterDraft()
     {
         var ticket = TicketBuilder.New().InDraftState();
-        ticket.Publish();
+        ticket.Publish(string.Empty, string.Empty,  new DateTime());
         ticket.Status.Should().Be(Status.Created);
     }
 
