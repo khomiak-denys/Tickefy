@@ -2,7 +2,9 @@
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Exceptions;
+using Tickefy.Application.Ticket.Common.Helpers;
 using Tickefy.Domain.ActivityLog;
+using Tickefy.Domain.Common.Action;
 using Tickefy.Domain.Common.Status;
 using Tickefy.Domain.Common.UserRole;
 using Tickefy.Domain.Team;
@@ -16,7 +18,7 @@ namespace Tickefy.Application.Ticket.Take
         private readonly ITicketRepository _ticketRepository;
         private readonly IActivityLogRepository _logRepository;
         private readonly ITeamRepository _teamRepository;
-        private readonly IUserRepository _useRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _uow;
 
         public TakeTicketCommandHandler(
@@ -29,7 +31,7 @@ namespace Tickefy.Application.Ticket.Take
             _ticketRepository = ticketRepository;
             _logRepository = logRepository;
             _teamRepository = teamRepository;
-            _useRepository = userRepository;
+            _userRepository = userRepository;
             _uow = uow;
         }
         public async Task<Unit> Handle(TakeTicketCommand command, CancellationToken cancellationToken)
@@ -38,28 +40,27 @@ namespace Tickefy.Application.Ticket.Take
 
             if (ticket == null) throw new NotFoundException(nameof(ticket), command.TicketId);
 
-            if (ticket.Status != Status.Created) throw new ForbiddenException("Ticket already assigned");
+            if (TicketAction.Take.CanExecute(ticket, command.UserId, command.Roles))
+            {
+                var user = await _userRepository.GetByIdAsync(command.UserId);
+                if (user == null) throw new NotFoundException(nameof(user), command.UserId);
+                if (user.TeamId is null) throw new ForbiddenException("You should be in team to take tickets");
+                
+                var team = await _teamRepository.GetByIdAsync(user.TeamId);
+                if (team == null) throw new NotFoundException(nameof(team), user.TeamId);
 
-            var user = await _useRepository.GetByIdAsync(command.UserId);
-            if (user == null) throw new NotFoundException(nameof(user), command.UserId);
-            if (user.TeamId is null) throw new ForbiddenException("You should be in team to take tickets");
+                ticket.Take(user.Id, team.Id);
 
-            var isAgent = command.Roles.Contains(UserRoles.Agent.ToString()) && (ticket.AssignedAgentId is null);
-            if (!isAgent) throw new ForbiddenException("Obtain agent role to take tickets");
+                var log = Domain.ActivityLog.ActivityLog.Create(ticket.Id, user.Id,
+                    Domain.Common.Event.EventType.UserAssigned, "Agent assigned");
+                _logRepository.Add(log);
+                await _uow.SaveChangesAsync(cancellationToken);
+            }
+            else
+            {
+                throw new ForbiddenException("Access denied");
+            }
 
-            
-            
-            var team = await _teamRepository.GetByIdAsync(user.TeamId);
-            if (team == null) throw new NotFoundException(nameof(team), user.TeamId);
-
-            ticket.Take(user.Id, team.Id);
-
-            var log = Domain.ActivityLog.ActivityLog.Create(ticket.Id, user.Id, Domain.Common.Event.EventType.UserAssigned, "Agent assigned");
-            
-            _logRepository.Add(log);
-
-            await _uow.SaveChangesAsync();
-            
             return Unit.Value;
         }
     }

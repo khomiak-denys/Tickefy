@@ -55,14 +55,15 @@ public class GetTicketByIdHandler
         var mapper = new Mock<IMapper>();
 
         var mappedDto = new TicketDetailsResult(
-            Guid.Empty,
-            "", "",
+            Id: Guid.Empty,
+            Title: string.Empty, 
+            Description: string.Empty,
             Requester: default!,         
             AssignedTeam: null,
             AssignedAgent: null,
-            Category: "",
-            Priority: "",
-            Status: "",
+            Category: string.Empty,
+            Priority: string.Empty,
+            Status: string.Empty,
             Created: DateTime.UtcNow,
             Deadline: DateTime.UtcNow,
             Comments: new(),

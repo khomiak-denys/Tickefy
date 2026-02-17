@@ -20,17 +20,16 @@ namespace Tickefy.Application.Ticket.GetById
                 throw new NotFoundException(nameof(ticket), query.TicketId);
             }
 
-            var isAgent = query.Roles.Contains(nameof(UserRoles.Agent));
             var isRequester = ticket.RequesterId == query.UserId;
             var isAdmin = query.Roles.Contains(nameof(UserRoles.Admin));
-            var isAssignedAgent = ticket.AssignedAgentId?.Value == query.UserId.Value && isAgent;
+            var isAssignedAgent = ticket.AssignedAgentId?.Value == query.UserId.Value && query.Roles.Contains(nameof(UserRoles.Agent));
 
             if (!isRequester && !isAdmin && !isAssignedAgent) throw new ForbiddenException("Access denied");
 
             var result = mapper.Map<TicketDetailsResult>(ticket);
 
             result.AvailableActions = ticket.GetAvailableActions()
-                .Where(act => act.CanExecute(ticket, isAdmin, isRequester, isAssignedAgent, isAgent))
+                .Where(act => act.CanExecute(ticket, query.UserId, query.Roles))
                 .Select(act => new TicketActionResult(act.ToString(), act.RequireReason()));
             
             return result;

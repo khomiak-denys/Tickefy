@@ -1,5 +1,7 @@
 using Tickefy.Domain.Common.Action;
 using Tickefy.Domain.Common.Status;
+using Tickefy.Domain.Common.UserRole;
+using Tickefy.Domain.Primitives;
 
 namespace Tickefy.Application.Ticket.Common.Helpers;
 
@@ -30,5 +32,15 @@ public static class ActionHelper
             TicketAction.Fail => isAdmin,
             _ => false
         };
+    }
+    
+    public static bool CanExecute(this TicketAction action, Domain.Ticket.Ticket ticket, UserId userId, IEnumerable<string> roles)
+    {
+        var isAgent = roles.Contains(nameof(UserRoles.Agent));
+        var isRequester = ticket.RequesterId == userId;
+        var isAdmin = roles.Contains(nameof(UserRoles.Admin));
+        var isAssignedAgent = ticket.AssignedAgentId?.Value == userId.Value && isAgent;
+        
+        return action.CanExecute(ticket, isAdmin, isRequester, isAssignedAgent, isAgent);
     }
 }

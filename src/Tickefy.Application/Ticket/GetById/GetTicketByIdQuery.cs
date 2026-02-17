@@ -10,8 +10,10 @@ namespace Tickefy.Application.Ticket.GetById
         public List<string> Roles { get; init; }
         public TicketId TicketId { get; init; }
         
-
-        public GetTicketByIdQuery(UserId userId, List<string> roles, TicketId ticketId)
+        public GetTicketByIdQuery(
+            UserId userId, 
+            List<string> roles, 
+            TicketId ticketId)
         {
             UserId = userId;
             Roles = roles;
