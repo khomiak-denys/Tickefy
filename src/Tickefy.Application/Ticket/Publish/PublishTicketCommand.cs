@@ -1,0 +1,15 @@
+﻿using MediatR;
+using Tickefy.Application.Abstractions.Messaging;
+using Tickefy.Domain.Primitives;
+
+namespace Tickefy.Application.Ticket.Publish;
+
+public class PublishTicketCommand : ICommand<Unit>
+{
+    public UserId UserId { get; init; }
+    public IEnumerable<string> Roles { get; init; }
+    public TicketId TicketId { get; init; }
+    public string Title { get; init; }
+    public string Description { get; init; }
+    public DateTime Deadline { get; init; }
+}

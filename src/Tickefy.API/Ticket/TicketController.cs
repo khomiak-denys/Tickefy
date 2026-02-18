@@ -6,13 +6,16 @@ using Swashbuckle.AspNetCore.Annotations;
 using System.Security.Claims;
 using Tickefy.API.Ticket.Requests;
 using Tickefy.API.Ticket.Responses;
+using Tickefy.Application.Ticket.Accept;
 using Tickefy.Application.Ticket.Cancel;
 using Tickefy.Application.Ticket.Complete;
+using Tickefy.Application.Ticket.Fail;
 using Tickefy.Application.Ticket.GetAll;
 using Tickefy.Application.Ticket.GetById;
 using Tickefy.Application.Ticket.GetMy;
 using Tickefy.Application.Ticket.GetQueue;
 using Tickefy.Application.Ticket.Revise;
+using Tickefy.Application.Ticket.StartWork;
 using Tickefy.Application.Ticket.Take;
 using Tickefy.Domain.Primitives;
 
@@ -34,7 +37,7 @@ namespace Tickefy.API.Ticket
         }
 
         [HttpPost]
-        [Authorize(Roles = "Requester")]
+        [Authorize]
         [SwaggerOperation(Summary = "Handles request to create ticket")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
@@ -55,6 +58,60 @@ namespace Tickefy.API.Ticket
             await _mediator.Send(command);
 
             return Created();
+        }
+        
+        [HttpPost("draft")]
+        [Authorize]
+        [SwaggerOperation(Summary = "Handles request to create draft ticket")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> CreateDraftAsync(CreateDraftTicketRequest request)
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+            {
+                return Unauthorized("User ID is missing or invalid");
+            }
+
+            var command = request.ToCommand(new UserId(userId));
+            await _mediator.Send(command);
+
+            return Created();
+        }
+        
+        [HttpPut]
+        [Authorize]
+        [Route("{ticketId:guid}/publish")]
+        [SwaggerOperation(Summary = "Handles request to publish ticket")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> PublishAsync(Guid ticketId, PublishTicketRequest request)
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+            {
+                return Unauthorized("User ID is missing or invalid");
+            }
+            
+            var roles = User.Claims
+                .Where(c => c.Type == ClaimTypes.Role)
+                .Select(c => c.Value)
+                .ToList();
+
+            var command = request.ToCommand(new UserId(userId), roles, new TicketId(ticketId));
+            await _mediator.Send(command);
+
+            return Ok();
         }
 
         [HttpGet]
@@ -187,7 +244,7 @@ namespace Tickefy.API.Ticket
         }
 
         [HttpPut]
-        [Authorize(Roles = "Agent, Admin")]
+        [Authorize(Roles = "Agent,Admin")]
         [Route("{ticketId}/take")]
         [SwaggerOperation(Summary = "Handles request to complete ticket")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -223,7 +280,7 @@ namespace Tickefy.API.Ticket
         }
 
         [HttpPut]
-        [Authorize(Roles = "Agent, Admin")]
+        [Authorize(Roles = "Agent,Admin")]
         [Route("{ticketId:guid}/complete")]
         [SwaggerOperation(Summary = "Handles request to complete ticket")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -259,7 +316,7 @@ namespace Tickefy.API.Ticket
         }
 
         [HttpPut]
-        [Authorize(Roles = "Requester, Admin")]
+        [Authorize(Roles = "Requester,Admin")]
         [Route("{ticketId:guid}/reopen")]
         [SwaggerOperation(Summary = "Handles request to reopen ticket")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -287,7 +344,7 @@ namespace Tickefy.API.Ticket
                 UserId = new UserId(userId),
                 Roles = roles,
                 TicketId = new TicketId(ticketId),
-                Reason =  request.Reason
+                Reason = request.Reason
             };
 
             await _mediator.Send(command);
@@ -296,7 +353,7 @@ namespace Tickefy.API.Ticket
         }
 
         [HttpPut]
-        [Authorize(Roles = "Requester, Admin")]
+        [Authorize(Roles = "Requester,Admin")]
         [Route("{ticketId:guid}/cancel")]
         [SwaggerOperation(Summary = "Handles request to cancel ticket")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -329,6 +386,115 @@ namespace Tickefy.API.Ticket
 
             await _mediator.Send(command);
 
+            return Ok();
+        }
+        
+        [HttpPut]
+        [Authorize(Roles = "Admin")]
+        [Route("{ticketId:guid}/fail")]
+        [SwaggerOperation(Summary = "Handles request to fail ticket")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> FailTicketAsync(Guid ticketId, ReasonForTicketActionRequest request)
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+            {
+                return Unauthorized("User ID is missing or invalid");
+            }
+
+            var roles = User.Claims
+                .Where(c => c.Type == ClaimTypes.Role)
+                .Select(c => c.Value)
+                .ToList();
+
+            var command = new FailTicketCommand
+                {
+                UserId = new UserId(userId),
+                Roles = roles,
+                TicketId = new TicketId(ticketId),
+                Reason = request.Reason
+            };
+
+            await _mediator.Send(command);
+
+            return Ok();
+        }
+        
+        [HttpPut]
+        [Authorize]
+        [Route("{ticketId:guid}/accept")]
+        [SwaggerOperation(Summary = "Handles request to accept work and finish ticket")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> AcceptAsync(Guid ticketId)
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+            {
+                return Unauthorized("User ID is missing or invalid");
+            }
+
+            var roles = User.Claims
+                .Where(c => c.Type == ClaimTypes.Role)
+                .Select(c => c.Value)
+                .ToList();
+
+            var command = new AcceptTicketCommand
+            {
+                UserId = new UserId(userId),
+                Roles = roles,
+                TicketId = new TicketId(ticketId)
+            };
+            
+            await _mediator.Send(command);
+            
+            return Ok();
+        }
+
+        [HttpPut]
+        [Authorize(Roles = "Agent,Admin")]
+        [Route("{ticketId:guid}/start-work")]
+        [SwaggerOperation(Summary = "Handles request to start work on ticket")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> StartWorkAsync(Guid ticketId)
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+            {
+                return Unauthorized("User ID is missing or invalid");
+            }
+
+            var roles = User.Claims
+                .Where(c => c.Type == ClaimTypes.Role)
+                .Select(c => c.Value)
+                .ToList();
+
+            var command = new StartWorkTicketCommand
+            {
+                UserId = new UserId(userId),
+                Roles = roles,
+                TicketId = new TicketId(ticketId)
+            };
+            
+            await _mediator.Send(command);
+            
             return Ok();
         }
     }
