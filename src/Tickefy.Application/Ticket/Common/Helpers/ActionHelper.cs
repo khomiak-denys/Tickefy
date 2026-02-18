@@ -36,7 +36,7 @@ public static class ActionHelper
     
     public static bool CanExecute(this TicketAction action, Domain.Ticket.Ticket ticket, UserId userId, IEnumerable<string> roles)
     {
-        var roleSet = roles as ISet<string> ?? roles.ToHashSet();
+        var roleSet = roles as ISet<string> ?? roles.ToHashSet(StringComparer.OrdinalIgnoreCase);
         
         var isAgent = roleSet.Contains(nameof(UserRoles.Agent));
         var isRequester = ticket.RequesterId == userId;

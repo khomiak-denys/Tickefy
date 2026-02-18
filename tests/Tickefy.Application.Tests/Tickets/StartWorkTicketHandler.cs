@@ -10,7 +10,7 @@ using Tickefy.Domain.Ticket;
 
 namespace Tickefy.Application.Tests.Tickets;
 
-public class StartWorkTicketHandler
+public class StartWorkTicketHandlerTests
 {
     [Fact]
     public async Task StartWorkTicketCommandHandler_Should_Throw_NotFoundException_On_Null_Ticket()
@@ -36,7 +36,7 @@ public class StartWorkTicketHandler
     }
     
     [Fact]
-    public async Task StartWorkTicketCommandHandler_Should_Throw_ForBiddenException_On_RequesterRole()
+    public async Task StartWorkTicketCommandHandler_Should_Throw_ForbiddenException_On_RequesterRole()
     {
         var repo = new Mock<ITicketRepository>();
         repo.Setup(r => r.GetByIdAsync(It.IsAny<TicketId>(), It.IsAny<CancellationToken>()))
