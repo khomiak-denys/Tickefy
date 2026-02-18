@@ -36,10 +36,12 @@ public static class ActionHelper
     
     public static bool CanExecute(this TicketAction action, Domain.Ticket.Ticket ticket, UserId userId, IEnumerable<string> roles)
     {
-        var isAgent = roles.Contains(nameof(UserRoles.Agent));
+        var roleSet = roles as ISet<string> ?? roles.ToHashSet();
+        
+        var isAgent = roleSet.Contains(nameof(UserRoles.Agent));
         var isRequester = ticket.RequesterId == userId;
-        var isAdmin = roles.Contains(nameof(UserRoles.Admin));
-        var isAssignedAgent = ticket.AssignedAgentId?.Value == userId.Value && isAgent;
+        var isAdmin = roleSet.Contains(nameof(UserRoles.Admin));
+        var isAssignedAgent = ticket.AssignedAgentId == userId && isAgent;
         
         return action.CanExecute(ticket, isAdmin, isRequester, isAssignedAgent, isAgent);
     }
