@@ -6,8 +6,10 @@ using Swashbuckle.AspNetCore.Annotations;
 using System.Security.Claims;
 using Tickefy.API.Ticket.Requests;
 using Tickefy.API.Ticket.Responses;
+using Tickefy.Application.Ticket.Accept;
 using Tickefy.Application.Ticket.Cancel;
 using Tickefy.Application.Ticket.Complete;
+using Tickefy.Application.Ticket.Fail;
 using Tickefy.Application.Ticket.GetAll;
 using Tickefy.Application.Ticket.GetById;
 using Tickefy.Application.Ticket.GetMy;
@@ -412,12 +414,12 @@ namespace Tickefy.API.Ticket
                 .ToList();
 
             var command = new FailTicketCommand
-            (
-                new UserId(userId),
-                roles,
-                new TicketId(ticketId),
-                request.Reason
-            );
+                {
+                UserId = new UserId(userId),
+                Roles = roles,
+                TicketId = new TicketId(ticketId),
+                Reason = request.Reason
+            };
 
             await _mediator.Send(command);
 
