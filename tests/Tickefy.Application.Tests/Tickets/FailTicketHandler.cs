@@ -13,7 +13,7 @@ namespace Tickefy.Application.Tests.Tickets;
 public class FailTicketHandlerTests
 {
     [Fact]
-    public async Task FaillTicketCommandHandler_Should_Throw_NotFoundException_On_Null_Ticket()
+    public async Task FailTicketCommandHandler_Should_Throw_NotFoundException_On_Null_Ticket()
     {
         var repo = new Mock<ITicketRepository>();
         repo.Setup(r => r.GetByIdAsync(It.IsAny<TicketId>(), It.IsAny<CancellationToken>()))
@@ -59,7 +59,7 @@ public class FailTicketHandlerTests
     }
 
     [Fact]
-    public async Task CancelTicketCommandHandler_Should_CancelTicketAndLogReason_WhenConditionAllows()
+    public async Task FailTicketCommandHandler_Should_CancelTicketAndLogReason_WhenConditionAllows()
     {
         var ticket = Domain.Ticket.Ticket.Create(string.Empty, string.Empty, new UserId(), DateTime.UtcNow);
         ticket.Take(new UserId(), new TeamId());

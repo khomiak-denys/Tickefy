@@ -60,7 +60,7 @@ namespace Tickefy.API.Ticket
             return Created();
         }
         
-        [HttpPost]
+        [HttpPost("draft")]
         [Authorize]
         [SwaggerOperation(Summary = "Handles request to create draft ticket")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -244,7 +244,7 @@ namespace Tickefy.API.Ticket
         }
 
         [HttpPut]
-        [Authorize(Roles = "Agent, Admin")]
+        [Authorize(Roles = "Agent,Admin")]
         [Route("{ticketId}/take")]
         [SwaggerOperation(Summary = "Handles request to complete ticket")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -280,7 +280,7 @@ namespace Tickefy.API.Ticket
         }
 
         [HttpPut]
-        [Authorize(Roles = "Agent, Admin")]
+        [Authorize(Roles = "Agent,Admin")]
         [Route("{ticketId:guid}/complete")]
         [SwaggerOperation(Summary = "Handles request to complete ticket")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -316,7 +316,7 @@ namespace Tickefy.API.Ticket
         }
 
         [HttpPut]
-        [Authorize(Roles = "Requester, Admin")]
+        [Authorize(Roles = "Requester,Admin")]
         [Route("{ticketId:guid}/reopen")]
         [SwaggerOperation(Summary = "Handles request to reopen ticket")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -353,7 +353,7 @@ namespace Tickefy.API.Ticket
         }
 
         [HttpPut]
-        [Authorize(Roles = "Requester, Admin")]
+        [Authorize(Roles = "Requester,Admin")]
         [Route("{ticketId:guid}/cancel")]
         [SwaggerOperation(Summary = "Handles request to cancel ticket")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -463,7 +463,7 @@ namespace Tickefy.API.Ticket
         }
 
         [HttpPut]
-        [Authorize(Roles = "Agent, Admin")]
+        [Authorize(Roles = "Agent,Admin")]
         [Route("{ticketId:guid}/start-work")]
         [SwaggerOperation(Summary = "Handles request to start work on ticket")]
         [ProducesResponseType(StatusCodes.Status200OK)]

@@ -15,7 +15,7 @@ using Tickefy.Domain.Ticket;
 
 namespace Tickefy.Application.Tests.Tickets;
 
-public class PublishTicketHandler
+public class PublishTicketHandlerTests
 {
     [Fact]
     public async Task PublishTicketCommandHandler_Should_Throw_NotFoundException_When_Ticket_Is_NotFound()

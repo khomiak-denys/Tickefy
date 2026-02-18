@@ -78,7 +78,7 @@ public class PublishTicketCommandHandler : ICommandHandler<PublishTicketCommand,
         }
         else
         {
-            throw new ForbiddenException("Forbidden.");
+            throw new ForbiddenException("You are not allowed to publish this ticket. Only users with the required permissions (e.g., the ticket owner or users with appropriate roles) can publish a ticket that is in a publishable state.");
         }
         return Unit.Value;
     }
