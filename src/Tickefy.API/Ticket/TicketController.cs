@@ -60,7 +60,7 @@ namespace Tickefy.API.Ticket
         
         [HttpPost]
         [Authorize]
-        [SwaggerOperation(Summary = "Handles request to create ticket")]
+        [SwaggerOperation(Summary = "Handles request to create draft ticket")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
@@ -86,7 +86,7 @@ namespace Tickefy.API.Ticket
         [Authorize]
         [Route("{ticketId:guid}/publish")]
         [SwaggerOperation(Summary = "Handles request to publish ticket")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
