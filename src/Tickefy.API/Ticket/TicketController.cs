@@ -35,7 +35,7 @@ namespace Tickefy.API.Ticket
         }
 
         [HttpPost]
-        [Authorize(Roles = "Requester")]
+        [Authorize]
         [SwaggerOperation(Summary = "Handles request to create ticket")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
@@ -44,6 +44,30 @@ namespace Tickefy.API.Ticket
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateAsync(CreateTicketRequest request)
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+            {
+                return Unauthorized("User ID is missing or invalid");
+            }
+
+            var command = request.ToCommand(new UserId(userId));
+            await _mediator.Send(command);
+
+            return Created();
+        }
+        
+        [HttpPost]
+        [Authorize]
+        [SwaggerOperation(Summary = "Handles request to create ticket")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> CreateDraftAsync(CreateDraftTicketRequest request)
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
