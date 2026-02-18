@@ -1,0 +1,43 @@
+﻿using Moq;
+using Tickefy.Application.Abstractions.Data;
+using Tickefy.Application.Ticket.CreateDraft;
+using Tickefy.Domain.Primitives;
+using Tickefy.Domain.Ticket;
+
+namespace Tickefy.Application.Tests.Tickets;
+
+public class CreateDraftTicketHandlerTests
+{
+    [Fact]
+    public async Task CreateDraftTicketHandler_Should_Successfully_Create_Draft_Ticket()
+    {
+        var userId = new UserId();
+        var title = string.Empty;
+        var description = string.Empty;
+        var deadline = new DateTime(2026, 12, 31);
+        var ticketRepository = new Mock<ITicketRepository>();
+        var unitOfWork = new Mock<IUnitOfWork>();
+        
+        var handler = new CreateDraftTicketCommandHandler(
+            ticketRepository.Object,
+            unitOfWork.Object);
+
+        var command = new CreateDraftTicketCommand
+        {
+            UserId = userId,
+            Title = title,
+            Description = description,
+            Deadline = deadline
+        };
+        
+        await handler.Handle(command, CancellationToken.None);
+        
+        ticketRepository.Verify(repo => repo.Add(It.Is<Domain.Ticket.Ticket>(t =>
+            t.Title == title &&
+            t.Description == description && 
+            t.Deadline == deadline && 
+            t.RequesterId  == userId)));
+        
+        unitOfWork.Verify(uow => uow.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+    }
+}
