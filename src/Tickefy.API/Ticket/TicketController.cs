@@ -57,6 +57,36 @@ namespace Tickefy.API.Ticket
 
             return Created();
         }
+        
+        [HttpPut]
+        [Authorize]
+        [Route("{ticketId:guid}/publish")]
+        [SwaggerOperation(Summary = "Handles request to publish ticket")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> PublishAsync(Guid ticketId, PublishTicketRequest request)
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+            {
+                return Unauthorized("User ID is missing or invalid");
+            }
+            
+            var roles = User.Claims
+                .Where(c => c.Type == ClaimTypes.Role)
+                .Select(c => c.Value)
+                .ToList();
+
+            var command = request.ToCommand(new UserId(userId), roles, new TicketId(ticketId));
+            await _mediator.Send(command);
+
+            return Ok();
+        }
 
         [HttpGet]
         [Authorize]
