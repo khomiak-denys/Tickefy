@@ -386,6 +386,79 @@ namespace Tickefy.API.Ticket
 
             return Ok();
         }
+        
+        [HttpPut]
+        [Authorize(Roles = "Admin")]
+        [Route("{ticketId:guid}/fail")]
+        [SwaggerOperation(Summary = "Handles request to fail ticket")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> FailTicketAsync(Guid ticketId, ReasonForTicketActionRequest request)
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+            {
+                return Unauthorized("User ID is missing or invalid");
+            }
+
+            var roles = User.Claims
+                .Where(c => c.Type == ClaimTypes.Role)
+                .Select(c => c.Value)
+                .ToList();
+
+            var command = new FailTicketCommand
+            (
+                new UserId(userId),
+                roles,
+                new TicketId(ticketId),
+                request.Reason
+            );
+
+            await _mediator.Send(command);
+
+            return Ok();
+        }
+        
+        [HttpPut]
+        [Authorize]
+        [Route("{ticketId:guid}/accept")]
+        [SwaggerOperation(Summary = "Handles request to accept work and finish ticket")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> AcceptAsync(Guid ticketId)
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+            {
+                return Unauthorized("User ID is missing or invalid");
+            }
+
+            var roles = User.Claims
+                .Where(c => c.Type == ClaimTypes.Role)
+                .Select(c => c.Value)
+                .ToList();
+
+            var command = new AcceptTicketCommand
+            {
+                UserId = new UserId(userId),
+                Roles = roles,
+                TicketId = new TicketId(ticketId)
+            };
+            
+            await _mediator.Send(command);
+            
+            return Ok();
+        }
 
         [HttpPut]
         [Authorize(Roles = "Agent, Admin")]
