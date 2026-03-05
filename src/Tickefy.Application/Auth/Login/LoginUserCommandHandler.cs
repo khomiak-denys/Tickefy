@@ -1,12 +1,13 @@
 ﻿using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Abstractions.Services;
-using Tickefy.Application.Auth.Common;
-using Tickefy.Application.Exceptions;
+using Tickefy.Application.Auth.Сommon;
+using Tickefy.Domain.Common.Errors;
+using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.User;
 
 namespace Tickefy.Application.Auth.Login
 {
-    public class LoginUserCommandHandler : ICommandHandler<LoginUserCommand, LoginResult>
+    public class LoginUserCommandHandler : ICommandHandler<LoginUserCommand, Result<LoginResult>>
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _passwordHasher;
@@ -22,17 +23,17 @@ namespace Tickefy.Application.Auth.Login
             _tokenService = tokenService;
         }
 
-        public async Task<LoginResult> Handle(LoginUserCommand command, CancellationToken cancellationToken)
+        public async Task<Result<LoginResult>> Handle(LoginUserCommand command, CancellationToken cancellationToken)
         {
             var existingUser = await _userRepository.GetByLoginAsync(command.Login);
             if (existingUser == null)
             {
-                throw new NotFoundException("User not found");
+                return new NotFoundError("User not found");
             }
 
             if (!_passwordHasher.VerifyPassword(command.Password, existingUser.PasswordHash))
             {
-                throw new InvalidArgumentException("Invalid credentials");
+                return new InvalidArgumentError("Invalid credentials");
             }
 
             var token = await _tokenService.GetToken(existingUser.Id.Value, existingUser.Login, existingUser.Role);

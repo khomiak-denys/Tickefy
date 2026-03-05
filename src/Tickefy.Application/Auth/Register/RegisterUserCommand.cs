@@ -1,8 +1,9 @@
 ﻿using Tickefy.Application.Abstractions.Messaging;
+using Tickefy.Domain.Common.Results;
 
 namespace Tickefy.Application.Auth.Register
 {
-    public class RegisterUserCommand : ICommand<Guid>
+    public class RegisterUserCommand : ICommand<Result<Guid>>
     {
         public string FirstName { get; init; }
         public string LastName { get; init; }
