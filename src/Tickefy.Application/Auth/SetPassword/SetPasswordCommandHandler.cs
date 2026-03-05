@@ -3,11 +3,12 @@ using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Abstractions.Services;
 using Tickefy.Application.Exceptions;
+using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.User;
 
 namespace Tickefy.Application.Auth.SetPassword
 {
-    public class SetPasswordCommandHandler : ICommandHandler<SetPasswordCommand, Unit>
+    public class SetPasswordCommandHandler : ICommandHandler<SetPasswordCommand, Result>
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _passwordHasher;
@@ -22,7 +23,7 @@ namespace Tickefy.Application.Auth.SetPassword
             _uow = uow;
         }
 
-        public async Task<Unit> Handle(SetPasswordCommand command, CancellationToken cancellationToken)
+        public async Task<Result> Handle(SetPasswordCommand command, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetByIdAsync(command.UserId);
             if (user == null) throw new NotFoundException(nameof(user), command.UserId);
@@ -36,7 +37,7 @@ namespace Tickefy.Application.Auth.SetPassword
 
             await _uow.SaveChangesAsync();
             
-            return Unit.Value;
+            return Result.Success();
         }
     }
 }

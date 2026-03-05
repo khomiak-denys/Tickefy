@@ -2,11 +2,12 @@
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Abstractions.Services;
 using Tickefy.Application.Exceptions;
+using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.User;
 
 namespace Tickefy.Application.Auth.Register
 {
-    public class RegisterUserCommandHandler : ICommandHandler<RegisterUserCommand, Guid>
+    public class RegisterUserCommandHandler : ICommandHandler<RegisterUserCommand, Result<Guid>>
     {
         private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _uow;
@@ -21,7 +22,7 @@ namespace Tickefy.Application.Auth.Register
             _uow = uow;
             _passwordHasher = passwordHasher;
         }
-        public async Task<Guid> Handle(RegisterUserCommand command, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(RegisterUserCommand command, CancellationToken cancellationToken)
         {
             var existingUser = await _userRepository.GetByLoginAsync(command.Login);
             if (existingUser != null)

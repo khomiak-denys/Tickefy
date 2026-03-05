@@ -1,10 +1,11 @@
 ﻿using MediatR;
 using Tickefy.Application.Abstractions.Messaging;
+using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.Primitives;
 
 namespace Tickefy.Application.Auth.SetPassword
 {
-    public class SetPasswordCommand : ICommand<Unit>
+    public class SetPasswordCommand : ICommand<Result>
     {
         public UserId UserId { get; init; }
         public string OldPassword { get; init; }
