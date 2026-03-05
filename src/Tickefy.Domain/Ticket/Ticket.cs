@@ -2,7 +2,9 @@
 using Tickefy.Domain.Common.Action;
 using Tickefy.Domain.Common.Category;
 using Tickefy.Domain.Common.EntityBase;
+using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Priority;
+using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.Common.Status;
 using Tickefy.Domain.Primitives;
 
@@ -73,84 +75,91 @@ namespace Tickefy.Domain.Ticket
         
         
 
-        public void Publish(string title, string description, DateTime deadline)
+        public Result Publish(string title, string description, DateTime deadline)
         {
             if (!GetAvailableActions().Contains(TicketAction.Publish))
             {
-                throw new ForbiddenException("Invalid action");
+                return Result.Failure(new ForbiddenError("Invalid action"));
             }
             Title = title;
             Description = description;
             Deadline = deadline;
-            
             Status = Status.Created;
+            return Result.Success();
         }
         
-        public void Take(UserId agentId, TeamId teamId)
+        public Result Take(UserId agentId, TeamId teamId)
         {
             if (!GetAvailableActions().Contains(TicketAction.Take))
             {
-                throw new ForbiddenException("Invalid action");
+                return Result.Failure(new ForbiddenError("Invalid action"));
             }
             AssignedAgentId = agentId;
             AssignedTeamId = teamId;
             Status = Status.Assigned;
+            return Result.Success();
         }
 
-        public void StartWork()
+        public Result StartWork()
         {
             if (!GetAvailableActions().Contains(TicketAction.StartWork))
             {
-                throw new ForbiddenException("Invalid action");
+                return Result.Failure(new ForbiddenError("Invalid action"));
             }
 
             Status = Status.InProgress;
+            return Result.Success();
         }
 
-        public void Complete()
+        public Result Complete()
         {
             if (!GetAvailableActions().Contains(TicketAction.Complete))
             {
-                throw new ForbiddenException("Invalid action");
+                return Result.Failure(new ForbiddenError("Invalid action"));
                 
             }
             Status = Status.Completed;
+            return  Result.Success();
         }
 
-        public void Reopen()
+        public Result Reopen()
         {
             if (!GetAvailableActions().Contains(TicketAction.Reopen))
             {
-                throw new ForbiddenException("Invalid action");
+                return Result.Failure(new ForbiddenError("Invalid action"));
             }
             Status = Status.Reopened;
+            return Result.Success();
         }
 
-        public void Accept()
+        public Result Accept()
         {
             if (!GetAvailableActions().Contains(TicketAction.Accept))
             {
-                throw new ForbiddenException("Invalid action");
+                return Result.Failure(new ForbiddenError("Invalid action"));
             }
             Status = Status.Accepted;
+            return Result.Success();
         }
 
-        public void Fail()
+        public Result Fail()
         {
             if (!GetAvailableActions().Contains(TicketAction.Fail))
             {
-                throw new ForbiddenException("Invalid action");
+                return Result.Failure(new ForbiddenError("Invalid action"));
             }
             Status = Status.Failed;
+            return Result.Success();
         }
 
-        public void Cancel()
+        public Result Cancel()
         {
             if (!GetAvailableActions().Contains(TicketAction.Cancel))
             {
-                throw new ForbiddenException("Invalid action");
+                return Result.Failure(new ForbiddenError("Invalid action"));
             }
             Status = Status.Canceled;
+            return Result.Success();
         }
 
         public IEnumerable<TicketAction> GetAvailableActions()
