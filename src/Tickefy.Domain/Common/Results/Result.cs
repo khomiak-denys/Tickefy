@@ -1,6 +1,6 @@
 ﻿using Tickefy.Domain.Common.Errors;
 
-namespace Tickefy.Domain.Common.Resultor;
+namespace Tickefy.Domain.Common.Results;
 
 public class Result : IResult
 {
