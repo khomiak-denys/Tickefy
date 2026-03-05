@@ -84,9 +84,7 @@ namespace Tickefy.Domain.Ticket
             Title = title;
             Description = description;
             Deadline = deadline;
-            
             Status = Status.Created;
-            
             return Result.Success();
         }
         
@@ -99,7 +97,6 @@ namespace Tickefy.Domain.Ticket
             AssignedAgentId = agentId;
             AssignedTeamId = teamId;
             Status = Status.Assigned;
-            
             return Result.Success();
         }
 
@@ -111,7 +108,6 @@ namespace Tickefy.Domain.Ticket
             }
 
             Status = Status.InProgress;
-            
             return Result.Success();
         }
 
@@ -123,7 +119,6 @@ namespace Tickefy.Domain.Ticket
                 
             }
             Status = Status.Completed;
-            
             return  Result.Success();
         }
 
@@ -134,7 +129,6 @@ namespace Tickefy.Domain.Ticket
                 return Result.Failure(new ForbiddenError("Invalid action"));
             }
             Status = Status.Reopened;
-            
             return Result.Success();
         }
 
@@ -145,7 +139,6 @@ namespace Tickefy.Domain.Ticket
                 return Result.Failure(new ForbiddenError("Invalid action"));
             }
             Status = Status.Accepted;
-            
             return Result.Success();
         }
 
@@ -156,7 +149,6 @@ namespace Tickefy.Domain.Ticket
                 return Result.Failure(new ForbiddenError("Invalid action"));
             }
             Status = Status.Failed;
-            
             return Result.Success();
         }
 
@@ -167,8 +159,7 @@ namespace Tickefy.Domain.Ticket
                 return Result.Failure(new ForbiddenError("Invalid action"));
             }
             Status = Status.Canceled;
-            
-            return  Result.Success();
+            return Result.Success();
         }
 
         public IEnumerable<TicketAction> GetAvailableActions()
