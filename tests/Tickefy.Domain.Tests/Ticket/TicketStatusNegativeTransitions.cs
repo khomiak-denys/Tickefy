@@ -1,4 +1,3 @@
-using Tickefy.Application.Exceptions;
 using Tickefy.Domain.Common.Action;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Results;
@@ -21,10 +20,7 @@ public class TicketStatusNegativeTransitionsTests
         var ticket = TicketBuilder.New().InDraftState();
         var result = Invoke(ticket, action)();
         
-        result.IsSuccess.Should().BeFalse();
-        result.IsFailure.Should().BeTrue();
-        result.Error.Should().BeOfType(typeof(ForbiddenError));
-        result.Error.Message.Should().Be("Invalid action");
+        AssertForbidden(result, "Invalid action");
     }
     
     [Theory]
@@ -39,10 +35,7 @@ public class TicketStatusNegativeTransitionsTests
         var ticket = TicketBuilder.New().InCreatedState();
         var result = Invoke(ticket, action)();
         
-        result.IsSuccess.Should().BeFalse();
-        result.IsFailure.Should().BeTrue();
-        result.Error.Should().BeOfType(typeof(ForbiddenError));
-        result.Error.Message.Should().Be("Invalid action");
+        AssertForbidden(result, "Invalid action");
     }
 
     [Theory]
@@ -57,10 +50,7 @@ public class TicketStatusNegativeTransitionsTests
         var ticket = TicketBuilder.New().InAssignedState();
         var result = Invoke(ticket, action)();
         
-        result.IsSuccess.Should().BeFalse();
-        result.IsFailure.Should().BeTrue();
-        result.Error.Should().BeOfType(typeof(ForbiddenError));
-        result.Error.Message.Should().Be("Invalid action");
+        AssertForbidden(result, "Invalid action");
     }
 
     [Theory]
@@ -74,10 +64,7 @@ public class TicketStatusNegativeTransitionsTests
         var ticket = TicketBuilder.New().InInProgressState();
         var result = Invoke(ticket, action)();
         
-        result.IsSuccess.Should().BeFalse();
-        result.IsFailure.Should().BeTrue();
-        result.Error.Should().BeOfType(typeof(ForbiddenError));
-        result.Error.Message.Should().Be("Invalid action");
+        AssertForbidden(result, "Invalid action");
     }
 
     [Theory]
@@ -92,10 +79,7 @@ public class TicketStatusNegativeTransitionsTests
         var ticket = TicketBuilder.New().InCompletedState();
         var result = Invoke(ticket, action)();
         
-        result.IsSuccess.Should().BeFalse();
-        result.IsFailure.Should().BeTrue();
-        result.Error.Should().BeOfType(typeof(ForbiddenError));
-        result.Error.Message.Should().Be("Invalid action");
+        AssertForbidden(result, "Invalid action");
     }
 
     [Theory]
@@ -111,10 +95,7 @@ public class TicketStatusNegativeTransitionsTests
         var ticket = TicketBuilder.New().InReopenedState();
         var result = Invoke(ticket, action)();
         
-        result.IsSuccess.Should().BeFalse();
-        result.IsFailure.Should().BeTrue();
-        result.Error.Should().BeOfType(typeof(ForbiddenError));
-        result.Error.Message.Should().Be("Invalid action");
+        AssertForbidden(result, "Invalid action");
     }
 
     [Theory]
@@ -131,10 +112,7 @@ public class TicketStatusNegativeTransitionsTests
         var ticket = TicketBuilder.New().InCanceledState();
         var result = Invoke(ticket, action)();
         
-        result.IsSuccess.Should().BeFalse();
-        result.IsFailure.Should().BeTrue();
-        result.Error.Should().BeOfType(typeof(ForbiddenError));
-        result.Error.Message.Should().Be("Invalid action");
+        AssertForbidden(result, "Invalid action");
     }
     
     [Theory]
@@ -151,10 +129,7 @@ public class TicketStatusNegativeTransitionsTests
         var ticket = TicketBuilder.New().InFailedState();
         var result = Invoke(ticket, action)();
         
-        result.IsSuccess.Should().BeFalse();
-        result.IsFailure.Should().BeTrue();
-        result.Error.Should().BeOfType(typeof(ForbiddenError));
-        result.Error.Message.Should().Be("Invalid action");
+        AssertForbidden(result, "Invalid action");
     }
     
     [Theory]
@@ -171,10 +146,15 @@ public class TicketStatusNegativeTransitionsTests
         var ticket = TicketBuilder.New().InAcceptedState();
         var result = Invoke(ticket, action)();
         
+        AssertForbidden(result, "Invalid action");
+    }
+
+    private void AssertForbidden(Result result, string message)
+    {
         result.IsSuccess.Should().BeFalse();
         result.IsFailure.Should().BeTrue();
         result.Error.Should().BeOfType(typeof(ForbiddenError));
-        result.Error.Message.Should().Be("Invalid action");
+        result.Error.Message.Should().Be(message);
     }
 
     private Func<Result> Invoke(Domain.Ticket.Ticket ticket, TicketAction action)
