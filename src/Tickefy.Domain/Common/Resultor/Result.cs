@@ -67,7 +67,4 @@ public class Result<T> : IResult<T>
     {
         return new Result<T>(error);
     }
-    
-    
-    
 }

@@ -2,12 +2,9 @@
 
 namespace Tickefy.Domain.Common.Resultor;
 
-public interface IResult<out T>
+public interface IResult<out T> : IResult
 {
     public T Value { get; }
-    public Error Error { get; }
-    public bool IsSuccess { get; }
-    public bool IsFailure { get; }
 }
 
 public interface IResult
