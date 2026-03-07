@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using Tickefy.API.ErrorHandling;
 using Tickefy.API.Team.Requests;
 using Tickefy.API.Team.Responses;
 using Tickefy.Domain.Primitives;
@@ -43,8 +44,8 @@ namespace Tickefy.API.Team
                 return Unauthorized("User ID is missing or invalid");
 
             var command = request.ToCommand(new UserId(leaderGuid));
-            await _mediator.Send(command);
-            return Created();
+            var result = await _mediator.Send(command);
+            return result.Match(Created(), this.ToActionResult);
         }
 
         [HttpPatch("{teamId}/members")]
@@ -63,8 +64,8 @@ namespace Tickefy.API.Team
 
             var command = request.ToCommand(new TeamId(teamId), new UserId(memberGuid));
 
-            await _mediator.Send(command);
-            return Ok();
+            var result = await _mediator.Send(command);
+            return result.Match(Ok(), this.ToActionResult);
         }
 
         [HttpDelete("{teamId}/members/{memberId}")]
@@ -87,8 +88,8 @@ namespace Tickefy.API.Team
                 new TeamId(teamId)
             );
 
-            await _mediator.Send(command);
-            return NoContent();
+            var result = await _mediator.Send(command);
+            return result.Match(NoContent(), this.ToActionResult);
         }
 
         [HttpDelete("{teamId}")]
@@ -106,8 +107,8 @@ namespace Tickefy.API.Team
                 return Unauthorized("User ID is missing or invalid");
 
             var command = new DeleteTeamCommand(new TeamId(teamId), new UserId(leaderGuid));
-            await _mediator.Send(command);
-            return NoContent();
+            var result = await _mediator.Send(command);
+            return result.Match(NoContent(), this.ToActionResult);
         }
 
         [HttpGet("{teamId}")]
@@ -121,8 +122,9 @@ namespace Tickefy.API.Team
         {
             var query = new GetMyTeamQuery(new TeamId(teamId));
             var result = await _mediator.Send(query);
-            var response = _mapper.Map<TeamDetailResponse>(result);
-            return Ok(response);
+            
+            return result.Match(onSuccess: value => Ok(_mapper.Map<TeamDetailResponse>(value)), 
+                onFailure: this.ToActionResult);
         }
 
         [HttpGet]
@@ -135,8 +137,9 @@ namespace Tickefy.API.Team
         {
             var query = new GetAllTeamsQuery();
             var result = await _mediator.Send(query);
-            var response = _mapper.Map<List<TeamResponse>>(result);
-            return Ok(response);
+            
+            return result.Match(onSuccess: value => Ok(_mapper.Map<TeamDetailResponse>(value)), 
+                onFailure: this.ToActionResult);
         }
 
         [HttpGet("my")]
@@ -154,8 +157,9 @@ namespace Tickefy.API.Team
 
             var query = new GetTeamByUserIdQuery(new UserId(memberGuid));
             var result = await _mediator.Send(query);
-            var response = _mapper.Map<List<TeamResponse>>(result);
-            return Ok(response);
+            
+            return result.Match(onSuccess: value => Ok(_mapper.Map<TeamDetailResponse>(value)), 
+                onFailure: this.ToActionResult);
         }
     }
 }

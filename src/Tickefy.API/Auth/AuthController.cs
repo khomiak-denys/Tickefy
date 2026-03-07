@@ -77,9 +77,9 @@ namespace Tickefy.API.Auth
 
             var command = request.ToCommand(new UserId(userId));
 
-            await _mediator.Send(command);
+            var result = await _mediator.Send(command);
 
-            return Ok();
+            return result.Match(Ok(), this.ToActionResult);
         }
     }
 }
