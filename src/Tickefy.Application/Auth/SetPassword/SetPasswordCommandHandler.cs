@@ -25,11 +25,11 @@ namespace Tickefy.Application.Auth.SetPassword
         public async Task<Result> Handle(SetPasswordCommand command, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetByIdAsync(command.UserId);
-            if (user == null) return new NotFoundError(nameof(user) + " " + command.UserId);
+            if (user == null) return Result.Failure(new NotFoundError(nameof(user) + " " + command.UserId));
 
             if (!_passwordHasher.VerifyPassword(command.OldPassword, user.PasswordHash))
             {
-                return new InvalidArgumentError("Invalid credentials");
+                return Result.Failure(new InvalidArgumentError("Invalid credentials"));
             }
             var passwordHash = _passwordHasher.HashPassword(command.NewPassword);
             user.UpdatePassword(passwordHash);

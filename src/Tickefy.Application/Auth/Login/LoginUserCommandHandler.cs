@@ -28,25 +28,24 @@ namespace Tickefy.Application.Auth.Login
             var existingUser = await _userRepository.GetByLoginAsync(command.Login);
             if (existingUser == null)
             {
-                return new NotFoundError("User not found");
+                return Result<LoginResult>.Failure(new NotFoundError("User not found"));
             }
 
             if (!_passwordHasher.VerifyPassword(command.Password, existingUser.PasswordHash))
             {
-                return new InvalidArgumentError("Invalid credentials");
+                return Result<LoginResult>.Failure(new InvalidArgumentError("Invalid credentials"));
             }
 
             var token = await _tokenService.GetToken(existingUser.Id.Value, existingUser.Login, existingUser.Role);
 
-            return new LoginResult
+            return Result<LoginResult>.Success(new LoginResult
             (
                 existingUser.Id.Value,
                 existingUser.FirstName,
                 existingUser.LastName,
                 existingUser.Login,
                 token
-            );
-            
+            ));
         }
     }
 }
