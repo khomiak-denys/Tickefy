@@ -67,4 +67,9 @@ public class Result<T> : IResult<T>
     {
         return new Result<T>(error);
     }
+
+    public TOut Match<TOut>(Func<T, TOut> onSuccess, Func<Error, TOut> onFailure)
+    {
+        return IsSuccess ? onSuccess(Value) :  onFailure(Error);
+    }
 }
