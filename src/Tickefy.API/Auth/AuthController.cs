@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Tickefy.API.Auth.Requests;
 using Tickefy.API.Auth.Responses;
+using Tickefy.API.ErrorHandling;
 using Tickefy.Domain.Primitives;
 
 namespace Tickefy.API.Auth
@@ -51,10 +52,10 @@ namespace Tickefy.API.Auth
         {
             var command = request.ToCommand();
             var result = await _mediator.Send(command);
-
-            var response = _mapper.Map<LoginResponse>(result);
-
-            return Ok(response);
+            
+            return result.Match(
+                onSuccess: value => Ok(_mapper.Map<LoginResponse>(value)),
+                onFailure: this.ToActionResult);
         }
         
         [Authorize]
