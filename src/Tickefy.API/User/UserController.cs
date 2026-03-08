@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using Tickefy.API.ErrorHandling;
 using Tickefy.API.User.Requests;
 using Tickefy.API.User.Responses;
 using Tickefy.Application.User.Delete;
@@ -36,8 +37,9 @@ namespace Tickefy.API.User
         {
             var query = new GetAllUsersQuery();
             var result = await _mediator.Send(query);
-            var response = _mapper.Map<List<UserResponse>>(result);
-            return Ok(response);
+
+            return result.Match(onSuccess: value => Ok(_mapper.Map<List<UserResponse>>(value)),
+                onFailure: this.ToActionResult);
         }
 
         [HttpGet("{userId}")]
@@ -52,8 +54,8 @@ namespace Tickefy.API.User
         {
             var query = new GetUserByIdQuery(new UserId(userId));
             var result = await _mediator.Send(query);
-            var response = _mapper.Map<UserResponse>(result);
-            return Ok(response);
+            return result.Match(onSuccess: value => Ok(_mapper.Map<List<UserResponse>>(value)),
+                onFailure: this.ToActionResult);
         }
 
         [HttpGet("me")]
@@ -70,8 +72,8 @@ namespace Tickefy.API.User
 
             var query = new GetUserByIdQuery(new UserId(userId));
             var result = await _mediator.Send(query);
-            var response = _mapper.Map<UserResponse>(result);
-            return Ok(response);
+            return result.Match(onSuccess: value => Ok(_mapper.Map<List<UserResponse>>(value)),
+                onFailure: this.ToActionResult);
         }
 
         [HttpDelete("{userId}")]
@@ -85,8 +87,8 @@ namespace Tickefy.API.User
         public async Task<IActionResult> DeleteUserAsync(Guid userId)
         {
             var command = new DeleteUserCommand(new UserId(userId));
-            await _mediator.Send(command);
-            return NoContent();
+            var result = await _mediator.Send(command);
+            return result.Match(NoContent(), this.ToActionResult);
         }
 
         [HttpPatch("{userId}")]
@@ -100,8 +102,8 @@ namespace Tickefy.API.User
         public async Task<IActionResult> SetUserRoleAsync(Guid userId, [FromBody] SetUserRoleRequest request)
         {
             var command = request.ToCommand(new UserId(userId));
-            await _mediator.Send(command);
-            return Ok();
+            var result = await _mediator.Send(command);
+            return result.Match(NoContent(), this.ToActionResult);
         }
 
         [HttpPatch("update-profile")]
@@ -118,8 +120,8 @@ namespace Tickefy.API.User
                 return Unauthorized("User ID is missing or invalid");
 
             var command = request.ToCommand(new UserId(userId));
-            await _mediator.Send(command);
-            return Ok();
+            var result = await _mediator.Send(command);
+            return result.Match(Ok(), this.ToActionResult);
         }
     }
 }
