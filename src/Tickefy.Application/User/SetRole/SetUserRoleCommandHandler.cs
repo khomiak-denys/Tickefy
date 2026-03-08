@@ -2,12 +2,14 @@
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Exceptions;
+using Tickefy.Domain.Common.Errors;
+using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.Common.UserRole;
 using Tickefy.Domain.User;
 
 namespace Tickefy.Application.User.SetRole
 {
-    public class SetUserRoleCommandHandler : ICommandHandler<SetUserRoleCommand, Unit>
+    public class SetUserRoleCommandHandler : ICommandHandler<SetUserRoleCommand, Result>
     {
         private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _uow;
@@ -18,13 +20,12 @@ namespace Tickefy.Application.User.SetRole
             _userRepository = userRepository;
             _uow = uow;
         }
-        public async Task<Unit> Handle(SetUserRoleCommand command, CancellationToken cancellationToken)
+        public async Task<Result> Handle(SetUserRoleCommand command, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetByIdAsync(command.UserId);
-            if (user == null) throw new NotFoundException(nameof(user), command.UserId.ToString());
+            if (user == null) return Result.Failure(new NotFoundError(nameof(user) + " " + command.UserId.ToString()));
 
             UserRoles role;
-
             var result = Enum.TryParse<UserRoles>(command.Role, ignoreCase: true, out role);
 
             if (!result)
@@ -32,13 +33,13 @@ namespace Tickefy.Application.User.SetRole
                 role = UserRoles.Requester;
             }
 
-            if (user.Role == UserRoles.Admin) throw new ForbiddenException("Admin role cant be changed");
+            if (user.Role == UserRoles.Admin) return Result.Failure(new ForbiddenError("Admin role cant be changed"));
             
             user.SetRole(role);
 
-            await _uow.SaveChangesAsync();
+            await _uow.SaveChangesAsync(cancellationToken);
             
-            return Unit.Value;
+            return Result.Success();
         }
     }
 }
