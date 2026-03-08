@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Security.Claims;
+using Tickefy.API.ErrorHandling;
 using Tickefy.API.Ticket.Requests;
 using Tickefy.API.Ticket.Responses;
 using Tickefy.Application.Ticket.Accept;
@@ -55,9 +56,9 @@ namespace Tickefy.API.Ticket
             }
 
             var command = request.ToCommand(new UserId(userId));
-            await _mediator.Send(command);
+            var result = await _mediator.Send(command);
 
-            return Created();
+            return result.Match(Created(), this.ToActionResult);
         }
         
         [HttpPost("draft")]
@@ -79,9 +80,9 @@ namespace Tickefy.API.Ticket
             }
 
             var command = request.ToCommand(new UserId(userId));
-            await _mediator.Send(command);
+            var result = await _mediator.Send(command);
 
-            return Created();
+            return result.Match(Created(), this.ToActionResult);
         }
         
         [HttpPut]
@@ -109,9 +110,9 @@ namespace Tickefy.API.Ticket
                 .ToList();
 
             var command = request.ToCommand(new UserId(userId), roles, new TicketId(ticketId));
-            await _mediator.Send(command);
+            var result = await _mediator.Send(command);
 
-            return Ok();
+            return result.Match(Ok(), this.ToActionResult);
         }
 
         [HttpGet]
@@ -135,10 +136,9 @@ namespace Tickefy.API.Ticket
             var query = new GetMyTicketsQuery(new UserId(userId));
 
             var result = await _mediator.Send(query);
-
-            var response = _mapper.Map<List<TicketResponse>>(result);
-
-            return Ok(response);
+            
+            return result.Match(onSuccess: value => Ok(_mapper.Map<List<TicketResponse>>(value)), 
+                onFailure: this.ToActionResult);
         }
 
         [HttpGet]
@@ -168,9 +168,8 @@ namespace Tickefy.API.Ticket
             var query = new GetTicketByIdQuery(new UserId(userId), roles, new TicketId(TicketId));
             var result = await _mediator.Send(query);
             
-            var response = _mapper.Map<TicketDetailsResponse>(result);
-            
-            return Ok(response);
+            return result.Match(onSuccess: value => Ok(_mapper.Map<TicketDetailsResponse>(value)), 
+                onFailure: this.ToActionResult);
         }
 
         [HttpGet]
@@ -186,9 +185,9 @@ namespace Tickefy.API.Ticket
         {
             var query = new GetAllTicketsQuery();
             var result = await _mediator.Send(query);
-
-            var response = _mapper.Map<List<TicketResponse>>(result);
-            return Ok(response);
+            
+            return result.Match(onSuccess: value => Ok(_mapper.Map<List<TicketResponse>>(value)), 
+                onFailure: this.ToActionResult);
         }
 
         [HttpGet]
@@ -213,9 +212,9 @@ namespace Tickefy.API.Ticket
 
             var query = new GetQueueTicketsQuery(new UserId(userId));
             var result = await _mediator.Send(query);
-
-            var response = _mapper.Map<List<TicketResponse>>(result);
-            return Ok(response);
+            
+            return result.Match(onSuccess: value => Ok(_mapper.Map<List<TicketResponse>>(value)), 
+                onFailure: this.ToActionResult);
         }
 
         [HttpPost]
@@ -239,8 +238,8 @@ namespace Tickefy.API.Ticket
 
             var command = request.ToCommand(new UserId(userId), new TicketId(ticketId));
 
-            await _mediator.Send(command);
-            return Created();
+            var result = await _mediator.Send(command);
+            return result.Match(Created(), this.ToActionResult);
         }
 
         [HttpPut]
@@ -274,9 +273,9 @@ namespace Tickefy.API.Ticket
                 TicketId = new TicketId(ticketId)
             };
 
-            await _mediator.Send(command);
+            var result = await _mediator.Send(command);
 
-            return Ok();
+            return result.Match(Ok(), this.ToActionResult);
         }
 
         [HttpPut]
@@ -310,9 +309,9 @@ namespace Tickefy.API.Ticket
                 TicketId = new TicketId(ticketId)
             };
 
-            await _mediator.Send(command);
+            var result = await _mediator.Send(command);
 
-            return Ok();
+            return result.Match(Ok(), this.ToActionResult);
         }
 
         [HttpPut]
@@ -347,9 +346,9 @@ namespace Tickefy.API.Ticket
                 Reason = request.Reason
             };
 
-            await _mediator.Send(command);
+            var result = await _mediator.Send(command);
 
-            return Ok();
+            return result.Match(Ok(), this.ToActionResult);
         }
 
         [HttpPut]
@@ -384,9 +383,9 @@ namespace Tickefy.API.Ticket
                 request.Reason
             );
 
-            await _mediator.Send(command);
+            var result = await _mediator.Send(command);
 
-            return Ok();
+            return result.Match(Ok(), this.ToActionResult);
         }
         
         [HttpPut]
@@ -420,10 +419,10 @@ namespace Tickefy.API.Ticket
                 TicketId = new TicketId(ticketId),
                 Reason = request.Reason
             };
+            
+            var result = await _mediator.Send(command);
 
-            await _mediator.Send(command);
-
-            return Ok();
+            return result.Match(Ok(), this.ToActionResult);
         }
         
         [HttpPut]
@@ -457,9 +456,9 @@ namespace Tickefy.API.Ticket
                 TicketId = new TicketId(ticketId)
             };
             
-            await _mediator.Send(command);
+            var result = await _mediator.Send(command);
             
-            return Ok();
+            return result.Match(Ok(), this.ToActionResult);
         }
 
         [HttpPut]
@@ -493,9 +492,9 @@ namespace Tickefy.API.Ticket
                 TicketId = new TicketId(ticketId)
             };
             
-            await _mediator.Send(command);
+            var result = await _mediator.Send(command);
             
-            return Ok();
+            return result.Match(Ok(), this.ToActionResult);
         }
     }
 }

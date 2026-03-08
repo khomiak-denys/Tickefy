@@ -1,10 +1,10 @@
-﻿using MediatR;
 using Tickefy.Application.Abstractions.Messaging;
+using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.Primitives;
 
 namespace Tickefy.Application.Ticket.Publish;
 
-public class PublishTicketCommand : ICommand<Unit>
+public class PublishTicketCommand : ICommand<Result>
 {
     public UserId UserId { get; init; }
     public IEnumerable<string> Roles { get; init; }

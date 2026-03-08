@@ -1,16 +1,16 @@
-using MediatR;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
-using Tickefy.Application.Exceptions;
 using Tickefy.Application.Ticket.Common.Helpers;
 using Tickefy.Domain.ActivityLog;
 using Tickefy.Domain.Common.Action;
+using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Event;
+using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.Ticket;
 
 namespace Tickefy.Application.Ticket.Accept;
 
-public class AcceptTicketCommandHandler : ICommandHandler<AcceptTicketCommand, Unit>
+public class AcceptTicketCommandHandler : ICommandHandler<AcceptTicketCommand, Result>
 {
     private readonly ITicketRepository _ticketRepository;
     private readonly IActivityLogRepository _logRepository;
@@ -25,11 +25,11 @@ public class AcceptTicketCommandHandler : ICommandHandler<AcceptTicketCommand, U
         _logRepository = logRepository;
         _uow = uow;
     }
-    public async Task<Unit> Handle(AcceptTicketCommand command, CancellationToken cancellationToken)
+    public async Task<Result> Handle(AcceptTicketCommand command, CancellationToken cancellationToken)
     {
         var ticket = await _ticketRepository.GetByIdAsync(command.TicketId, cancellationToken);
 
-        if (ticket == null) throw new NotFoundException(nameof(ticket), command.TicketId);
+        if (ticket == null) return Result.Failure(new NotFoundError(nameof(ticket)+ " " + command.TicketId));
             
         if (TicketAction.Accept.CanExecute(ticket, command.UserId, command.Roles))
         {
@@ -41,8 +41,8 @@ public class AcceptTicketCommandHandler : ICommandHandler<AcceptTicketCommand, U
         }
         else
         {
-            throw new ForbiddenException("Only requester can accept tickets");
+            return Result.Failure(new ForbiddenError("Only requester can accept tickets"));
         }
-        return Unit.Value;
+        return Result.Success();
     }
 }

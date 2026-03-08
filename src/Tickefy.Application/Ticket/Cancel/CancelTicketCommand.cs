@@ -1,11 +1,10 @@
-﻿using MediatR;
-using Tickefy.Application.Abstractions.Messaging;
-using Tickefy.Domain.Common.UserRole;
+﻿using Tickefy.Application.Abstractions.Messaging;
+using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.Primitives;
 
 namespace Tickefy.Application.Ticket.Cancel
 {
-    public class CancelTicketCommand : ICommand<Unit>
+    public class CancelTicketCommand : ICommand<Result>
     {
         public UserId UserId { get; init; }
         public IEnumerable<string> Roles { get; init; }

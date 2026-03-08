@@ -1,10 +1,11 @@
 ﻿using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Ticket.Common;
+using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.Primitives;
 
 namespace Tickefy.Application.Ticket.GetById
 {
-    public class GetTicketByIdQuery : IQuery<TicketDetailsResult>
+    public class GetTicketByIdQuery : IQuery<Result<TicketDetailsResult>>
     {
         public UserId UserId { get; init; }
         public List<string> Roles { get; init; }
