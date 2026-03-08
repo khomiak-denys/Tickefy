@@ -1,14 +1,14 @@
-﻿using MediatR;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
-using Tickefy.Application.Exceptions;
 using Tickefy.Domain.ActivityLog;
+using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Event;
+using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.Ticket;
 
 namespace Tickefy.Application.Ticket.PostComment
 {
-    public class PostCommentCommandHandler : ICommandHandler<PostCommentCommand, Unit>
+    public class PostCommentCommandHandler : ICommandHandler<PostCommentCommand, Result>
     {
         private readonly IUnitOfWork _uow;
         private readonly ITicketRepository _ticketRepository;
@@ -23,18 +23,19 @@ namespace Tickefy.Application.Ticket.PostComment
             _ticketRepository = ticketRepository;
             _logRepository = logRepository;
         }
-        public async Task<Unit> Handle(PostCommentCommand command, CancellationToken cancellationToken)
+
+        public async Task<Result> Handle(PostCommentCommand command, CancellationToken cancellationToken)
         {
             var ticket = await _ticketRepository.GetByIdAsync(command.TicketId, cancellationToken);
 
             if (ticket == null)
             {
-                throw new NotFoundException(nameof(ticket), command.TicketId);
+                return Result.Failure(new NotFoundError(nameof(ticket) + " " + command.TicketId));
             }
 
             if (ticket.RequesterId.Value != command.UserId.Value && ticket.AssignedAgentId?.Value != command.UserId.Value)
             {
-                throw new InvalidArgumentException(nameof(command.UserId.Value));
+                return Result.Failure(new InvalidArgumentError(nameof(command.UserId.Value)));
             }
 
             var comment = Domain.Comment.Comment.Create(command.UserId, command.TicketId, command.Content);
@@ -44,9 +45,9 @@ namespace Tickefy.Application.Ticket.PostComment
             var log = Domain.ActivityLog.ActivityLog.Create(ticket.Id, command.UserId, EventType.CommentAdded, "User added comment");
             _logRepository.Add(log);
 
-            await _uow.SaveChangesAsync();
-            
-            return Unit.Value;
+            await _uow.SaveChangesAsync(cancellationToken);
+
+            return Result.Success();
         }
     }
 }

@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Ticket.Common;
+using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.Ticket;
 
 namespace Tickefy.Application.Ticket.GetAll
 {
-    public class GetAllTicketsQueryHandler : IQueryHandler<GetAllTicketsQuery, List<TicketResult>>
+    public class GetAllTicketsQueryHandler : IQueryHandler<GetAllTicketsQuery, Result<List<TicketResult>>>
     {
         private readonly ITicketRepository _ticketRepository;
         private readonly IMapper _mapper;
@@ -17,12 +18,12 @@ namespace Tickefy.Application.Ticket.GetAll
             _ticketRepository = ticketRepository;
             _mapper = mapper;
         }
-        public async Task<List<TicketResult>> Handle(GetAllTicketsQuery request, CancellationToken cancellationToken)
+        public async Task<Result<List<TicketResult>>> Handle(GetAllTicketsQuery request, CancellationToken cancellationToken)
         {
             var tickets = await _ticketRepository.GetAll(); 
             var result = _mapper.Map<List<TicketResult>>(tickets);
 
-            return result;
+            return Result<List<TicketResult>>.Success(result);
         }
     }
 }

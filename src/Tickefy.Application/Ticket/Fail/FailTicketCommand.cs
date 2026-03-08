@@ -1,10 +1,11 @@
 using MediatR;
 using Tickefy.Application.Abstractions.Messaging;
+using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.Primitives;
 
 namespace Tickefy.Application.Ticket.Fail;
 
-public class FailTicketCommand : ICommand<Unit>
+public class FailTicketCommand : ICommand<Result>
 {
     public UserId UserId { get; init; }
     public IEnumerable<string> Roles { get; init; }

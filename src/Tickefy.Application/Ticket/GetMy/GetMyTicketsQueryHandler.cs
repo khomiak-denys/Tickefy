@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
-using MediatR;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Ticket.Common;
+using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.Ticket;
 
 namespace Tickefy.Application.Ticket.GetMy
 {
-    public class GetMyTicketsQueryHandler : IQueryHandler<GetMyTicketsQuery, List<TicketResult>>
+    public class GetMyTicketsQueryHandler : IQueryHandler<GetMyTicketsQuery, Result<List<TicketResult>>>
     {
         private readonly ITicketRepository _ticketRepository;
         private readonly IMapper _mapper;
@@ -19,12 +19,12 @@ namespace Tickefy.Application.Ticket.GetMy
             _mapper = mapper;
         }
 
-        public async Task<List<TicketResult>> Handle(GetMyTicketsQuery request, CancellationToken cancellationToken)
+        public async Task<Result<List<TicketResult>>> Handle(GetMyTicketsQuery request, CancellationToken cancellationToken)
         {
             var tickets = await _ticketRepository.GetByUserId(request.UserId);
             var result = _mapper.Map<List<TicketResult>>(tickets);
 
-            return result;
+            return Result<List<TicketResult>>.Success(result);
         }
     }
 }

@@ -1,18 +1,16 @@
-﻿using MediatR;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
-using Tickefy.Application.Exceptions;
 using Tickefy.Application.Ticket.Common.Helpers;
 using Tickefy.Domain.ActivityLog;
 using Tickefy.Domain.Common.Action;
+using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Event;
-using Tickefy.Domain.Common.Status;
-using Tickefy.Domain.Common.UserRole;
+using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.Ticket;
 
 namespace Tickefy.Application.Ticket.Revise
 {
-    public class ReopenTicketCommandHandler : ICommandHandler<ReopenTicketCommand, Unit>
+    public class ReopenTicketCommandHandler : ICommandHandler<ReopenTicketCommand, Result>
     {
         private readonly ITicketRepository _ticketRepository;
         private readonly IActivityLogRepository _logRepository;
@@ -27,25 +25,31 @@ namespace Tickefy.Application.Ticket.Revise
             _logRepository = logRepository;
             _uow = uow;
         }
-        public async Task<Unit> Handle(ReopenTicketCommand command, CancellationToken cancellationToken)
+
+        public async Task<Result> Handle(ReopenTicketCommand command, CancellationToken cancellationToken)
         {
             var ticket = await _ticketRepository.GetByIdAsync(command.TicketId, cancellationToken);
 
-            if (ticket == null) throw new NotFoundException(nameof(ticket), command.TicketId);
-            
-            if (TicketAction.Reopen.CanExecute(ticket, command.UserId, command.Roles))
+            if (ticket == null)
             {
-                ticket.Reopen();
-                var log = Domain.ActivityLog.ActivityLog.Create(ticket.Id, command.UserId, EventType.StatusChanged,
-                    $"Ticket reopened.Reason: {command.Reason}");
-                _logRepository.Add(log);
-                await _uow.SaveChangesAsync(cancellationToken);
+                return Result.Failure(new NotFoundError(nameof(ticket) + " " + command.TicketId));
             }
-            else
+
+            if (!TicketAction.Reopen.CanExecute(ticket, command.UserId, command.Roles))
             {
-                throw new ForbiddenException("Only admin or requester agent can revise tickets");
+                return Result.Failure(new ForbiddenError("Only admin or requester agent can revise tickets"));
             }
-            return Unit.Value;
+
+            ticket.Reopen();
+            var log = Domain.ActivityLog.ActivityLog.Create(
+                ticket.Id,
+                command.UserId,
+                EventType.StatusChanged,
+                $"Ticket reopened.Reason: {command.Reason}");
+            _logRepository.Add(log);
+            await _uow.SaveChangesAsync(cancellationToken);
+
+            return Result.Success();
         }
     }
 }
