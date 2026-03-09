@@ -1,5 +1,4 @@
-﻿using Tickefy.Application.Exceptions;
-using Tickefy.Domain.Common.Category;
+﻿using Tickefy.Domain.Common.Category;
 using Tickefy.Domain.Common.EntityBase;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Results;
