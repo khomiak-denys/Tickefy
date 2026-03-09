@@ -26,7 +26,7 @@ namespace Tickefy.Application.Team.Delete
         public async Task<Result> Handle(DeleteTeamCommand command, CancellationToken cancellationToken)
         {
             var team = await _teamRepository.GetByIdAsync(command.TeamId);
-            if (team == null) throw new NotFoundException(nameof(team), command.TeamId);
+            if (team == null) return Result.Failure(new NotFoundError(nameof(team) + " " + command.TeamId));
 
             if (team.ManagerId != command.ManagerId) return Result.Failure(new ForbiddenError("Not a manager role to delete team"));
 
