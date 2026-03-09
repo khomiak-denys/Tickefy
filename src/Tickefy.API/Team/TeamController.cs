@@ -137,7 +137,7 @@ namespace Tickefy.API.Team
             var query = new GetAllTeamsQuery();
             var result = await _mediator.Send(query);
             
-            return result.Match(onSuccess: value => Ok(_mapper.Map<TeamDetailResponse>(value)), 
+            return result.Match(onSuccess: value => Ok(_mapper.Map<List<TeamResponse>>(value)), 
                 onFailure: this.ToActionResult);
         }
 

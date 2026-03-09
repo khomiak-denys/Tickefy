@@ -54,7 +54,7 @@ namespace Tickefy.API.User
         {
             var query = new GetUserByIdQuery(new UserId(userId));
             var result = await _mediator.Send(query);
-            return result.Match(onSuccess: value => Ok(_mapper.Map<List<UserResponse>>(value)),
+            return result.Match(onSuccess: value => Ok(_mapper.Map<UserResponse>(value)),
                 onFailure: this.ToActionResult);
         }
 
