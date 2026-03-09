@@ -1,9 +1,9 @@
 using Moq;
 using Tickefy.Application.Abstractions.Data;
-using Tickefy.Application.Exceptions;
 using Tickefy.Application.Ticket.Cancel;
-using Tickefy.Domain.Common.Event;
 using Tickefy.Domain.ActivityLog;
+using Tickefy.Domain.Common.Errors;
+using Tickefy.Domain.Common.Event;
 using Tickefy.Domain.Common.UserRole;
 using Tickefy.Domain.Primitives;
 using Tickefy.Domain.Ticket;
@@ -13,7 +13,7 @@ namespace Tickefy.Application.Tests.Tickets;
 public class CancelTicketHandler
 {
     [Fact]
-    public async Task CancelTicketCommandHandler_Should_Throw_NotFoundException_On_Null_Ticket()
+    public async Task CancelTicketCommandHandler_Should_Return_NotFoundError_On_Null_Ticket()
     {
         var repo = new Mock<ITicketRepository>();
         repo.Setup(r => r.GetByIdAsync(It.IsAny<TicketId>(), It.IsAny<CancellationToken>()))
@@ -25,13 +25,14 @@ public class CancelTicketHandler
         var handler = new CancelTicketCommandHandler(repo.Object, logRepository.Object, uow.Object);
 
         var command = new CancelTicketCommand(new UserId(), new List<string>(), new TicketId(), string.Empty);
-        var func = () => handler.Handle(command, CancellationToken.None);
-        
-        await func.Should().ThrowAsync<NotFoundException>();
+        var result = await handler.Handle(command, CancellationToken.None);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Should().BeOfType<NotFoundError>();
     }
     
     [Fact]
-    public async Task CancelTicketCommandHandler_Should_Throw_ForBiddenException_On_AgentRole()
+    public async Task CancelTicketCommandHandler_Should_Return_ForbiddenError_On_AgentRole()
     {
         var repo = new Mock<ITicketRepository>();
         repo.Setup(r => r.GetByIdAsync(It.IsAny<TicketId>(), It.IsAny<CancellationToken>()))
@@ -43,9 +44,10 @@ public class CancelTicketHandler
         var handler = new CancelTicketCommandHandler(repo.Object, logRepository.Object, uow.Object);
 
         var command = new CancelTicketCommand(new UserId(), [nameof(UserRoles.Agent)], new TicketId(), string.Empty);
-        var func = () => handler.Handle(command, CancellationToken.None);
-        
-        await func.Should().ThrowAsync<ForbiddenException>();
+        var result = await handler.Handle(command, CancellationToken.None);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Should().BeOfType<ForbiddenError>();
     }
 
     [Fact]
@@ -67,7 +69,9 @@ public class CancelTicketHandler
         var handler = new CancelTicketCommandHandler(repo.Object, logRepository.Object, uow.Object);
 
         var command = new CancelTicketCommand(userId, [nameof(UserRoles.Admin)], ticketId, reason);
-        await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, CancellationToken.None);
+
+        result.IsSuccess.Should().BeTrue();
 
         logRepository.Verify(repo => repo.Add(It.Is<Domain.ActivityLog.ActivityLog>(log =>
             log.UserId == userId &&
