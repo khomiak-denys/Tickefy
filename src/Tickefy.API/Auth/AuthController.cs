@@ -38,8 +38,10 @@ namespace Tickefy.API.Auth
         public async Task<IActionResult> Register([FromBody] RegisterUserRequest request)
         {
             var command = request.ToCommand();
-            await _mediator.Send(command);
-            return Created();
+            var result = await _mediator.Send(command);
+            return result.Match(
+                onSuccess: _ => Created(),
+                onFailure: this.ToActionResult);
         }
         
         [AllowAnonymous]
