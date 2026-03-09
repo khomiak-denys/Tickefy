@@ -8,7 +8,6 @@ using Tickefy.API.Team.Requests;
 using Tickefy.API.Team.Responses;
 using Tickefy.Domain.Primitives;
 using Tickefy.Application.Team.Delete;
-using Tickefy.Application.Team.AddMember;
 using Tickefy.Application.Team.RemoveMember;
 using Tickefy.Application.Team.GetById;
 using Tickefy.Application.Team.GetAll;
@@ -158,7 +157,7 @@ namespace Tickefy.API.Team
             var query = new GetTeamByUserIdQuery(new UserId(memberGuid));
             var result = await _mediator.Send(query);
             
-            return result.Match(onSuccess: value => Ok(_mapper.Map<TeamDetailResponse>(value)), 
+            return result.Match(onSuccess: value => Ok(_mapper.Map<List<TeamResponse>>(value)), 
                 onFailure: this.ToActionResult);
         }
     }
