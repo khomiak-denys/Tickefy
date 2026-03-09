@@ -1,10 +1,11 @@
 ﻿using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Team.Common;
+using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.Primitives;
 
 namespace Tickefy.Application.Team.GetById
 {
-    public class GetMyTeamQuery : IQuery<TeamDetailsResult>
+    public class GetMyTeamQuery : IQuery<Result<TeamDetailsResult>>
     {
         public TeamId TeamId { get; init; }
 

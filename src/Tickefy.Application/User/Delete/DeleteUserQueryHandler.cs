@@ -1,12 +1,12 @@
-﻿using MediatR;
-using Tickefy.Application.Abstractions.Data;
+﻿using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
-using Tickefy.Application.Exceptions;
+using Tickefy.Domain.Common.Errors;
+using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.User;
 
 namespace Tickefy.Application.User.Delete
 {
-    public class DeleteUserCommandHandler : ICommandHandler<DeleteUserCommand, Unit>
+    public class DeleteUserCommandHandler : ICommandHandler<DeleteUserCommand, Result>
     {
         private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _uow;
@@ -18,16 +18,16 @@ namespace Tickefy.Application.User.Delete
             _userRepository = userRepository;
             _uow = uow;
         }
-        public async Task<Unit> Handle(DeleteUserCommand command, CancellationToken cancellationToken)
+        public async Task<Result> Handle(DeleteUserCommand command, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetByIdAsync(command.UserId);
-            if (user == null) throw new NotFoundException(nameof(user), command.UserId.ToString());
+            if (user == null) return Result.Failure(new NotFoundError(nameof(user) + " " + command.UserId.ToString()));
 
             _userRepository.Delete(user);
 
-            await _uow.SaveChangesAsync();
+            await _uow.SaveChangesAsync(cancellationToken);
             
-            return Unit.Value;
+            return Result.Success();
         }
     }
 }

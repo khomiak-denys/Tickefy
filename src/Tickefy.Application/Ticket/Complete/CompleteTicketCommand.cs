@@ -1,10 +1,10 @@
-﻿using MediatR;
-using Tickefy.Application.Abstractions.Messaging;
+﻿using Tickefy.Application.Abstractions.Messaging;
+using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.Primitives;
 
 namespace Tickefy.Application.Ticket.Complete
 {
-    public class CompleteTicketCommand : ICommand<Unit>
+    public class CompleteTicketCommand : ICommand<Result>
     {
         public UserId UserId {  get; init; }
         public List<string> Roles { get; init; }

@@ -1,16 +1,16 @@
-﻿using MediatR;
-using Tickefy.Application.Abstractions.Data;
+﻿using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
-using Tickefy.Application.Exceptions;
 using Tickefy.Application.Ticket.Common.Helpers;
 using Tickefy.Domain.ActivityLog;
 using Tickefy.Domain.Common.Action;
+using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Event;
+using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.Ticket;
 
 namespace Tickefy.Application.Ticket.Cancel
 {
-    public class CancelTicketCommandHandler : ICommandHandler<CancelTicketCommand, Unit>
+    public class CancelTicketCommandHandler : ICommandHandler<CancelTicketCommand, Result>
     {
         private readonly ITicketRepository _ticketRepository;
         private readonly IActivityLogRepository _logRepository;
@@ -25,11 +25,11 @@ namespace Tickefy.Application.Ticket.Cancel
             _logRepository = logRepository;
             _uow = uow;
         }
-        public async Task<Unit> Handle(CancelTicketCommand command, CancellationToken cancellationToken)
+        public async Task<Result> Handle(CancelTicketCommand command, CancellationToken cancellationToken)
         {
             var ticket = await _ticketRepository.GetByIdAsync(command.TicketId, cancellationToken);
 
-            if (ticket == null) throw new NotFoundException(nameof(ticket), command.TicketId);
+            if (ticket == null) return Result.Failure(new NotFoundError(nameof(ticket) + " " +  command.TicketId));
 
             if (TicketAction.Cancel.CanExecute(ticket, command.UserId, command.Roles))
             {
@@ -40,10 +40,10 @@ namespace Tickefy.Application.Ticket.Cancel
             }
             else
             {
-                throw new ForbiddenException("Only admin or requester can cancel tickets");
+                return Result.Failure(new ForbiddenError("Only admin or requester can cancel tickets"));
             }
 
-            return Unit.Value;
+            return Result.Success();
         }
     }
 }

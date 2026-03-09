@@ -1,11 +1,11 @@
-﻿using MediatR;
-using Tickefy.Application.Abstractions.Messaging;
+﻿using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Domain.Common.Category;
+using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.Primitives;
 
 namespace Tickefy.Application.Team.Create
 {
-    public class CreateTeamCommand : ICommand<Unit>
+    public class CreateTeamCommand : ICommand<Result>
     {
         public UserId UserId { get; init; }
         public string Name { get; init; }

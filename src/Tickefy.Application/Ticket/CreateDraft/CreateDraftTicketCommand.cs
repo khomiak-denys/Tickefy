@@ -1,10 +1,10 @@
-﻿using MediatR;
-using Tickefy.Application.Abstractions.Messaging;
+﻿using Tickefy.Application.Abstractions.Messaging;
+using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.Primitives;
 
 namespace Tickefy.Application.Ticket.CreateDraft;
 
-public class CreateDraftTicketCommand : ICommand<Unit>
+public class CreateDraftTicketCommand : ICommand<Result>
 {
     public UserId UserId { get; init; }
     public string? Title { get; init; }

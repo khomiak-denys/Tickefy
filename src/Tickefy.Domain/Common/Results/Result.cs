@@ -29,11 +29,6 @@ public class Result : IResult
     {
         return new Result(error);
     }
-
-    public static implicit operator Result(Error error)
-    {
-        return new Result(error);   
-    }
 }
 
 public class Result<T> : IResult<T>
@@ -57,14 +52,19 @@ public class Result<T> : IResult<T>
         Error = error;
         Value = default(T)!;
     }
-
-    public static implicit operator Result<T>(T value)
+    
+    public static Result<T> Success(T value)
     {
         return new Result<T>(value);
     }
 
-    public static implicit operator Result<T>(Error error)
+    public static Result<T> Failure(Error error)
     {
         return new Result<T>(error);
+    }
+
+    public TOut Match<TOut>(Func<T, TOut> onSuccess, Func<Error, TOut> onFailure)
+    {
+        return IsSuccess ? onSuccess(Value) :  onFailure(Error);
     }
 }

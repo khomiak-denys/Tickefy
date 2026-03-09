@@ -1,10 +1,11 @@
 ﻿using MediatR;
 using Tickefy.Application.Abstractions.Messaging;
+using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.Primitives;
 
 namespace Tickefy.Application.User.SetRole
 {
-    public class SetUserRoleCommand : ICommand<Unit>
+    public class SetUserRoleCommand : ICommand<Result>
     {
         public UserId UserId { get; init; }
         public string Role { get; init; }

@@ -1,18 +1,16 @@
-﻿using MediatR;
-using Tickefy.Application.Abstractions.Data;
+﻿using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
-using Tickefy.Application.Exceptions;
 using Tickefy.Application.Ticket.Common.Helpers;
 using Tickefy.Domain.ActivityLog;
 using Tickefy.Domain.Common.Action;
+using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Event;
-using Tickefy.Domain.Common.Status;
-using Tickefy.Domain.Common.UserRole;
+using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.Ticket;
 
 namespace Tickefy.Application.Ticket.Complete
 {
-    public class CompleteTicketCommandHandler : ICommandHandler<CompleteTicketCommand, Unit>
+    public class CompleteTicketCommandHandler : ICommandHandler<CompleteTicketCommand, Result>
     {
         private readonly ITicketRepository _ticketRepository;
         private readonly IActivityLogRepository _logRepository;
@@ -27,11 +25,11 @@ namespace Tickefy.Application.Ticket.Complete
             _logRepository = logRepository;
             _uow = uow;
         }
-        public async Task<Unit> Handle(CompleteTicketCommand command, CancellationToken cancellationToken)
+        public async Task<Result> Handle(CompleteTicketCommand command, CancellationToken cancellationToken)
         {
             var ticket = await _ticketRepository.GetByIdAsync(command.TicketId, cancellationToken);
 
-            if (ticket == null) throw new NotFoundException(nameof(ticket), command.TicketId);
+            if (ticket == null) return Result.Failure(new NotFoundError(nameof(ticket) + " " + command.TicketId));
 
             if (TicketAction.Complete.CanExecute(ticket, command.UserId, command.Roles))
             {
@@ -39,15 +37,15 @@ namespace Tickefy.Application.Ticket.Complete
                 var log = Domain.ActivityLog.ActivityLog.Create(ticket.Id, command.UserId, EventType.StatusChanged,
                     "Ticket completed");
                 _logRepository.Add(log);
-                await _uow.SaveChangesAsync();
+                await _uow.SaveChangesAsync(cancellationToken);
 
             }
             else
             {
-                throw new ForbiddenException("Only admin or assigned agent can complete tickets");
+                return Result.Failure(new ForbiddenError("Only admin or assigned agent can complete tickets"));
             }
 
-            return Unit.Value;
+            return Result.Success();
         }   
     }
 }

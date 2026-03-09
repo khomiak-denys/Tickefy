@@ -1,10 +1,11 @@
 ﻿using MediatR;
 using Tickefy.Application.Abstractions.Messaging;
+using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.Primitives;
 
 namespace Tickefy.Application.Team.AddMember
 {
-    public class AddMemberCommand : ICommand<Unit>
+    public class AddMemberCommand : ICommand<Result>
     {
         public string MemberLogin { get; init; }
         public UserId ManagerId { get; init; }  

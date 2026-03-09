@@ -1,10 +1,10 @@
-﻿using MediatR;
 using Tickefy.Application.Abstractions.Messaging;
+using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.Primitives;
 
 namespace Tickefy.Application.Ticket.PostComment
 {
-    public class PostCommentCommand : ICommand<Unit>
+    public class PostCommentCommand : ICommand<Result>
     {
         public UserId UserId { get; init; }
         public TicketId TicketId { get; init; }

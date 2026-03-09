@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using Tickefy.Application.Abstractions.Messaging;
-using Tickefy.Application.Exceptions;
 using Tickefy.Application.Ticket.Common;
+using Tickefy.Domain.Common.Errors;
+using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.Common.UserRole;
 using Tickefy.Domain.Team;
 using Tickefy.Domain.Ticket;
@@ -9,7 +10,7 @@ using Tickefy.Domain.User;
 
 namespace Tickefy.Application.Ticket.GetQueue
 {
-    public class GetQueueTicketsQueryHandler : IQueryHandler<GetQueueTicketsQuery, List<TicketResult>>
+    public class GetQueueTicketsQueryHandler : IQueryHandler<GetQueueTicketsQuery, Result<List<TicketResult>>>
     {
         private readonly IUserRepository _userRepository;
         private readonly ITeamRepository _teamRepository;
@@ -27,21 +28,21 @@ namespace Tickefy.Application.Ticket.GetQueue
             _ticketRepository = ticketRepository;
             _mapper = mapper;
         }
-        public async Task<List<TicketResult>> Handle(GetQueueTicketsQuery query, CancellationToken cancellationToken)
+        public async Task<Result<List<TicketResult>>> Handle(GetQueueTicketsQuery query, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetByIdAsync(query.UserId);
-            if (user == null) throw new NotFoundException(nameof(user), query.UserId);
+            if (user == null) return Result<List<TicketResult>>.Failure(new NotFoundError(nameof(user) + " " + query.UserId));
 
-            if (user.Role != UserRoles.Agent) throw new ForbiddenException("Only for agents");
+            if (user.Role != UserRoles.Agent) return Result<List<TicketResult>>.Failure(new ForbiddenError("Only for agents"));
 
-            if (user.TeamId is null) throw new ForbiddenException("Agent should be in a team");
+            if (user.TeamId is null) return Result<List<TicketResult>>.Failure(new ForbiddenError("Agent should be in a team"));
             var team = await _teamRepository.GetByIdAsync(user.TeamId);
 
-            if (team == null) throw new NotFoundException(nameof(team));
+            if (team == null) return Result<List<TicketResult>>.Failure(new NotFoundError(nameof(team)));
 
             var tickets = await _ticketRepository.GetCreatedByCategory(team.Category);
 
-            return _mapper.Map<List<TicketResult>>(tickets);
+            return Result<List<TicketResult>>.Success(_mapper.Map<List<TicketResult>>(tickets));
         }
     }
 }
