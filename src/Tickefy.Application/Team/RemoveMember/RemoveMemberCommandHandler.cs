@@ -36,7 +36,9 @@ namespace Tickefy.Application.Team.RemoveMember
             if (manager == null) return Result.Failure(new NotFoundError(nameof(manager) + " " + command.ManagerId.Value));
             if (team.ManagerId != command.ManagerId && manager.Role != UserRoles.Admin) return Result.Failure(new ForbiddenError("Become a manager to remove users"));
 
-            team.RemoveMember(user);
+            var removeResult = team.RemoveMember(user);
+            if (removeResult.IsFailure) return removeResult;
+            
             user.SetRole(UserRoles.Requester);
 
             await _uow.SaveChangesAsync(cancellationToken);
