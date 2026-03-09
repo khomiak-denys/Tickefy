@@ -1,7 +1,5 @@
-using MediatR;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
-using Tickefy.Application.Exceptions;
 using Tickefy.Application.Ticket.Common.Helpers;
 using Tickefy.Domain.ActivityLog;
 using Tickefy.Domain.Common.Action;

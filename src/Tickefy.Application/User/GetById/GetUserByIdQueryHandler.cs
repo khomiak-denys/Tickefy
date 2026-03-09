@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Tickefy.Application.Abstractions.Messaging;
-using Tickefy.Application.Exceptions;
 using Tickefy.Application.User.Common;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Results;
