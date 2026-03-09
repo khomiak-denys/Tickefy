@@ -103,7 +103,7 @@ namespace Tickefy.API.User
         {
             var command = request.ToCommand(new UserId(userId));
             var result = await _mediator.Send(command);
-            return result.Match(NoContent(), this.ToActionResult);
+            return result.Match(Ok(), this.ToActionResult);
         }
 
         [HttpPatch("update-profile")]
