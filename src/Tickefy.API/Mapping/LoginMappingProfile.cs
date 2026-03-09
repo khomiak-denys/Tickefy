@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Tickefy.API.Auth.Responses;
-using Tickefy.Application.Auth.Сommon;
+using Tickefy.Application.Auth.Common;
 
 namespace Tickefy.API.Mapping
 {

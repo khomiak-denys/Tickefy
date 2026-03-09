@@ -1,6 +1,6 @@
 ﻿using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Abstractions.Services;
-using Tickefy.Application.Auth.Сommon;
+using Tickefy.Application.Auth.Common;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.User;
