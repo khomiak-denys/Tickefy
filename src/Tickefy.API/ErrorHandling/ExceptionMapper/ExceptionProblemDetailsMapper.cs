@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Tickefy.Application.Exceptions;
 
 namespace Tickefy.API.ErrorHandling.ExceptionMapper
 {
@@ -30,46 +29,6 @@ namespace Tickefy.API.ErrorHandling.ExceptionMapper
                         Title = "Validation Error",
                         Type = "https://httpstatuses.io/400"
                     };
-                }
-            },
-            {
-                typeof(NotFoundException),
-                ex => new ProblemDetails
-                {
-                    Status = StatusCodes.Status404NotFound,
-                    Title = "Not Found",
-                    Detail = ex.Message,
-                    Type = "https://httpstatuses.io/404"
-                }
-            },
-            {
-                typeof(ForbiddenException),
-                ex => new ProblemDetails
-                {
-                    Status = StatusCodes.Status403Forbidden,
-                    Title = "Forbidden",
-                    Detail = ex.Message,
-                    Type = "https://httpstatuses.io/403"
-                }
-            },
-            {
-                typeof(AlreadyExistsException),
-                ex => new ProblemDetails
-                {
-                    Status = StatusCodes.Status409Conflict,
-                    Title = "Already exists",
-                    Detail = ex.Message,
-                    Type = "https://httpstatuses.io/409"
-                }
-            },
-            {
-                typeof(InvalidArgumentException),
-                ex => new ProblemDetails
-                {
-                    Status = StatusCodes.Status400BadRequest,
-                    Title = "Bad request",
-                    Detail = ex.Message,
-                    Type = "https://httpstatuses.io/400"
                 }
             }
         };
