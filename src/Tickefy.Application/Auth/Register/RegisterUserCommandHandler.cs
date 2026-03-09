@@ -27,7 +27,7 @@ namespace Tickefy.Application.Auth.Register
             var existingUser = await _userRepository.GetByLoginAsync(command.Login);
             if (existingUser != null)
             {
-                return Result<Guid>.Failure(new AlreadyExistsError("User"));
+                return Result<Guid>.Failure(new AlreadyExistsError("User already exists"));
             }
             var passwordHash = _passwordHasher.HashPassword(command.Password);
             var user = Domain.User.User.Create(command.FirstName, command.LastName, command.Login, passwordHash);
