@@ -1,8 +1,8 @@
 using Moq;
 using Tickefy.Application.Abstractions.Data;
-using Tickefy.Application.Exceptions;
 using Tickefy.Application.Ticket.Accept;
 using Tickefy.Domain.ActivityLog;
+using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Event;
 using Tickefy.Domain.Common.UserRole;
 using Tickefy.Domain.Primitives;
@@ -13,7 +13,7 @@ namespace Tickefy.Application.Tests.Tickets;
 public class AcceptTicketHandlerTests
 {
     [Fact]
-    public async Task AcceptTicketCommandHandler_Should_Throw_NotFoundException_On_Null_Ticket()
+    public async Task AcceptTicketCommandHandler_Should_Return_NotFoundError_On_Null_Ticket()
     {
         var repo = new Mock<ITicketRepository>();
         repo.Setup(r => r.GetByIdAsync(It.IsAny<TicketId>(), It.IsAny<CancellationToken>()))
@@ -30,13 +30,14 @@ public class AcceptTicketHandlerTests
             TicketId = new TicketId()
         };
         
-        var func = () => handler.Handle(command, CancellationToken.None);
-        
-        await func.Should().ThrowAsync<NotFoundException>();
+        var result = await handler.Handle(command, CancellationToken.None);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Should().BeOfType<NotFoundError>();
     }
     
     [Fact]
-    public async Task AcceptTicketCommandHandler_Should_Throw_ForBiddenException_On_NonRequesterRole()
+    public async Task AcceptTicketCommandHandler_Should_Return_ForbiddenError_On_NonRequesterRole()
     {
         var repo = new Mock<ITicketRepository>();
         repo.Setup(r => r.GetByIdAsync(It.IsAny<TicketId>(), It.IsAny<CancellationToken>()))
@@ -52,9 +53,10 @@ public class AcceptTicketHandlerTests
             Roles = [nameof(UserRoles.Requester)], 
             TicketId = new TicketId()
         };
-        var func = () => handler.Handle(command, CancellationToken.None);
-        
-        await func.Should().ThrowAsync<ForbiddenException>();
+        var result = await handler.Handle(command, CancellationToken.None);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Should().BeOfType<ForbiddenError>();
     }
     
     [Fact]
@@ -83,7 +85,9 @@ public class AcceptTicketHandlerTests
             Roles = [nameof(UserRoles.Agent)], 
             TicketId = ticketId
         };
-        await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, CancellationToken.None);
+
+        result.IsSuccess.Should().BeTrue();
 
         logRepository.Verify(repo => repo.Add(It.Is<Domain.ActivityLog.ActivityLog>(log =>
             log.UserId == requesterId &&
