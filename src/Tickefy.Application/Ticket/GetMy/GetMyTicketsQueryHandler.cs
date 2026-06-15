@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Ticket.Common;
 using Tickefy.Domain.Common.Results;
@@ -12,7 +12,7 @@ namespace Tickefy.Application.Ticket.GetMy
         private readonly IMapper _mapper;
 
         public GetMyTicketsQueryHandler(
-            ITicketRepository ticketRepository, 
+            ITicketRepository ticketRepository,
             IMapper mapper)
         {
             _ticketRepository = ticketRepository;

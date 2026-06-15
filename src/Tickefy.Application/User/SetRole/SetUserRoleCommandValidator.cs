@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using Tickefy.Domain.Common.UserRole;
 
 namespace Tickefy.Application.User.SetRole

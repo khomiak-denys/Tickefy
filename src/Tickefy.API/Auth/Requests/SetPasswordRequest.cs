@@ -1,4 +1,4 @@
-﻿using Tickefy.Application.Auth.SetPassword;
+using Tickefy.Application.Auth.SetPassword;
 using Tickefy.Domain.Primitives;
 
 namespace Tickefy.API.Auth.Requests

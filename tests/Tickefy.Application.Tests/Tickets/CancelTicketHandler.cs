@@ -21,7 +21,7 @@ public class CancelTicketHandler
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
-        
+
         var handler = new CancelTicketCommandHandler(repo.Object, logRepository.Object, uow.Object);
 
         var command = new CancelTicketCommand(new UserId(), new List<string>(), new TicketId(), string.Empty);
@@ -30,7 +30,7 @@ public class CancelTicketHandler
         result.IsFailure.Should().BeTrue();
         result.Error.Should().BeOfType<NotFoundError>();
     }
-    
+
     [Fact]
     public async Task CancelTicketCommandHandler_Should_Return_ForbiddenError_On_AgentRole()
     {
@@ -40,7 +40,7 @@ public class CancelTicketHandler
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
-        
+
         var handler = new CancelTicketCommandHandler(repo.Object, logRepository.Object, uow.Object);
 
         var command = new CancelTicketCommand(new UserId(), [nameof(UserRoles.Agent)], new TicketId(), string.Empty);
@@ -58,14 +58,14 @@ public class CancelTicketHandler
         var userId = new UserId();
         var eventType = EventType.StatusChanged;
         var reason = "Test description";
-        
+
         var repo = new Mock<ITicketRepository>();
         repo.Setup(r => r.GetByIdAsync(It.IsAny<TicketId>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(ticket);
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
-        
+
         var handler = new CancelTicketCommandHandler(repo.Object, logRepository.Object, uow.Object);
 
         var command = new CancelTicketCommand(userId, [nameof(UserRoles.Admin)], ticketId, reason);
@@ -79,7 +79,7 @@ public class CancelTicketHandler
                 log.EventType == eventType &&
                 log.Description.Contains(reason)
         )), Times.Once);
-        
+
         uow.Verify(uow => uow.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 }

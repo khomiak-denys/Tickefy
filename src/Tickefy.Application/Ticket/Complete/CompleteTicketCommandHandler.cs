@@ -1,4 +1,4 @@
-﻿using Tickefy.Application.Abstractions.Data;
+using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Ticket.Common.Helpers;
 using Tickefy.Domain.ActivityLog;
@@ -46,6 +46,6 @@ namespace Tickefy.Application.Ticket.Complete
             }
 
             return Result.Success();
-        }   
+        }
     }
 }

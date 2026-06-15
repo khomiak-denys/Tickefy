@@ -25,7 +25,7 @@ public class FailTicketCommandHandler : ICommandHandler<FailTicketCommand, Resul
         _logRepository = logRepository;
         _uow = uow;
     }
-    
+
     public async Task<Result> Handle(FailTicketCommand command, CancellationToken cancellationToken)
     {
         var ticket = await _ticketRepository.GetByIdAsync(command.TicketId, cancellationToken);

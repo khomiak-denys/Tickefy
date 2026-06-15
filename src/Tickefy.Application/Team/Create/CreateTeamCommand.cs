@@ -1,4 +1,4 @@
-﻿using Tickefy.Application.Abstractions.Messaging;
+using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Domain.Common.Category;
 using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.Primitives;

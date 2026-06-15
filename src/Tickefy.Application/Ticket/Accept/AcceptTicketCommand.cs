@@ -6,7 +6,7 @@ namespace Tickefy.Application.Ticket.Accept;
 
 public class AcceptTicketCommand : ICommand<Result>
 {
-    public UserId UserId {  get; init; }
+    public UserId UserId { get; init; }
     public List<string> Roles { get; init; }
     public TicketId TicketId { get; init; }
 }

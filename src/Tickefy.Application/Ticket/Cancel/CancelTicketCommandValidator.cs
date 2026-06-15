@@ -1,10 +1,10 @@
-﻿using FluentValidation;
+using FluentValidation;
 
 namespace Tickefy.Application.Ticket.Cancel
 {
     public class CancelTicketCommandValidator : AbstractValidator<CancelTicketCommand>
     {
-        public CancelTicketCommandValidator() 
+        public CancelTicketCommandValidator()
         {
             RuleFor(x => x.TicketId)
                 .NotNull()

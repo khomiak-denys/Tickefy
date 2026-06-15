@@ -1,4 +1,4 @@
-﻿using Tickefy.Application.Abstractions.Data;
+using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Results;
@@ -26,7 +26,7 @@ namespace Tickefy.Application.User.Delete
             _userRepository.Delete(user);
 
             await _uow.SaveChangesAsync(cancellationToken);
-            
+
             return Result.Success();
         }
     }

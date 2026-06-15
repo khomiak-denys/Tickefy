@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.User.Common;
 using Tickefy.Domain.Common.Errors;

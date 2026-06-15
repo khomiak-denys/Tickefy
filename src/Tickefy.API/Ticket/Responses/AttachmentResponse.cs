@@ -1,4 +1,4 @@
-﻿namespace Tickefy.API.Ticket.Responses
+namespace Tickefy.API.Ticket.Responses
 {
     public record AttachmentResponse(
         string FilePath,

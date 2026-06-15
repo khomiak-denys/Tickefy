@@ -1,10 +1,10 @@
-﻿using FluentValidation;
+using FluentValidation;
 
 namespace Tickefy.Application.Auth.SetPassword
 {
     public class SetPasswordCommandValidator : AbstractValidator<SetPasswordCommand>
     {
-        public SetPasswordCommandValidator() 
+        public SetPasswordCommandValidator()
         {
             RuleFor(x => x.OldPassword)
                 .NotEmpty().WithMessage("Password is required.")

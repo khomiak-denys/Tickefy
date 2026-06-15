@@ -1,10 +1,10 @@
-﻿using FluentValidation;
+using FluentValidation;
 
 namespace Tickefy.Application.Team.Create
 {
     public class CreateTeamCommandValidator : AbstractValidator<CreateTeamCommand>
     {
-        public CreateTeamCommandValidator() 
+        public CreateTeamCommandValidator()
         {
             RuleFor(x => x.UserId)
             .NotNull()

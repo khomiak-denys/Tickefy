@@ -1,4 +1,4 @@
-﻿using Tickefy.Application.Auth.Login;
+using Tickefy.Application.Auth.Login;
 
 namespace Tickefy.API.Auth.Requests
 {

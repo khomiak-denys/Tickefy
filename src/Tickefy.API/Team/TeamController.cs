@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -121,8 +121,8 @@ namespace Tickefy.API.Team
         {
             var query = new GetMyTeamQuery(new TeamId(teamId));
             var result = await _mediator.Send(query);
-            
-            return result.Match(onSuccess: value => Ok(_mapper.Map<TeamDetailResponse>(value)), 
+
+            return result.Match(onSuccess: value => Ok(_mapper.Map<TeamDetailResponse>(value)),
                 onFailure: this.ToActionResult);
         }
 
@@ -136,8 +136,8 @@ namespace Tickefy.API.Team
         {
             var query = new GetAllTeamsQuery();
             var result = await _mediator.Send(query);
-            
-            return result.Match(onSuccess: value => Ok(_mapper.Map<List<TeamResponse>>(value)), 
+
+            return result.Match(onSuccess: value => Ok(_mapper.Map<List<TeamResponse>>(value)),
                 onFailure: this.ToActionResult);
         }
 
@@ -156,8 +156,8 @@ namespace Tickefy.API.Team
 
             var query = new GetTeamByUserIdQuery(new UserId(memberGuid));
             var result = await _mediator.Send(query);
-            
-            return result.Match(onSuccess: value => Ok(_mapper.Map<List<TeamResponse>>(value)), 
+
+            return result.Match(onSuccess: value => Ok(_mapper.Map<List<TeamResponse>>(value)),
                 onFailure: this.ToActionResult);
         }
     }

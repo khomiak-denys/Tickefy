@@ -1,4 +1,4 @@
-﻿using Tickefy.Application.Abstractions.Data;
+using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Results;
@@ -24,7 +24,7 @@ namespace Tickefy.Application.User.UpdateProfile
             user.Update(command.FirstName, command.LastName);
 
             await _uow.SaveChangesAsync(cancellationToken);
-            
+
             return Result.Success();
         }
     }

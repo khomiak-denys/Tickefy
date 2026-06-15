@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.ActivityLog.Common;
 using Tickefy.Domain.ActivityLog;
@@ -9,7 +9,7 @@ namespace Tickefy.Application.ActivityLog.GetAll
     {
         private readonly IActivityLogRepository _logRepository;
         private readonly IMapper _mapper;
-        
+
         public GetAllLogsQueryHandler(
             IActivityLogRepository logRepository,
             IMapper mapper)

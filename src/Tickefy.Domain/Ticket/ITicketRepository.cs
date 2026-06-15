@@ -1,4 +1,4 @@
-﻿using Tickefy.Domain.Common.Category;
+using Tickefy.Domain.Common.Category;
 using Tickefy.Domain.Primitives;
 
 namespace Tickefy.Domain.Ticket

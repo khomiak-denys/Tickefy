@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Tickefy.Application.Ticket.Common;
 
 namespace Tickefy.Application.Mapping

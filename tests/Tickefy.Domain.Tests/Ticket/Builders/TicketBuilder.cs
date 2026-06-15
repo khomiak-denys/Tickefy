@@ -4,9 +4,9 @@ public class TicketBuilder
 {
     private readonly string _title = "some title";
     private readonly string _description = "some description";
-    
+
     public static TicketBuilder New() => new TicketBuilder();
-    
+
     public Domain.Ticket.Ticket InDraftState()
     {
         return Domain.Ticket.Ticket.CreateDraft(_title, _description, new UserId(), DateTime.UtcNow);

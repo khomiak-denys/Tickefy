@@ -29,8 +29,8 @@ public class AcceptTicketCommandHandler : ICommandHandler<AcceptTicketCommand, R
     {
         var ticket = await _ticketRepository.GetByIdAsync(command.TicketId, cancellationToken);
 
-        if (ticket == null) return Result.Failure(new NotFoundError(nameof(ticket)+ " " + command.TicketId));
-            
+        if (ticket == null) return Result.Failure(new NotFoundError(nameof(ticket) + " " + command.TicketId));
+
         if (TicketAction.Accept.CanExecute(ticket, command.UserId, command.Roles))
         {
             ticket.Accept();

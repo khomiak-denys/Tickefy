@@ -1,4 +1,4 @@
-﻿using Tickefy.Application.Abstractions.Services;
+using Tickefy.Application.Abstractions.Services;
 using Tickefy.Application.AI.Dtos;
 using Tickefy.Domain.Common.Category;
 using Tickefy.Domain.Common.Priority;
@@ -14,7 +14,7 @@ namespace Tickefy.Infrastructure.Services.AI
                 return category;
             }
 
-            return Category.Other; 
+            return Category.Other;
         }
 
         public Priority ParsePriority(AiResponse response)
@@ -24,7 +24,7 @@ namespace Tickefy.Infrastructure.Services.AI
                 return priority;
             }
 
-            return Priority.Medium; 
+            return Priority.Medium;
         }
     }
 }

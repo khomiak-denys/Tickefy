@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Team.Common;
 using Tickefy.Domain.Common.Errors;
@@ -13,7 +13,7 @@ namespace Tickefy.Application.Team.GetById
         private readonly IMapper _mapper;
         public GetTeamByIdQueryHandler(
             ITeamRepository teamRepository,
-            IMapper mapper) 
+            IMapper mapper)
         {
             _teamRepository = teamRepository;
             _mapper = mapper;

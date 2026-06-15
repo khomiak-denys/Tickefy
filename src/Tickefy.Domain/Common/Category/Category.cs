@@ -1,10 +1,10 @@
-﻿namespace Tickefy.Domain.Common.Category
+namespace Tickefy.Domain.Common.Category
 {
     public enum Category
     {
         Finance,
-        IT, 
-        Design, 
+        IT,
+        Design,
         Marketing,
         HumanResources,
         Legal,

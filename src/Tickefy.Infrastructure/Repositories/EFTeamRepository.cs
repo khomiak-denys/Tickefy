@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Tickefy.Domain.Primitives;
 using Tickefy.Domain.Team;
 using Tickefy.Infrastructure.Database;

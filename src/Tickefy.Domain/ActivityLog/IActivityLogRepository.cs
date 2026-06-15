@@ -1,4 +1,4 @@
-﻿using Tickefy.Domain.Primitives;
+using Tickefy.Domain.Primitives;
 
 namespace Tickefy.Domain.ActivityLog
 {

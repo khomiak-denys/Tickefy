@@ -1,4 +1,4 @@
-﻿using Tickefy.Application.Abstractions.Data;
+using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Results;
@@ -9,13 +9,13 @@ using Tickefy.Domain.User;
 namespace Tickefy.Application.Team.AddMember
 {
     public class AddMemberCommandHandler(
-        IUserRepository userRepository, 
-        ITeamRepository teamRepository, 
+        IUserRepository userRepository,
+        ITeamRepository teamRepository,
         IUnitOfWork uow) : ICommandHandler<AddMemberCommand, Result>
     {
         public async Task<Result> Handle(AddMemberCommand command, CancellationToken cancellationToken)
         {
-            var user = await  userRepository.GetByLoginAsync(command.MemberLogin);
+            var user = await userRepository.GetByLoginAsync(command.MemberLogin);
             if (user == null) return Result.Failure(new NotFoundError(nameof(user) + " " + command.MemberLogin));
             if (user.Role == UserRoles.Admin || user.Role == UserRoles.Manager) return Result.Failure(new ForbiddenError("Cant add manager or admin to team"));
 

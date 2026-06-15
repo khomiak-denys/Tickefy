@@ -1,4 +1,4 @@
-﻿using Tickefy.Application.Abstractions.Data;
+using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Abstractions.Services;
 using Tickefy.Domain.Common.Errors;
@@ -13,7 +13,7 @@ namespace Tickefy.Application.Auth.SetPassword
         private readonly IPasswordHasher _passwordHasher;
         private readonly IUnitOfWork _uow;
         public SetPasswordCommandHandler(
-            IUserRepository userRepository, 
+            IUserRepository userRepository,
             IPasswordHasher passwordHasher,
             IUnitOfWork uow)
         {
@@ -35,7 +35,7 @@ namespace Tickefy.Application.Auth.SetPassword
             user.UpdatePassword(passwordHash);
 
             await _uow.SaveChangesAsync(cancellationToken);
-            
+
             return Result.Success();
         }
     }

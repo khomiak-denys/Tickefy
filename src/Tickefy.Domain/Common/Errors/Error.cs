@@ -1,4 +1,4 @@
-﻿namespace Tickefy.Domain.Common.Errors;
+namespace Tickefy.Domain.Common.Errors;
 
 public class Error(string message)
 {

@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Tickefy.Application.ActivityLog.Common;
 
 namespace Tickefy.Application.Mapping

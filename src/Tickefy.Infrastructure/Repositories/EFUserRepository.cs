@@ -1,4 +1,4 @@
-﻿using Tickefy.Domain.User;
+using Tickefy.Domain.User;
 using Tickefy.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Tickefy.Domain.Primitives;
@@ -34,7 +34,7 @@ namespace Tickefy.Infrastructure.Repositories
 
         public async Task<User?> GetByIdAsync(UserId id)
         {
-            return await _dbContext.Users.FirstOrDefaultAsync(t => t.Id == id); 
+            return await _dbContext.Users.FirstOrDefaultAsync(t => t.Id == id);
         }
 
         public async Task<User?> GetByLoginAsync(string login)

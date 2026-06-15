@@ -21,13 +21,14 @@ public class FailTicketHandlerTests
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
-        
+
         var handler = new FailTicketCommandHandler(repo.Object, logRepository.Object, uow.Object);
 
-        var command = new FailTicketCommand {
-            UserId = new UserId(), 
-            Roles = new List<string>(), 
-            TicketId = new TicketId(), 
+        var command = new FailTicketCommand
+        {
+            UserId = new UserId(),
+            Roles = new List<string>(),
+            TicketId = new TicketId(),
             Reason = string.Empty
         };
         var result = await handler.Handle(command, CancellationToken.None);
@@ -35,7 +36,7 @@ public class FailTicketHandlerTests
         result.IsFailure.Should().BeTrue();
         result.Error.Should().BeOfType<NotFoundError>();
     }
-    
+
     [Fact]
     public async Task FailTicketCommandHandler_Should_Return_ForbiddenError_On_AgentOrRequesterRole()
     {
@@ -45,13 +46,14 @@ public class FailTicketHandlerTests
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
-        
+
         var handler = new FailTicketCommandHandler(repo.Object, logRepository.Object, uow.Object);
 
-        var command = new FailTicketCommand {
-            UserId = new UserId(), 
-            Roles = [nameof(UserRoles.Agent), nameof(UserRoles.Requester)], 
-            TicketId = new TicketId(), 
+        var command = new FailTicketCommand
+        {
+            UserId = new UserId(),
+            Roles = [nameof(UserRoles.Agent), nameof(UserRoles.Requester)],
+            TicketId = new TicketId(),
             Reason = string.Empty
         };
         var result = await handler.Handle(command, CancellationToken.None);
@@ -66,25 +68,26 @@ public class FailTicketHandlerTests
         var ticket = Domain.Ticket.Ticket.Create(string.Empty, string.Empty, new UserId(), DateTime.UtcNow);
         ticket.Take(new UserId(), new TeamId());
         ticket.StartWork();
-        
+
         var ticketId = ticket.Id;
         var userId = new UserId();
         var eventType = EventType.StatusChanged;
         var reason = "Test description";
-        
+
         var repo = new Mock<ITicketRepository>();
         repo.Setup(r => r.GetByIdAsync(It.IsAny<TicketId>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(ticket);
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
-        
+
         var handler = new FailTicketCommandHandler(repo.Object, logRepository.Object, uow.Object);
 
-        var command = new FailTicketCommand {
-            UserId = userId, 
-            Roles = [nameof(UserRoles.Admin)], 
-            TicketId = ticketId, 
+        var command = new FailTicketCommand
+        {
+            UserId = userId,
+            Roles = [nameof(UserRoles.Admin)],
+            TicketId = ticketId,
             Reason = reason
         };
         var result = await handler.Handle(command, CancellationToken.None);
@@ -97,7 +100,7 @@ public class FailTicketHandlerTests
                 log.EventType == eventType &&
                 log.Description.Contains(reason)
         )), Times.Once);
-        
+
         uow.Verify(uow => uow.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 }

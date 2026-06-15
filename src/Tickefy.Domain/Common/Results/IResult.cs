@@ -1,6 +1,7 @@
-﻿using Tickefy.Domain.Common.Errors;
+using Tickefy.Domain.Common.Errors;
 
 namespace Tickefy.Domain.Common.Results;
+
 public interface IResult
 {
     public Error Error { get; }

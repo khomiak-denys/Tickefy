@@ -1,4 +1,4 @@
-﻿using Tickefy.Application.Abstractions.Data;
+using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Results;
@@ -38,11 +38,11 @@ namespace Tickefy.Application.Team.RemoveMember
 
             var removeResult = team.RemoveMember(user);
             if (removeResult.IsFailure) return removeResult;
-            
+
             user.SetRole(UserRoles.Requester);
 
             await _uow.SaveChangesAsync(cancellationToken);
-            
+
             return Result.Success();
         }
     }

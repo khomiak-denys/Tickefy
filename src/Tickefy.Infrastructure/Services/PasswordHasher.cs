@@ -1,4 +1,4 @@
-﻿using Tickefy.Application.Abstractions.Services;
+using Tickefy.Application.Abstractions.Services;
 
 namespace Tickefy.Infrastructure.Services
 {

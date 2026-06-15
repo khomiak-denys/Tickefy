@@ -1,4 +1,4 @@
-﻿namespace Tickefy.Domain.Primitives.StronglyTypedId
+namespace Tickefy.Domain.Primitives.StronglyTypedId
 {
     public abstract partial record StronglyTypedId<T> where T : StronglyTypedId<T>
     {

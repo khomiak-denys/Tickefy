@@ -1,4 +1,4 @@
-﻿namespace Tickefy.Application.Abstractions.Services
+namespace Tickefy.Application.Abstractions.Services
 {
     public interface IPasswordHasher
     {

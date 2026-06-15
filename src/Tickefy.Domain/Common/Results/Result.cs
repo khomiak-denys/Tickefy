@@ -1,4 +1,4 @@
-﻿using Tickefy.Domain.Common.Errors;
+using Tickefy.Domain.Common.Errors;
 
 namespace Tickefy.Domain.Common.Results;
 
@@ -7,7 +7,7 @@ public class Result : IResult
     public Error Error { get; }
     public bool IsSuccess { get; }
     public bool IsFailure => !IsSuccess;
-    
+
     private Result()
     {
         IsSuccess = true;
@@ -52,7 +52,7 @@ public class Result<T> : IResult<T>
         Error = error;
         Value = default(T)!;
     }
-    
+
     public static Result<T> Success(T value)
     {
         return new Result<T>(value);
@@ -65,6 +65,6 @@ public class Result<T> : IResult<T>
 
     public TOut Match<TOut>(Func<T, TOut> onSuccess, Func<Error, TOut> onFailure)
     {
-        return IsSuccess ? onSuccess(Value) :  onFailure(Error);
+        return IsSuccess ? onSuccess(Value) : onFailure(Error);
     }
 }

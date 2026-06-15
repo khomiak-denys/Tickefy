@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Tickefy.Domain.ActivityLog;
 using Tickefy.Domain.Attachment;
 using Tickefy.Domain.Comment;
@@ -17,7 +17,7 @@ namespace Tickefy.Infrastructure.Database
 
         public DbSet<ActivityLog> ActivityLogs { get; set; }
         public DbSet<Attachment> Attachments { get; set; }
-        public DbSet<Comment> Comments  { get; set; }
+        public DbSet<Comment> Comments { get; set; }
         public DbSet<Team> Teams { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
@@ -25,10 +25,10 @@ namespace Tickefy.Infrastructure.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Ignore(typeof(Tickefy.Domain.Primitives.ActivityLogId)); 
+            modelBuilder.Ignore(typeof(Tickefy.Domain.Primitives.ActivityLogId));
             modelBuilder.Ignore(typeof(Tickefy.Domain.Primitives.AttachmentId));
             modelBuilder.Ignore(typeof(Tickefy.Domain.Primitives.CommentId));
-            modelBuilder.Ignore(typeof(Tickefy.Domain.Primitives.TeamId)); 
+            modelBuilder.Ignore(typeof(Tickefy.Domain.Primitives.TeamId));
             modelBuilder.Ignore(typeof(Tickefy.Domain.Primitives.TicketId));
             modelBuilder.Ignore(typeof(Tickefy.Domain.Primitives.UserId));
 
@@ -63,13 +63,13 @@ namespace Tickefy.Infrastructure.Database
             //ATTACHMENT
             modelBuilder.Entity<Attachment>()
                    .HasOne(a => a.Ticket)
-                   .WithMany(t => t.Attachments) 
+                   .WithMany(t => t.Attachments)
                    .HasForeignKey(a => a.TicketId)
-                   .OnDelete(DeleteBehavior.Cascade); 
+                   .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Attachment>()
                    .Property(a => a.FilePath)
-                   .HasMaxLength(2048) 
+                   .HasMaxLength(2048)
                    .IsRequired();
 
             modelBuilder.Entity<Attachment>()
@@ -82,8 +82,8 @@ namespace Tickefy.Infrastructure.Database
 
             //COMMENT
             modelBuilder.Entity<Comment>()
-                   .HasOne(c => c.Ticket) 
-                   .WithMany(t => t.Comments) 
+                   .HasOne(c => c.Ticket)
+                   .WithMany(t => t.Comments)
                    .HasForeignKey(c => c.TicketId)
                    .OnDelete(DeleteBehavior.Cascade);
 
@@ -99,7 +99,7 @@ namespace Tickefy.Infrastructure.Database
             modelBuilder.Entity<Team>().HasIndex(t => t.Name).IsUnique();
 
             modelBuilder.Entity<Team>()
-                .HasOne(t => t.Manager) 
+                .HasOne(t => t.Manager)
                 .WithMany()
                 .HasForeignKey(t => t.ManagerId)
                 .OnDelete(DeleteBehavior.SetNull);

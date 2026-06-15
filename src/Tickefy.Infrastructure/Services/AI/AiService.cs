@@ -1,4 +1,4 @@
-﻿using Google.GenAI;     
+using Google.GenAI;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Tickefy.Application.Abstractions.Services;
@@ -15,14 +15,14 @@ namespace Tickefy.Infrastructure.Services.AI
 
         public AiService(Client client, ILogger<AiService> logger)
         {
-           _client = client;
-           _logger = logger;
+            _client = client;
+            _logger = logger;
         }
 
         public async Task<AiResponse> AnalyzeTicketAsync(string title, string description, DateTime deadline)
         {
-             var prompt =
-                 @$"You are an internal Ticketing AI classifier. 
+            var prompt =
+                @$"You are an internal Ticketing AI classifier. 
                  Your task is to analyze the ticket details and assign a Category and Priority. 
                  Only return a JSON object.
 
@@ -62,10 +62,10 @@ namespace Tickefy.Infrastructure.Services.AI
                 throw new InvalidOperationException("AI returned empty response.");
 
             _logger.LogInformation("Raw AI JSON: {Json}", json);
-            
+
             var parsed = JsonSerializer.Deserialize<AiResponse>(json,
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            
+
             if (parsed == null)
                 throw new InvalidOperationException("Invalid AI JSON format.");
 

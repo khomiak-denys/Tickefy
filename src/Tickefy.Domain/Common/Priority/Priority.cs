@@ -1,4 +1,4 @@
-﻿namespace Tickefy.Domain.Common.Priority
+namespace Tickefy.Domain.Common.Priority
 {
     public enum Priority
     {

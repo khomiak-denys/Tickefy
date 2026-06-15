@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,7 +28,7 @@ namespace Tickefy.API.Auth
             _mapper = mapper;
             _logger = logger;
         }
-        
+
         [AllowAnonymous]
         [HttpPost("register")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -43,7 +43,7 @@ namespace Tickefy.API.Auth
                 onSuccess: _ => Created(),
                 onFailure: this.ToActionResult);
         }
-        
+
         [AllowAnonymous]
         [HttpPost("login")]
         [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
@@ -54,12 +54,12 @@ namespace Tickefy.API.Auth
         {
             var command = request.ToCommand();
             var result = await _mediator.Send(command);
-            
+
             return result.Match(
                 onSuccess: value => Ok(_mapper.Map<LoginResponse>(value)),
                 onFailure: this.ToActionResult);
         }
-        
+
         [Authorize]
         [HttpPatch("password")]
         [SwaggerOperation(Summary = "Handles request to reset user password")]

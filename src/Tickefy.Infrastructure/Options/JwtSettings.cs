@@ -1,4 +1,4 @@
-﻿namespace Tickefy.Infrastructure.Options
+namespace Tickefy.Infrastructure.Options
 {
     public class JwtSettings
     {

@@ -1,4 +1,4 @@
-﻿namespace Tickefy.Domain.Common.Action;
+namespace Tickefy.Domain.Common.Action;
 
 public enum TicketAction
 {

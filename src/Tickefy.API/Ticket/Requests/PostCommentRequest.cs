@@ -1,4 +1,4 @@
-﻿using Tickefy.Application.Ticket.PostComment;
+using Tickefy.Application.Ticket.PostComment;
 using Tickefy.Domain.Primitives;
 
 namespace Tickefy.API.Ticket.Requests
