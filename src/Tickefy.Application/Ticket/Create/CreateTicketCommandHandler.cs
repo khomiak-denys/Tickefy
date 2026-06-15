@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Abstractions.Services;
@@ -21,7 +21,7 @@ namespace Tickefy.Application.Ticket.Create
         private readonly ILogger<CreateTicketCommandHandler> _logger;
 
         public CreateTicketCommandHandler(
-            IUnitOfWork uow, 
+            IUnitOfWork uow,
             ITicketRepository ticketRepository,
             IActivityLogRepository logRepository,
             IAiService aiService,
@@ -61,9 +61,9 @@ namespace Tickefy.Application.Ticket.Create
 
             var log = Domain.ActivityLog.ActivityLog.Create(ticket.Id, command.UserId, EventType.RequestCreated, "Created request");
             _logRepository.Add(log);
-            
+
             await _uow.SaveChangesAsync(cancellationToken);
-            
+
             return Result.Success();
         }
     }

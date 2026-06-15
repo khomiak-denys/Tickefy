@@ -1,4 +1,4 @@
-﻿using Tickefy.Application.Abstractions.Messaging;
+using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.ActivityLog.Common;
 
 namespace Tickefy.Application.ActivityLog.GetAll
@@ -7,7 +7,7 @@ namespace Tickefy.Application.ActivityLog.GetAll
     {
         public int Page { get; init; }
         public int PageSize { get; init; }
-        public GetAllLogsQuery(int page, int pageSize) 
+        public GetAllLogsQuery(int page, int pageSize)
         {
             Page = page;
             PageSize = pageSize;

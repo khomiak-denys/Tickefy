@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Tickefy.API.Ticket.Responses;
 using Tickefy.Application.Ticket.Common;
 

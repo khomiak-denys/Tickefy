@@ -1,4 +1,4 @@
-﻿using Tickefy.Application.Team.Common;
+using Tickefy.Application.Team.Common;
 using Tickefy.Domain.Common.UserRole;
 using Tickefy.Domain.Primitives;
 

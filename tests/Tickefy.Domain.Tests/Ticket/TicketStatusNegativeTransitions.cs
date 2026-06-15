@@ -19,10 +19,10 @@ public class TicketStatusNegativeTransitionsTests
     {
         var ticket = TicketBuilder.New().InDraftState();
         var result = Invoke(ticket, action)();
-        
+
         AssertForbidden(result, "Invalid action");
     }
-    
+
     [Theory]
     [InlineData(TicketAction.Complete)]
     [InlineData(TicketAction.StartWork)]
@@ -34,7 +34,7 @@ public class TicketStatusNegativeTransitionsTests
     {
         var ticket = TicketBuilder.New().InCreatedState();
         var result = Invoke(ticket, action)();
-        
+
         AssertForbidden(result, "Invalid action");
     }
 
@@ -49,7 +49,7 @@ public class TicketStatusNegativeTransitionsTests
     {
         var ticket = TicketBuilder.New().InAssignedState();
         var result = Invoke(ticket, action)();
-        
+
         AssertForbidden(result, "Invalid action");
     }
 
@@ -63,7 +63,7 @@ public class TicketStatusNegativeTransitionsTests
     {
         var ticket = TicketBuilder.New().InInProgressState();
         var result = Invoke(ticket, action)();
-        
+
         AssertForbidden(result, "Invalid action");
     }
 
@@ -78,7 +78,7 @@ public class TicketStatusNegativeTransitionsTests
     {
         var ticket = TicketBuilder.New().InCompletedState();
         var result = Invoke(ticket, action)();
-        
+
         AssertForbidden(result, "Invalid action");
     }
 
@@ -94,7 +94,7 @@ public class TicketStatusNegativeTransitionsTests
     {
         var ticket = TicketBuilder.New().InReopenedState();
         var result = Invoke(ticket, action)();
-        
+
         AssertForbidden(result, "Invalid action");
     }
 
@@ -111,10 +111,10 @@ public class TicketStatusNegativeTransitionsTests
     {
         var ticket = TicketBuilder.New().InCanceledState();
         var result = Invoke(ticket, action)();
-        
+
         AssertForbidden(result, "Invalid action");
     }
-    
+
     [Theory]
     [InlineData(TicketAction.Publish)]
     [InlineData(TicketAction.Complete)]
@@ -128,10 +128,10 @@ public class TicketStatusNegativeTransitionsTests
     {
         var ticket = TicketBuilder.New().InFailedState();
         var result = Invoke(ticket, action)();
-        
+
         AssertForbidden(result, "Invalid action");
     }
-    
+
     [Theory]
     [InlineData(TicketAction.Publish)]
     [InlineData(TicketAction.Complete)]
@@ -145,7 +145,7 @@ public class TicketStatusNegativeTransitionsTests
     {
         var ticket = TicketBuilder.New().InAcceptedState();
         var result = Invoke(ticket, action)();
-        
+
         AssertForbidden(result, "Invalid action");
     }
 
@@ -172,5 +172,5 @@ public class TicketStatusNegativeTransitionsTests
             _ => throw new ArgumentOutOfRangeException(nameof(action), action, null)
         };
     }
-    
+
 }

@@ -1,4 +1,4 @@
-﻿using Tickefy.Domain.Common.Action;
+using Tickefy.Domain.Common.Action;
 using Tickefy.Domain.Common.Category;
 using Tickefy.Domain.Common.EntityBase;
 using Tickefy.Domain.Common.Errors;
@@ -61,7 +61,7 @@ namespace Tickefy.Domain.Ticket
         {
             Comments.Add(comment);
         }
-        
+
         private Ticket(string title, string description, Status status, UserId requesterId, DateTime deadline)
         {
             Id = new TicketId();
@@ -71,8 +71,8 @@ namespace Tickefy.Domain.Ticket
             RequesterId = requesterId;
             Deadline = deadline;
         }
-        
-        
+
+
 
         public Result Publish(string title, string description, DateTime deadline)
         {
@@ -86,7 +86,7 @@ namespace Tickefy.Domain.Ticket
             Status = Status.Created;
             return Result.Success();
         }
-        
+
         public Result Take(UserId agentId, TeamId teamId)
         {
             if (!GetAvailableActions().Contains(TicketAction.Take))
@@ -115,10 +115,10 @@ namespace Tickefy.Domain.Ticket
             if (!GetAvailableActions().Contains(TicketAction.Complete))
             {
                 return Result.Failure(new ForbiddenError("Invalid action"));
-                
+
             }
             Status = Status.Completed;
-            return  Result.Success();
+            return Result.Success();
         }
 
         public Result Reopen()

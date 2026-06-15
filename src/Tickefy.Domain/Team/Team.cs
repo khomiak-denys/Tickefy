@@ -1,4 +1,4 @@
-﻿using Tickefy.Domain.Common.Category;
+using Tickefy.Domain.Common.Category;
 using Tickefy.Domain.Common.EntityBase;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Results;
@@ -12,7 +12,7 @@ namespace Tickefy.Domain.Team
         public string? Description { get; private set; }
         public Category Category { get; private set; }
         public UserId ManagerId { get; private set; }
-        public Domain.User.User Manager {  get; private set; }
+        public Domain.User.User Manager { get; private set; }
         public List<Domain.User.User> Members { get; private set; } = new();
 
         private Team() { }

@@ -1,4 +1,4 @@
-﻿using Tickefy.Application.Abstractions.Data;
+using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Ticket.Common.Helpers;
 using Tickefy.Domain.ActivityLog;
@@ -29,14 +29,14 @@ namespace Tickefy.Application.Ticket.Cancel
         {
             var ticket = await _ticketRepository.GetByIdAsync(command.TicketId, cancellationToken);
 
-            if (ticket == null) return Result.Failure(new NotFoundError(nameof(ticket) + " " +  command.TicketId));
+            if (ticket == null) return Result.Failure(new NotFoundError(nameof(ticket) + " " + command.TicketId));
 
             if (TicketAction.Cancel.CanExecute(ticket, command.UserId, command.Roles))
             {
-                    ticket.Cancel();
-                    var log = Domain.ActivityLog.ActivityLog.Create(ticket.Id, command.UserId, EventType.StatusChanged, $"Ticket canceled. Reason: {command.Reason}");
-                    _logRepository.Add(log);
-                    await _uow.SaveChangesAsync(cancellationToken);
+                ticket.Cancel();
+                var log = Domain.ActivityLog.ActivityLog.Create(ticket.Id, command.UserId, EventType.StatusChanged, $"Ticket canceled. Reason: {command.Reason}");
+                _logRepository.Add(log);
+                await _uow.SaveChangesAsync(cancellationToken);
             }
             else
             {

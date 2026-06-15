@@ -1,10 +1,10 @@
-﻿namespace Tickefy.Domain.Common.UserRole
+namespace Tickefy.Domain.Common.UserRole
 {
     public enum UserRoles
     {
         Admin,
         Manager,
-        Agent, 
+        Agent,
         Requester
     }
 }

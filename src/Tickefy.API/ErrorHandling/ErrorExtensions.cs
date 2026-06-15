@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Tickefy.Domain.Common.Errors;
 
 namespace Tickefy.API.ErrorHandling;

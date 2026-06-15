@@ -1,10 +1,10 @@
-﻿namespace Tickefy.Domain.Common.Content
+namespace Tickefy.Domain.Common.Content
 {
     public enum ContentType
     {
-        Photo, 
+        Photo,
         Video,
-        Archive, 
+        Archive,
         Document
     }
 }

@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Tickefy.Domain.Common.Category;
 using Tickefy.Domain.Common.Content;
 using Tickefy.Domain.Common.Event;

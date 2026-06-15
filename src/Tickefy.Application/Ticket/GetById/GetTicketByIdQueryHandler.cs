@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Ticket.Common;
 using Tickefy.Application.Ticket.Common.Helpers;
@@ -32,7 +32,7 @@ namespace Tickefy.Application.Ticket.GetById
             result.AvailableActions = ticket.GetAvailableActions()
                 .Where(act => act.CanExecute(ticket, query.UserId, query.Roles))
                 .Select(act => new TicketActionResult(act.ToString(), act.RequireReason()));
-            
+
             return Result<TicketDetailsResult>.Success(result);
         }
     }

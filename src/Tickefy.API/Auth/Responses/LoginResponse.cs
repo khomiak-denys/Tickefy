@@ -1,4 +1,4 @@
-﻿namespace Tickefy.API.Auth.Responses
+namespace Tickefy.API.Auth.Responses
 {
     public record LoginResponse
     (
@@ -6,6 +6,6 @@
         string FirstName,
         string LastName,
         string Login,
-        string Token 
+        string Token
     );
 }

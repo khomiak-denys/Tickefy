@@ -1,4 +1,4 @@
-﻿namespace Tickefy.Application.Auth.Common
+namespace Tickefy.Application.Auth.Common
 {
     public record LoginResult
     (

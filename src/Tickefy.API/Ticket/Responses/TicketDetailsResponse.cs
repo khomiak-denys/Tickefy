@@ -1,4 +1,4 @@
-﻿using Tickefy.API.Team.Responses;
+using Tickefy.API.Team.Responses;
 using Tickefy.API.User.Responses;
 
 namespace Tickefy.API.Ticket.Responses

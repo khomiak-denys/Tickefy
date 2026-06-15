@@ -1,4 +1,4 @@
-﻿using Tickefy.Application.Abstractions.Messaging;
+using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Abstractions.Services;
 using Tickefy.Application.Auth.Common;
 using Tickefy.Domain.Common.Errors;
@@ -14,7 +14,7 @@ namespace Tickefy.Application.Auth.Login
         private readonly ITokenService _tokenService;
 
         public LoginUserCommandHandler(
-            IUserRepository userRepository, 
+            IUserRepository userRepository,
             IPasswordHasher passwordHasher,
             ITokenService tokenService)
         {

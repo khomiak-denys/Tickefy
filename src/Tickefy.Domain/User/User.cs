@@ -1,4 +1,4 @@
-﻿using Tickefy.Domain.Common.EntityBase;
+using Tickefy.Domain.Common.EntityBase;
 using Tickefy.Domain.Common.UserRole;
 using Tickefy.Domain.Primitives;
 
@@ -16,7 +16,7 @@ namespace Tickefy.Domain.User
         public Domain.Team.Team? Team { get; private set; } = null;
 
 
-        private User() : base (){ }
+        private User() : base() { }
         public static User Create(string firstName, string lastName, string login, string passwordHash)
         {
             var user = new User(firstName, lastName, login, passwordHash, UserRoles.Requester);
@@ -42,7 +42,7 @@ namespace Tickefy.Domain.User
         {
             TeamId = team?.Id;
             Team = team;
-            OnModify(); 
+            OnModify();
         }
         public void Update(string firstName, string lastName)
         {

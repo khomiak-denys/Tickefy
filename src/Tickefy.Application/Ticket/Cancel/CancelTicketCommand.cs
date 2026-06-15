@@ -1,4 +1,4 @@
-﻿using Tickefy.Application.Abstractions.Messaging;
+using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.Primitives;
 
@@ -13,7 +13,7 @@ namespace Tickefy.Application.Ticket.Cancel
 
         public CancelTicketCommand(
             UserId userId,
-            IEnumerable<string> roles, 
+            IEnumerable<string> roles,
             TicketId ticketId,
             string reason
         )

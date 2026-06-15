@@ -1,4 +1,4 @@
-﻿namespace Tickefy.Application.User.Common
+namespace Tickefy.Application.User.Common
 {
     public record UserResult(
         Guid Id,

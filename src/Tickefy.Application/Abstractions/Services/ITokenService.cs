@@ -1,4 +1,4 @@
-﻿using Tickefy.Domain.Common.UserRole;
+using Tickefy.Domain.Common.UserRole;
 
 namespace Tickefy.Application.Abstractions.Services
 {

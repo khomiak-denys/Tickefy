@@ -32,14 +32,14 @@ namespace Tickefy.API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            
-            
+
+
             builder.Host.UseSerilog((context, services, configuration) => configuration
                 //.ReadFrom.Configuration(context.Configuration) 
                 .ReadFrom.Services(services)
                 .Enrich.FromLogContext()
-                .WriteTo.Console()); 
-            
+                .WriteTo.Console());
+
             builder.Services.AddProblemDetails(configure =>
             {
                 configure.CustomizeProblemDetails = options =>
@@ -85,17 +85,17 @@ namespace Tickefy.API
 
 
             builder.Services.AddAutoMapper(
-                cfg => 
+                cfg =>
                 {
                     cfg.AllowNullCollections = true;
                 },
                 new[]
                 {
                     typeof(LoginMappingProfile).Assembly,
-                    typeof(TicketProfile).Assembly 
+                    typeof(TicketProfile).Assembly
 
                 }
-            ); 
+            );
 
             var postgresConnection =
                 $"Host={Environment.GetEnvironmentVariable("DB_HOST")};" +
@@ -200,7 +200,7 @@ namespace Tickefy.API
 
             app.UseAuthentication();
             app.UseAuthorization();
-           
+
             app.MapControllers();
 
             app.Run();

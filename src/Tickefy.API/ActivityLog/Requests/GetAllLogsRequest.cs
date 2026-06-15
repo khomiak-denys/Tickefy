@@ -1,4 +1,4 @@
-﻿using Tickefy.Application.ActivityLog.GetAll;
+using Tickefy.Application.ActivityLog.GetAll;
 
 namespace Tickefy.API.ActivityLog.Requests
 {
@@ -7,7 +7,7 @@ namespace Tickefy.API.ActivityLog.Requests
         public required int Page { get; init; }
         public required int PageSize { get; init; }
 
-        public  GetAllLogsQuery ToQuery()
+        public GetAllLogsQuery ToQuery()
         {
             return new GetAllLogsQuery(Page, PageSize);
         }

@@ -1,8 +1,8 @@
-﻿using Tickefy.Domain.Primitives.StronglyTypedId;
+using Tickefy.Domain.Primitives.StronglyTypedId;
 
 namespace Tickefy.Domain.Common.EntityBase
 {
-    public class EntityBase<T>  where T : StronglyTypedId<T>
+    public class EntityBase<T> where T : StronglyTypedId<T>
     {
         public T Id { get; protected set; }
         public DateTime Created { get; set; }

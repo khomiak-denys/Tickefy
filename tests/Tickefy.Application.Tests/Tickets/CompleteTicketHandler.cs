@@ -21,21 +21,22 @@ public class CompleteTicketHandler
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
-        
+
         var handler = new CompleteTicketCommandHandler(repo.Object, logRepository.Object, uow.Object);
 
-        var command = new CompleteTicketCommand{
-            UserId = new UserId(), 
-            Roles = new List<string>(), 
+        var command = new CompleteTicketCommand
+        {
+            UserId = new UserId(),
+            Roles = new List<string>(),
             TicketId = new TicketId()
         };
-        
+
         var result = await handler.Handle(command, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
         result.Error.Should().BeOfType<NotFoundError>();
     }
-    
+
     [Fact]
     public async Task CompleteTicketCommandHandler_Should_Return_ForbiddenError_On_RequesterRole()
     {
@@ -45,12 +46,13 @@ public class CompleteTicketHandler
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
-        
+
         var handler = new CompleteTicketCommandHandler(repo.Object, logRepository.Object, uow.Object);
 
-        var command = new CompleteTicketCommand {
-            UserId = new UserId(), 
-            Roles = [nameof(UserRoles.Requester)], 
+        var command = new CompleteTicketCommand
+        {
+            UserId = new UserId(),
+            Roles = [nameof(UserRoles.Requester)],
             TicketId = new TicketId()
         };
         var result = await handler.Handle(command, CancellationToken.None);
@@ -58,7 +60,7 @@ public class CompleteTicketHandler
         result.IsFailure.Should().BeTrue();
         result.Error.Should().BeOfType<ForbiddenError>();
     }
-    
+
     [Fact]
     public async Task CompleteTicketCommandHandler_Should_CompleteTicketAndLogReason_WhenConditionAllows()
     {
@@ -66,22 +68,23 @@ public class CompleteTicketHandler
         var ticketId = ticket.Id;
         var agentId = new UserId();
         var eventType = EventType.StatusChanged;
-        
+
         ticket.Take(agentId, new TeamId());
         ticket.StartWork();
-        
+
         var repo = new Mock<ITicketRepository>();
         repo.Setup(r => r.GetByIdAsync(It.IsAny<TicketId>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(ticket);
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
-        
+
         var handler = new CompleteTicketCommandHandler(repo.Object, logRepository.Object, uow.Object);
 
-        var command = new CompleteTicketCommand {
-            UserId = agentId, 
-            Roles = [nameof(UserRoles.Agent)], 
+        var command = new CompleteTicketCommand
+        {
+            UserId = agentId,
+            Roles = [nameof(UserRoles.Agent)],
             TicketId = ticketId
         };
         var result = await handler.Handle(command, CancellationToken.None);
@@ -91,9 +94,9 @@ public class CompleteTicketHandler
         logRepository.Verify(repo => repo.Add(It.Is<Domain.ActivityLog.ActivityLog>(log =>
             log.UserId == agentId &&
             log.TicketId == ticketId &&
-            log.EventType == eventType 
+            log.EventType == eventType
         )), Times.Once);
-        
+
         uow.Verify(uow => uow.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 }

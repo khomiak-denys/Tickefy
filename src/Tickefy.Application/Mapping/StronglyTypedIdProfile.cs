@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Tickefy.Domain.Primitives;
 namespace Tickefy.Application.Mapping
 {

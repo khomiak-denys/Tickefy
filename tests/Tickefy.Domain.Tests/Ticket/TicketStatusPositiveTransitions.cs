@@ -8,7 +8,7 @@ public class TicketStatusPositiveTransitionsTests
     public void Status_Should_BeCreated_AfterDraft()
     {
         var ticket = TicketBuilder.New().InDraftState();
-        ticket.Publish(string.Empty, string.Empty,  new DateTime());
+        ticket.Publish(string.Empty, string.Empty, new DateTime());
         ticket.Status.Should().Be(Status.Created);
     }
 
@@ -75,7 +75,7 @@ public class TicketStatusPositiveTransitionsTests
         ticket.Cancel();
         ticket.Status.Should().Be(Status.Canceled);
     }
-    
+
     [Fact]
     public void Status_Should_BeCanceled_AfterAssigned()
     {
@@ -83,11 +83,11 @@ public class TicketStatusPositiveTransitionsTests
         ticket.Cancel();
         ticket.Status.Should().Be(Status.Canceled);
     }
-    
+
     [Fact]
     public void Status_Should_BeCanceled_AfterInProgress()
     {
-        var ticket = TicketBuilder.New().InInProgressState(); 
+        var ticket = TicketBuilder.New().InInProgressState();
         ticket.Cancel();
         ticket.Status.Should().Be(Status.Canceled);
     }

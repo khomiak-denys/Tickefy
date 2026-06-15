@@ -1,10 +1,10 @@
-﻿using FluentValidation;
+using FluentValidation;
 
 namespace Tickefy.Application.Ticket.PostComment
 {
     public class PostCommentCommandValidator : AbstractValidator<PostCommentCommand>
     {
-        public PostCommentCommandValidator() 
+        public PostCommentCommandValidator()
         {
             RuleFor(x => x.TicketId)
                 .NotNull()
@@ -24,7 +24,7 @@ namespace Tickefy.Application.Ticket.PostComment
             RuleFor(x => x.UserId)
                 .NotNull()
                 .WithMessage("User ID is required.");
-            
+
             RuleFor(x => x.UserId.Value.ToString())
                 .Cascade(CascadeMode.Stop)
                 .Must(id => id != string.Empty)

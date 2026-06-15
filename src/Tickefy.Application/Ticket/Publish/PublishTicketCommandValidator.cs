@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 
 namespace Tickefy.Application.Ticket.Publish;
 
@@ -8,7 +8,7 @@ public class PublishTicketCommandValidator : AbstractValidator<PublishTicketComm
     {
         RuleFor(x => x.UserId)
             .NotEmpty().WithMessage("UserId is required.");
-        
+
         RuleFor(x => x.TicketId)
             .NotEmpty().WithMessage("TicketId is required.");
 

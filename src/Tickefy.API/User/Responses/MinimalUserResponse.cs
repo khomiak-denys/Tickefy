@@ -1,4 +1,4 @@
-﻿namespace Tickefy.API.User.Responses
+namespace Tickefy.API.User.Responses
 {
     public record MinimalUserResponse(
         Guid Id,

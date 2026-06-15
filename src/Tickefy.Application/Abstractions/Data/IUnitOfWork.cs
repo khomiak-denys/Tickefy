@@ -1,4 +1,4 @@
-﻿namespace Tickefy.Application.Abstractions.Data
+namespace Tickefy.Application.Abstractions.Data
 {
     public interface IUnitOfWork
     {

@@ -1,4 +1,4 @@
-﻿namespace Tickefy.Application.AI.Dtos
+namespace Tickefy.Application.AI.Dtos
 {
     public record AiResponse(
         string Category,

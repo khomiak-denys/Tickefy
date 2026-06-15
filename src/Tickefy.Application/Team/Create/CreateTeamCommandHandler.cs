@@ -1,4 +1,4 @@
-﻿using Tickefy.Application.Abstractions.Data;
+using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Results;
@@ -52,7 +52,7 @@ namespace Tickefy.Application.Team.Create
             _teamRepository.Add(team);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            
+
             return Result.Success();
         }
     }

@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -60,7 +60,7 @@ namespace Tickefy.API.Ticket
 
             return result.Match(Created(), this.ToActionResult);
         }
-        
+
         [HttpPost("draft")]
         [Authorize]
         [SwaggerOperation(Summary = "Handles request to create draft ticket")]
@@ -84,7 +84,7 @@ namespace Tickefy.API.Ticket
 
             return result.Match(Created(), this.ToActionResult);
         }
-        
+
         [HttpPut]
         [Authorize]
         [Route("{ticketId:guid}/publish")]
@@ -103,7 +103,7 @@ namespace Tickefy.API.Ticket
             {
                 return Unauthorized("User ID is missing or invalid");
             }
-            
+
             var roles = User.Claims
                 .Where(c => c.Type == ClaimTypes.Role)
                 .Select(c => c.Value)
@@ -136,8 +136,8 @@ namespace Tickefy.API.Ticket
             var query = new GetMyTicketsQuery(new UserId(userId));
 
             var result = await _mediator.Send(query);
-            
-            return result.Match(onSuccess: value => Ok(_mapper.Map<List<TicketResponse>>(value)), 
+
+            return result.Match(onSuccess: value => Ok(_mapper.Map<List<TicketResponse>>(value)),
                 onFailure: this.ToActionResult);
         }
 
@@ -167,8 +167,8 @@ namespace Tickefy.API.Ticket
 
             var query = new GetTicketByIdQuery(new UserId(userId), roles, new TicketId(TicketId));
             var result = await _mediator.Send(query);
-            
-            return result.Match(onSuccess: value => Ok(_mapper.Map<TicketDetailsResponse>(value)), 
+
+            return result.Match(onSuccess: value => Ok(_mapper.Map<TicketDetailsResponse>(value)),
                 onFailure: this.ToActionResult);
         }
 
@@ -185,8 +185,8 @@ namespace Tickefy.API.Ticket
         {
             var query = new GetAllTicketsQuery();
             var result = await _mediator.Send(query);
-            
-            return result.Match(onSuccess: value => Ok(_mapper.Map<List<TicketResponse>>(value)), 
+
+            return result.Match(onSuccess: value => Ok(_mapper.Map<List<TicketResponse>>(value)),
                 onFailure: this.ToActionResult);
         }
 
@@ -212,8 +212,8 @@ namespace Tickefy.API.Ticket
 
             var query = new GetQueueTicketsQuery(new UserId(userId));
             var result = await _mediator.Send(query);
-            
-            return result.Match(onSuccess: value => Ok(_mapper.Map<List<TicketResponse>>(value)), 
+
+            return result.Match(onSuccess: value => Ok(_mapper.Map<List<TicketResponse>>(value)),
                 onFailure: this.ToActionResult);
         }
 
@@ -387,7 +387,7 @@ namespace Tickefy.API.Ticket
 
             return result.Match(Ok(), this.ToActionResult);
         }
-        
+
         [HttpPut]
         [Authorize(Roles = "Admin")]
         [Route("{ticketId:guid}/fail")]
@@ -413,18 +413,18 @@ namespace Tickefy.API.Ticket
                 .ToList();
 
             var command = new FailTicketCommand
-                {
+            {
                 UserId = new UserId(userId),
                 Roles = roles,
                 TicketId = new TicketId(ticketId),
                 Reason = request.Reason
             };
-            
+
             var result = await _mediator.Send(command);
 
             return result.Match(Ok(), this.ToActionResult);
         }
-        
+
         [HttpPut]
         [Authorize]
         [Route("{ticketId:guid}/accept")]
@@ -455,9 +455,9 @@ namespace Tickefy.API.Ticket
                 Roles = roles,
                 TicketId = new TicketId(ticketId)
             };
-            
+
             var result = await _mediator.Send(command);
-            
+
             return result.Match(Ok(), this.ToActionResult);
         }
 
@@ -491,9 +491,9 @@ namespace Tickefy.API.Ticket
                 Roles = roles,
                 TicketId = new TicketId(ticketId)
             };
-            
+
             var result = await _mediator.Send(command);
-            
+
             return result.Match(Ok(), this.ToActionResult);
         }
     }

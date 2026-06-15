@@ -1,4 +1,4 @@
-﻿using Tickefy.Application.AI.Dtos;
+using Tickefy.Application.AI.Dtos;
 using Tickefy.Domain.Common.Category;
 using Tickefy.Domain.Common.Priority;
 

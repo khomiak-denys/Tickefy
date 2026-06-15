@@ -1,4 +1,4 @@
-﻿using Tickefy.Domain.Primitives.StronglyTypedId;
+using Tickefy.Domain.Primitives.StronglyTypedId;
 
 namespace Tickefy.Domain.Primitives
 {

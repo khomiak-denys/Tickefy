@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.User.Common;
 using Tickefy.Domain.Common.Results;
@@ -12,7 +12,7 @@ namespace Tickefy.Application.User.GetAll
         private readonly IMapper _mapper;
 
         public GetAllUsersQueryHandler(
-            IUserRepository userRepository, 
+            IUserRepository userRepository,
             IMapper mapper)
         {
             _userRepository = userRepository;

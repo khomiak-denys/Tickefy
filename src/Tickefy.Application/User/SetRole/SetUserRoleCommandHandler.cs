@@ -1,4 +1,4 @@
-﻿using Tickefy.Application.Abstractions.Data;
+using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Results;
@@ -32,11 +32,11 @@ namespace Tickefy.Application.User.SetRole
             }
 
             if (user.Role == UserRoles.Admin) return Result.Failure(new ForbiddenError("Admin role cant be changed"));
-            
+
             user.SetRole(role);
 
             await _uow.SaveChangesAsync(cancellationToken);
-            
+
             return Result.Success();
         }
     }

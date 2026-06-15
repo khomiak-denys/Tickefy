@@ -1,4 +1,4 @@
-﻿using Tickefy.API.User.Responses;
+using Tickefy.API.User.Responses;
 using Tickefy.Application.User.Common;
 
 namespace Tickefy.API.Team.Responses

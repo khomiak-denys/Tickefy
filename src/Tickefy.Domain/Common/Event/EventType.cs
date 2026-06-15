@@ -1,4 +1,4 @@
-﻿namespace Tickefy.Domain.Common.Event
+namespace Tickefy.Domain.Common.Event
 {
     public enum EventType
     {

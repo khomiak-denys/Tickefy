@@ -1,4 +1,4 @@
-﻿using Tickefy.Application.User.Common;
+using Tickefy.Application.User.Common;
 
 namespace Tickefy.Application.Team.Common
 {

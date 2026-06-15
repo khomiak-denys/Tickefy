@@ -1,10 +1,10 @@
-﻿using FluentValidation;
+using FluentValidation;
 
 namespace Tickefy.Application.Ticket.Complete
 {
     public class CompleteTicketCommandValidator : AbstractValidator<CompleteTicketCommand>
     {
-        public CompleteTicketCommandValidator() 
+        public CompleteTicketCommandValidator()
         {
             RuleFor(x => x.TicketId)
                 .NotNull()

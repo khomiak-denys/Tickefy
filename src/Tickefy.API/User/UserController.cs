@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +16,7 @@ namespace Tickefy.API.User
     [ApiController]
     [Route("api/v1/users")]
     [Produces("application/json")]
-    public class UserController : ControllerBase 
+    public class UserController : ControllerBase
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;

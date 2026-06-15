@@ -1,4 +1,4 @@
-﻿using Tickefy.Application.AI.Dtos;
+using Tickefy.Application.AI.Dtos;
 
 namespace Tickefy.Application.Abstractions.Services
 {

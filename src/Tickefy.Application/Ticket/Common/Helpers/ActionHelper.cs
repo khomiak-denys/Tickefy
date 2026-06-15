@@ -33,16 +33,16 @@ public static class ActionHelper
             _ => false
         };
     }
-    
+
     public static bool CanExecute(this TicketAction action, Domain.Ticket.Ticket ticket, UserId userId, IEnumerable<string> roles)
     {
         var roleSet = roles as ISet<string> ?? roles.ToHashSet(StringComparer.OrdinalIgnoreCase);
-        
+
         var isAgent = roleSet.Contains(nameof(UserRoles.Agent));
         var isRequester = ticket.RequesterId == userId;
         var isAdmin = roleSet.Contains(nameof(UserRoles.Admin));
         var isAssignedAgent = ticket.AssignedAgentId == userId && isAgent;
-        
+
         return action.CanExecute(ticket, isAdmin, isRequester, isAssignedAgent, isAgent);
     }
 }
