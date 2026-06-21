@@ -25,10 +25,19 @@ namespace Tickefy.API.Ticket
     [ApiController]
     [Route("api/v1/tickets")]
     [Produces("application/json")]
+    /// <summary>
+    /// Handles API requests for tickets, comments, and ticket workflow actions.
+    /// </summary>
     public class TicketController : ControllerBase
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TicketController"/> class.
+        /// </summary>
+        /// <param name="mediator">The mediator used to send ticket commands and queries.</param>
+        /// <param name="mapper">The mapper used to convert ticket results to responses.</param>
         public TicketController(
             IMediator mediator,
             IMapper mapper)
@@ -37,6 +46,10 @@ namespace Tickefy.API.Ticket
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Creates a ticket for the current user.
+        /// </summary>
+        /// <param name="request">The ticket creation request.</param>
         [HttpPost]
         [Authorize]
         [SwaggerOperation(Summary = "Handles request to create ticket")]
@@ -61,6 +74,10 @@ namespace Tickefy.API.Ticket
             return result.Match(Created(), this.ToActionResult);
         }
 
+        /// <summary>
+        /// Creates a draft ticket for the current user.
+        /// </summary>
+        /// <param name="request">The draft ticket creation request.</param>
         [HttpPost("draft")]
         [Authorize]
         [SwaggerOperation(Summary = "Handles request to create draft ticket")]
@@ -85,6 +102,11 @@ namespace Tickefy.API.Ticket
             return result.Match(Created(), this.ToActionResult);
         }
 
+        /// <summary>
+        /// Publishes a draft ticket.
+        /// </summary>
+        /// <param name="ticketId">The identifier of the ticket to publish.</param>
+        /// <param name="request">The ticket publication request.</param>
         [HttpPut]
         [Authorize]
         [Route("{ticketId:guid}/publish")]
@@ -115,6 +137,9 @@ namespace Tickefy.API.Ticket
             return result.Match(Ok(), this.ToActionResult);
         }
 
+        /// <summary>
+        /// Gets tickets for the current user.
+        /// </summary>
         [HttpGet]
         [Authorize]
         [Route("my")]
@@ -141,6 +166,10 @@ namespace Tickefy.API.Ticket
                 onFailure: this.ToActionResult);
         }
 
+        /// <summary>
+        /// Gets a ticket by identifier.
+        /// </summary>
+        /// <param name="TicketId">The identifier of the ticket.</param>
         [HttpGet]
         [Authorize]
         [Route("{TicketId}")]
@@ -172,6 +201,9 @@ namespace Tickefy.API.Ticket
                 onFailure: this.ToActionResult);
         }
 
+        /// <summary>
+        /// Gets all tickets.
+        /// </summary>
         [HttpGet]
         [Authorize(Roles = "Admin")]
         [SwaggerOperation(Summary = "Handles request to retrieve all tickets for admin")]
@@ -190,6 +222,9 @@ namespace Tickefy.API.Ticket
                 onFailure: this.ToActionResult);
         }
 
+        /// <summary>
+        /// Gets queued tickets for the current agent.
+        /// </summary>
         [HttpGet]
         [Authorize(Roles = "Agent")]
         [Route("queue")]
@@ -217,6 +252,11 @@ namespace Tickefy.API.Ticket
                 onFailure: this.ToActionResult);
         }
 
+        /// <summary>
+        /// Adds a comment to a ticket.
+        /// </summary>
+        /// <param name="ticketId">The identifier of the ticket.</param>
+        /// <param name="request">The comment creation request.</param>
         [HttpPost]
         [Authorize(Roles = "Requester, Agent")]
         [Route("{ticketId}/comment")]
@@ -242,6 +282,10 @@ namespace Tickefy.API.Ticket
             return result.Match(Created(), this.ToActionResult);
         }
 
+        /// <summary>
+        /// Takes a ticket for work.
+        /// </summary>
+        /// <param name="ticketId">The identifier of the ticket to take.</param>
         [HttpPut]
         [Authorize(Roles = "Agent,Admin")]
         [Route("{ticketId}/take")]
@@ -278,6 +322,10 @@ namespace Tickefy.API.Ticket
             return result.Match(Ok(), this.ToActionResult);
         }
 
+        /// <summary>
+        /// Completes a ticket.
+        /// </summary>
+        /// <param name="ticketId">The identifier of the ticket to complete.</param>
         [HttpPut]
         [Authorize(Roles = "Agent,Admin")]
         [Route("{ticketId:guid}/complete")]
@@ -314,6 +362,11 @@ namespace Tickefy.API.Ticket
             return result.Match(Ok(), this.ToActionResult);
         }
 
+        /// <summary>
+        /// Reopens a ticket.
+        /// </summary>
+        /// <param name="ticketId">The identifier of the ticket to reopen.</param>
+        /// <param name="request">The request containing the reopen reason.</param>
         [HttpPut]
         [Authorize(Roles = "Requester,Admin")]
         [Route("{ticketId:guid}/reopen")]
@@ -351,6 +404,11 @@ namespace Tickefy.API.Ticket
             return result.Match(Ok(), this.ToActionResult);
         }
 
+        /// <summary>
+        /// Cancels a ticket.
+        /// </summary>
+        /// <param name="ticketId">The identifier of the ticket to cancel.</param>
+        /// <param name="request">The request containing the cancellation reason.</param>
         [HttpPut]
         [Authorize(Roles = "Requester,Admin")]
         [Route("{ticketId:guid}/cancel")]
@@ -388,6 +446,11 @@ namespace Tickefy.API.Ticket
             return result.Match(Ok(), this.ToActionResult);
         }
 
+        /// <summary>
+        /// Marks a ticket as failed.
+        /// </summary>
+        /// <param name="ticketId">The identifier of the ticket to fail.</param>
+        /// <param name="request">The request containing the failure reason.</param>
         [HttpPut]
         [Authorize(Roles = "Admin")]
         [Route("{ticketId:guid}/fail")]
@@ -425,6 +488,10 @@ namespace Tickefy.API.Ticket
             return result.Match(Ok(), this.ToActionResult);
         }
 
+        /// <summary>
+        /// Accepts completed work and finishes a ticket.
+        /// </summary>
+        /// <param name="ticketId">The identifier of the ticket to accept.</param>
         [HttpPut]
         [Authorize]
         [Route("{ticketId:guid}/accept")]
@@ -461,6 +528,10 @@ namespace Tickefy.API.Ticket
             return result.Match(Ok(), this.ToActionResult);
         }
 
+        /// <summary>
+        /// Starts work on a ticket.
+        /// </summary>
+        /// <param name="ticketId">The identifier of the ticket.</param>
         [HttpPut]
         [Authorize(Roles = "Agent,Admin")]
         [Route("{ticketId:guid}/start-work")]
