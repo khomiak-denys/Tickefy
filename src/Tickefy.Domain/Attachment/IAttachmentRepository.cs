@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Tickefy.Domain.Attachment
 {
+    /// <summary>
+    /// Defines persistence operations for attachments.
+    /// </summary>
     internal interface IAttachmentRepository
     {
     }
