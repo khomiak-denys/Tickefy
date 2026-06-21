@@ -13,12 +13,21 @@ namespace Tickefy.API.Auth
     [ApiController]
     [Route("api/v1/auth")]
     [Produces("application/json")]
+    /// <summary>
+    /// Handles API requests for authentication and password management.
+    /// </summary>
     public class AuthController : ControllerBase
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
         private readonly ILogger<AuthController> _logger;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthController"/> class.
+        /// </summary>
+        /// <param name="mediator">The mediator used to send authentication commands.</param>
+        /// <param name="mapper">The mapper used to convert authentication results to responses.</param>
+        /// <param name="logger">The logger used to write authentication logs.</param>
         public AuthController(
             IMediator mediator,
             IMapper mapper,
@@ -29,6 +38,10 @@ namespace Tickefy.API.Auth
             _logger = logger;
         }
 
+        /// <summary>
+        /// Registers a new user.
+        /// </summary>
+        /// <param name="request">The user registration request.</param>
         [AllowAnonymous]
         [HttpPost("register")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -44,6 +57,10 @@ namespace Tickefy.API.Auth
                 onFailure: this.ToActionResult);
         }
 
+        /// <summary>
+        /// Authenticates a user and returns a login response.
+        /// </summary>
+        /// <param name="request">The user login request.</param>
         [AllowAnonymous]
         [HttpPost("login")]
         [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
@@ -60,6 +77,10 @@ namespace Tickefy.API.Auth
                 onFailure: this.ToActionResult);
         }
 
+        /// <summary>
+        /// Updates the current user's password.
+        /// </summary>
+        /// <param name="request">The password update request.</param>
         [Authorize]
         [HttpPatch("password")]
         [SwaggerOperation(Summary = "Handles request to reset user password")]

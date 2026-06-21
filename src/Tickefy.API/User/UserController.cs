@@ -16,16 +16,28 @@ namespace Tickefy.API.User
     [ApiController]
     [Route("api/v1/users")]
     [Produces("application/json")]
+    /// <summary>
+    /// Handles API requests for users.
+    /// </summary>
     public class UserController : ControllerBase
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserController"/> class.
+        /// </summary>
+        /// <param name="mediator">The mediator used to send user commands and queries.</param>
+        /// <param name="mapper">The mapper used to convert user results to responses.</param>
         public UserController(IMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Gets all users.
+        /// </summary>
         [HttpGet]
         [Authorize(Roles = "Admin")]
         [SwaggerOperation(Summary = "Retrieve all users (Admin only)")]
@@ -42,6 +54,10 @@ namespace Tickefy.API.User
                 onFailure: this.ToActionResult);
         }
 
+        /// <summary>
+        /// Gets a user by identifier.
+        /// </summary>
+        /// <param name="userId">The identifier of the user.</param>
         [HttpGet("{userId}")]
         [Authorize(Roles = "Admin")]
         [SwaggerOperation(Summary = "Retrieve user by id (Admin only)")]
@@ -58,6 +74,9 @@ namespace Tickefy.API.User
                 onFailure: this.ToActionResult);
         }
 
+        /// <summary>
+        /// Gets the current user's profile.
+        /// </summary>
         [HttpGet("me")]
         [Authorize]
         [SwaggerOperation(Summary = "Retrieve current user profile")]
@@ -76,6 +95,10 @@ namespace Tickefy.API.User
                 onFailure: this.ToActionResult);
         }
 
+        /// <summary>
+        /// Deletes a user by identifier.
+        /// </summary>
+        /// <param name="userId">The identifier of the user to delete.</param>
         [HttpDelete("{userId}")]
         [Authorize(Roles = "Admin")]
         [SwaggerOperation(Summary = "Delete user by id (Admin only)")]
@@ -91,6 +114,11 @@ namespace Tickefy.API.User
             return result.Match(NoContent(), this.ToActionResult);
         }
 
+        /// <summary>
+        /// Sets a user's role.
+        /// </summary>
+        /// <param name="userId">The identifier of the user.</param>
+        /// <param name="request">The user role update request.</param>
         [HttpPatch("{userId}")]
         [Authorize(Roles = "Admin")]
         [SwaggerOperation(Summary = "Set user role (Admin only)")]
@@ -106,6 +134,10 @@ namespace Tickefy.API.User
             return result.Match(Ok(), this.ToActionResult);
         }
 
+        /// <summary>
+        /// Updates the current user's profile.
+        /// </summary>
+        /// <param name="request">The profile update request.</param>
         [HttpPatch("update-profile")]
         [Authorize]
         [SwaggerOperation(Summary = "Update current user profile")]

@@ -18,17 +18,29 @@ namespace Tickefy.API.Team
     [ApiController]
     [Route("api/v1/teams")]
     [Produces("application/json")]
+    /// <summary>
+    /// Handles API requests for teams and team membership.
+    /// </summary>
     public class TeamController : ControllerBase
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TeamController"/> class.
+        /// </summary>
+        /// <param name="mediator">The mediator used to send team commands and queries.</param>
+        /// <param name="mapper">The mapper used to convert team results to responses.</param>
         public TeamController(IMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Creates a new team for the current user.
+        /// </summary>
+        /// <param name="request">The team creation request.</param>
         [HttpPost]
         [Authorize(Roles = "Admin, Requester")]
         [SwaggerOperation(Summary = "Handles request to create a new team")]
@@ -47,6 +59,11 @@ namespace Tickefy.API.Team
             return result.Match(Created(), this.ToActionResult);
         }
 
+        /// <summary>
+        /// Adds a member to a team.
+        /// </summary>
+        /// <param name="teamId">The identifier of the team.</param>
+        /// <param name="request">The member addition request.</param>
         [HttpPatch("{teamId}/members")]
         [Authorize(Roles = "Admin, Manager")]
         [SwaggerOperation(Summary = "Add a member to the team (ONLY TEAM LEADER)")]
@@ -67,6 +84,11 @@ namespace Tickefy.API.Team
             return result.Match(Ok(), this.ToActionResult);
         }
 
+        /// <summary>
+        /// Removes a member from a team.
+        /// </summary>
+        /// <param name="teamId">The identifier of the team.</param>
+        /// <param name="memberId">The identifier of the member to remove.</param>
         [HttpDelete("{teamId}/members/{memberId}")]
         [Authorize(Roles = "Admin, Manager")]
         [SwaggerOperation(Summary = "Remove a member from the team (ONLY TEAM LEADER)")]
@@ -91,6 +113,10 @@ namespace Tickefy.API.Team
             return result.Match(NoContent(), this.ToActionResult);
         }
 
+        /// <summary>
+        /// Deletes a team by identifier.
+        /// </summary>
+        /// <param name="teamId">The identifier of the team to delete.</param>
         [HttpDelete("{teamId}")]
         [Authorize(Roles = "Admin, Manager")]
         [SwaggerOperation(Summary = "Delete a team by id (ONLY TEAM LEADER OR ADMIN)")]
@@ -110,6 +136,10 @@ namespace Tickefy.API.Team
             return result.Match(NoContent(), this.ToActionResult);
         }
 
+        /// <summary>
+        /// Gets a team by identifier.
+        /// </summary>
+        /// <param name="teamId">The identifier of the team.</param>
         [HttpGet("{teamId}")]
         [Authorize(Roles = "Agent, Admin, Manager")]
         [SwaggerOperation(Summary = "Retrieve team by id")]
@@ -126,6 +156,9 @@ namespace Tickefy.API.Team
                 onFailure: this.ToActionResult);
         }
 
+        /// <summary>
+        /// Gets all teams.
+        /// </summary>
         [HttpGet]
         [Authorize(Roles = "Admin")]
         [SwaggerOperation(Summary = "Retrieve all teams")]
@@ -141,6 +174,9 @@ namespace Tickefy.API.Team
                 onFailure: this.ToActionResult);
         }
 
+        /// <summary>
+        /// Gets teams for the current user.
+        /// </summary>
         [HttpGet("my")]
         [Authorize]
         [SwaggerOperation(Summary = "Retrieve teams of the current user")]

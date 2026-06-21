@@ -13,17 +13,29 @@ namespace Tickefy.API.ActivityLog
     [ApiController]
     [Route("api/v1/logs")]
     [Produces("application/json")]
+    /// <summary>
+    /// Handles API requests for activity log entries.
+    /// </summary>
     public class ActivityLogController : ControllerBase
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ActivityLogController"/> class.
+        /// </summary>
+        /// <param name="mediator">The mediator used to send activity log queries.</param>
+        /// <param name="mapper">The mapper used to convert activity log results to responses.</param>
         public ActivityLogController(IMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Gets all activity log entries using the specified paging request.
+        /// </summary>
+        /// <param name="request">The activity log query request.</param>
         [HttpGet]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(List<LogResponse>), StatusCodes.Status200OK)]
@@ -40,6 +52,10 @@ namespace Tickefy.API.ActivityLog
             return Ok(response);
         }
 
+        /// <summary>
+        /// Gets activity log entries for a ticket.
+        /// </summary>
+        /// <param name="ticketId">The identifier of the ticket.</param>
         [HttpGet("ticket/{ticketId}")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(List<LogResponse>), StatusCodes.Status200OK)]
