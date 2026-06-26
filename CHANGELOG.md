@@ -2,6 +2,18 @@
 
 Format: update - date - name (#number)
 
+## update - 2026-06-21 - Documentation improvement (#37)
+**Goal:** Improve project documentation with endpoint docs and interface summaries.
+**Description:** Added endpoint documentation and XML summary comments for interfaces across the codebase.
+
+## update - 2026-06-15 - Code format fix (#36)
+**Goal:** Enforce consistent code formatting across the project.
+**Description:** Ran code formatting to fix style inconsistencies throughout the codebase.
+
+## update - 2026-05-24 - Project structure refactor (#35)
+**Goal:** Add required project documentation and configuration files.
+**Description:** Added changelog, licence, and other required documents, configured editorconfig EOL settings, and added copyright to the licence file.
+
 ## update - 2026-03-09 - Exceptions cleanup and mapper trim (#34)
 **Goal:** Remove unused exception classes and mappings.
 **Description:** Removed unused exception types and pruned exception-to-problem mapping in the exception mapper.
