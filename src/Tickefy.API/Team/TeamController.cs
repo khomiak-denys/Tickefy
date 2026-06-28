@@ -41,6 +41,7 @@ namespace Tickefy.API.Team
         /// Creates a new team for the current user.
         /// </summary>
         /// <param name="request">The team creation request.</param>
+        /// <returns>HTTP 201 Created on success; 400 or 401 on failure.</returns>
         [HttpPost]
         [Authorize(Roles = "Admin, Requester")]
         [SwaggerOperation(Summary = "Handles request to create a new team")]
@@ -64,6 +65,7 @@ namespace Tickefy.API.Team
         /// </summary>
         /// <param name="teamId">The identifier of the team.</param>
         /// <param name="request">The member addition request.</param>
+        /// <returns>HTTP 200 OK on success; 400, 401, or 403 on failure.</returns>
         [HttpPatch("{teamId}/members")]
         [Authorize(Roles = "Admin, Manager")]
         [SwaggerOperation(Summary = "Add a member to the team (ONLY TEAM LEADER)")]
@@ -89,6 +91,7 @@ namespace Tickefy.API.Team
         /// </summary>
         /// <param name="teamId">The identifier of the team.</param>
         /// <param name="memberId">The identifier of the member to remove.</param>
+        /// <returns>HTTP 204 No Content on success; 400, 401, or 403 on failure.</returns>
         [HttpDelete("{teamId}/members/{memberId}")]
         [Authorize(Roles = "Admin, Manager")]
         [SwaggerOperation(Summary = "Remove a member from the team (ONLY TEAM LEADER)")]
@@ -117,6 +120,7 @@ namespace Tickefy.API.Team
         /// Deletes a team by identifier.
         /// </summary>
         /// <param name="teamId">The identifier of the team to delete.</param>
+        /// <returns>HTTP 204 No Content on success; 401, 403, or 404 on failure.</returns>
         [HttpDelete("{teamId}")]
         [Authorize(Roles = "Admin, Manager")]
         [SwaggerOperation(Summary = "Delete a team by id (ONLY TEAM LEADER OR ADMIN)")]
@@ -140,6 +144,7 @@ namespace Tickefy.API.Team
         /// Gets a team by identifier.
         /// </summary>
         /// <param name="teamId">The identifier of the team.</param>
+        /// <returns>HTTP 200 OK with a <see cref="TeamDetailResponse"/>; 401 or 404 on failure.</returns>
         [HttpGet("{teamId}")]
         [Authorize(Roles = "Agent, Admin, Manager")]
         [SwaggerOperation(Summary = "Retrieve team by id")]
@@ -159,6 +164,7 @@ namespace Tickefy.API.Team
         /// <summary>
         /// Gets all teams.
         /// </summary>
+        /// <returns>HTTP 200 OK with a list of <see cref="TeamResponse"/>; 401 on failure.</returns>
         [HttpGet]
         [Authorize(Roles = "Admin")]
         [SwaggerOperation(Summary = "Retrieve all teams")]
@@ -177,6 +183,7 @@ namespace Tickefy.API.Team
         /// <summary>
         /// Gets teams for the current user.
         /// </summary>
+        /// <returns>HTTP 200 OK with a list of <see cref="TeamResponse"/>; 401 or 404 on failure.</returns>
         [HttpGet("my")]
         [Authorize]
         [SwaggerOperation(Summary = "Retrieve teams of the current user")]

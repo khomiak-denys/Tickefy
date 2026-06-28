@@ -52,6 +52,7 @@ namespace Tickefy.API.Auth
         /// Registers a new user.
         /// </summary>
         /// <param name="request">The user registration request.</param>
+        /// <returns>HTTP 201 Created on success; 400 Bad Request if validation fails; 409 Conflict if the login is already taken.</returns>
         [AllowAnonymous]
         [HttpPost("register")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -71,6 +72,7 @@ namespace Tickefy.API.Auth
         /// Authenticates a user and returns a login response.
         /// </summary>
         /// <param name="request">The user login request.</param>
+        /// <returns>HTTP 200 OK with a <see cref="LoginResponse"/> and a <c>refresh_token</c> cookie on success; 400 or 401 on failure.</returns>
         [AllowAnonymous]
         [HttpPost("login")]
         [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
@@ -95,6 +97,7 @@ namespace Tickefy.API.Auth
         /// Updates the current user's password.
         /// </summary>
         /// <param name="request">The password update request.</param>
+        /// <returns>HTTP 200 OK on success; 400, 401, or 404 on failure.</returns>
         [Authorize]
         [HttpPatch("password")]
         [SwaggerOperation(Summary = "Handles request to reset user password")]
@@ -119,6 +122,10 @@ namespace Tickefy.API.Auth
             return result.Match(Ok(), this.ToActionResult);
         }
 
+        /// <summary>
+        /// Refreshes the current session using the <c>refresh_token</c> cookie.
+        /// </summary>
+        /// <returns>HTTP 200 OK with a new <see cref="LoginResponse"/> and updated <c>refresh_token</c> cookie on success; 401 if the cookie is missing; 403 if the token is invalid or expired.</returns>
         [AllowAnonymous]
         [HttpPost("refresh")]
         [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
@@ -142,6 +149,10 @@ namespace Tickefy.API.Auth
                 onFailure: this.ToActionResult);
         }
 
+        /// <summary>
+        /// Logs out the current user by invalidating the <c>refresh_token</c> cookie.
+        /// </summary>
+        /// <returns>HTTP 200 OK on success; 401 if the cookie is missing; 404 if the token is not found.</returns>
         [Authorize]
         [HttpPost("logout")]
         [ProducesResponseType(StatusCodes.Status200OK)]
