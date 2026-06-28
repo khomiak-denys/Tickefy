@@ -1,8 +1,10 @@
+using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Abstractions.Services;
 using Tickefy.Application.Auth.Common;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Results;
+using Tickefy.Domain.RefreshToken;
 using Tickefy.Domain.User;
 
 namespace Tickefy.Application.Auth.Login
@@ -10,15 +12,21 @@ namespace Tickefy.Application.Auth.Login
     public class LoginUserCommandHandler : ICommandHandler<LoginUserCommand, Result<LoginResult>>
     {
         private readonly IUserRepository _userRepository;
+        private readonly IRefreshTokenRepository _refreshTokenRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IPasswordHasher _passwordHasher;
         private readonly ITokenService _tokenService;
 
         public LoginUserCommandHandler(
             IUserRepository userRepository,
+            IRefreshTokenRepository refreshTokenRepository,
+            IUnitOfWork unitOfWork,
             IPasswordHasher passwordHasher,
             ITokenService tokenService)
         {
             _userRepository = userRepository;
+            _refreshTokenRepository = refreshTokenRepository;
+            _unitOfWork = unitOfWork;
             _passwordHasher = passwordHasher;
             _tokenService = tokenService;
         }
@@ -37,6 +45,12 @@ namespace Tickefy.Application.Auth.Login
             }
 
             var token = await _tokenService.GetToken(existingUser.Id.Value, existingUser.Login, existingUser.Role);
+            var refreshToken = _tokenService.GenerateRefreshToken();
+
+            var refreshTokenEntity = Domain.RefreshToken.RefreshToken.Create(existingUser.Id, DateTime.UtcNow.AddDays(7), refreshToken);
+
+            await _refreshTokenRepository.Add(refreshTokenEntity);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result<LoginResult>.Success(new LoginResult
             (
@@ -44,7 +58,8 @@ namespace Tickefy.Application.Auth.Login
                 existingUser.FirstName,
                 existingUser.LastName,
                 existingUser.Login,
-                token
+                token,
+                refreshToken
             ));
         }
     }

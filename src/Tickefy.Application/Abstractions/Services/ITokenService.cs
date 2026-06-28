@@ -1,4 +1,5 @@
 using Tickefy.Domain.Common.UserRole;
+using Tickefy.Domain.RefreshToken;
 
 namespace Tickefy.Application.Abstractions.Services
 {
@@ -14,5 +15,10 @@ namespace Tickefy.Application.Abstractions.Services
         /// <param name="login">The user login.</param>
         /// <param name="role">The user role.</param>
         public Task<string> GetToken(Guid id, string login, UserRoles role);
+
+        /// <summary>
+        /// Creates a refresh_token for the specified user identity.
+        /// </summary>
+        public string GenerateRefreshToken();
     }
 }

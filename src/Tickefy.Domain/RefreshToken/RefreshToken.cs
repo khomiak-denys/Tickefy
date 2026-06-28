@@ -1,0 +1,28 @@
+﻿using Tickefy.Domain.Common.EntityBase;
+using Tickefy.Domain.Primitives;
+
+namespace Tickefy.Domain.RefreshToken;
+
+public class RefreshToken : EntityBase<TokenId>
+{
+    public UserId UserId { get; private set; }
+    public DateTime Expires { get; private set; }
+    public string Token { get; private set; }
+    public User.User User { get; private set; }
+
+    private RefreshToken() { }
+    private RefreshToken(UserId userId, DateTime expires, string token)
+    {
+        Id = new TokenId();
+        UserId = userId;
+        Expires = expires;
+        Token = token;
+    }
+
+    public static RefreshToken Create(UserId userId, DateTime expires, string token)
+    {
+        var entity = new RefreshToken(userId, expires, token);
+        entity.OnCreate();
+        return entity;
+    }
+}
