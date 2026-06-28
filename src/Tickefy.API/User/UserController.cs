@@ -38,6 +38,7 @@ namespace Tickefy.API.User
         /// <summary>
         /// Gets all users.
         /// </summary>
+        /// <returns>HTTP 200 OK with a list of <see cref="UserResponse"/>; 401 or 403 if unauthorized.</returns>
         [HttpGet]
         [Authorize(Roles = "Admin")]
         [SwaggerOperation(Summary = "Retrieve all users (Admin only)")]
@@ -58,6 +59,7 @@ namespace Tickefy.API.User
         /// Gets a user by identifier.
         /// </summary>
         /// <param name="userId">The identifier of the user.</param>
+        /// <returns>HTTP 200 OK with a <see cref="UserResponse"/>; 401, 403, or 404 on failure.</returns>
         [HttpGet("{userId}")]
         [Authorize(Roles = "Admin")]
         [SwaggerOperation(Summary = "Retrieve user by id (Admin only)")]
@@ -77,6 +79,7 @@ namespace Tickefy.API.User
         /// <summary>
         /// Gets the current user's profile.
         /// </summary>
+        /// <returns>HTTP 200 OK with the current user's <see cref="UserResponse"/>; 401 if not authenticated.</returns>
         [HttpGet("me")]
         [Authorize]
         [SwaggerOperation(Summary = "Retrieve current user profile")]
@@ -99,6 +102,7 @@ namespace Tickefy.API.User
         /// Deletes a user by identifier.
         /// </summary>
         /// <param name="userId">The identifier of the user to delete.</param>
+        /// <returns>HTTP 204 No Content on success; 401, 403, or 404 on failure.</returns>
         [HttpDelete("{userId}")]
         [Authorize(Roles = "Admin")]
         [SwaggerOperation(Summary = "Delete user by id (Admin only)")]
@@ -119,6 +123,7 @@ namespace Tickefy.API.User
         /// </summary>
         /// <param name="userId">The identifier of the user.</param>
         /// <param name="request">The user role update request.</param>
+        /// <returns>HTTP 200 OK on success; 400, 401, or 403 on failure.</returns>
         [HttpPatch("{userId}")]
         [Authorize(Roles = "Admin")]
         [SwaggerOperation(Summary = "Set user role (Admin only)")]
@@ -138,6 +143,7 @@ namespace Tickefy.API.User
         /// Updates the current user's profile.
         /// </summary>
         /// <param name="request">The profile update request.</param>
+        /// <returns>HTTP 200 OK on success; 400 or 401 on failure.</returns>
         [HttpPatch("update-profile")]
         [Authorize]
         [SwaggerOperation(Summary = "Update current user profile")]

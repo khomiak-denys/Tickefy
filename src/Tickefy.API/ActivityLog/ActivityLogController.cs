@@ -36,6 +36,7 @@ namespace Tickefy.API.ActivityLog
         /// Gets all activity log entries using the specified paging request.
         /// </summary>
         /// <param name="request">The activity log query request.</param>
+        /// <returns>HTTP 200 OK with a list of <see cref="LogResponse"/>; 400, 401, or 403 on failure.</returns>
         [HttpGet]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(List<LogResponse>), StatusCodes.Status200OK)]
@@ -56,6 +57,7 @@ namespace Tickefy.API.ActivityLog
         /// Gets activity log entries for a ticket.
         /// </summary>
         /// <param name="ticketId">The identifier of the ticket.</param>
+        /// <returns>HTTP 200 OK with a list of <see cref="LogResponse"/>; 400, 401, 403, or 404 on failure.</returns>
         [HttpGet("ticket/{ticketId}")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(List<LogResponse>), StatusCodes.Status200OK)]

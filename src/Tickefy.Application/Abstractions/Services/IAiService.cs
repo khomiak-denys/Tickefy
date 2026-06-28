@@ -13,6 +13,7 @@ namespace Tickefy.Application.Abstractions.Services
         /// <param name="title">The ticket title.</param>
         /// <param name="description">The ticket description.</param>
         /// <param name="deadline">The ticket deadline.</param>
+        /// <returns>An <see cref="AiResponse"/> containing the suggested category and priority.</returns>
         Task<AiResponse> AnalyzeTicketAsync(string title, string description, DateTime deadline);
 
     }
