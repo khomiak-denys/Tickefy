@@ -6,7 +6,10 @@ using Swashbuckle.AspNetCore.Annotations;
 using Tickefy.API.Auth.Requests;
 using Tickefy.API.Auth.Responses;
 using Tickefy.API.ErrorHandling;
+using Tickefy.Application.Auth.Logout;
+using Tickefy.Application.Auth.RefreshToken;
 using Tickefy.Domain.Primitives;
+using Tickefy.Domain.RefreshToken;
 
 namespace Tickefy.API.Auth
 {
@@ -21,6 +24,13 @@ namespace Tickefy.API.Auth
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
         private readonly ILogger<AuthController> _logger;
+        private CookieOptions _cookieOptions = new CookieOptions
+        {
+            Expires = DateTime.Now.AddDays(7),
+            HttpOnly = true,
+            Secure = false,
+            SameSite = SameSiteMode.Strict
+        };
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthController"/> class.
@@ -73,7 +83,11 @@ namespace Tickefy.API.Auth
             var result = await _mediator.Send(command);
 
             return result.Match(
-                onSuccess: value => Ok(_mapper.Map<LoginResponse>(value)),
+                onSuccess: value =>
+                {
+                    Response.Cookies.Append("refresh_token", result.Value.RefreshToken, _cookieOptions);
+                    return Ok(_mapper.Map<LoginResponse>(value));
+                },
                 onFailure: this.ToActionResult);
         }
 
@@ -101,6 +115,48 @@ namespace Tickefy.API.Auth
             var command = request.ToCommand(new UserId(userId));
 
             var result = await _mediator.Send(command);
+
+            return result.Match(Ok(), this.ToActionResult);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("refresh")]
+        [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Refresh()
+        {
+            if (!Request.Cookies.TryGetValue("refresh_token", out var refreshToken))
+            {
+                return Unauthorized();
+            }
+
+            var result = await _mediator.Send(new RefreshTokenCommand(refreshToken));
+
+            return result.Match(
+                onSuccess: value =>
+                {
+                    Response.Cookies.Append("refresh_token", result.Value.RefreshToken, _cookieOptions);
+                    return Ok(_mapper.Map<LoginResponse>(value));
+                },
+                onFailure: this.ToActionResult);
+        }
+
+        [Authorize]
+        [HttpPost("logout")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Logout()
+        {
+            if (!Request.Cookies.TryGetValue("refresh_token", out var refreshToken))
+            {
+                return Unauthorized();
+            }
+
+            var result = await _mediator.Send(new LogoutCommand(refreshToken));
+
+            Response.Cookies.Append("refresh_token", string.Empty, _cookieOptions);
 
             return result.Match(Ok(), this.ToActionResult);
         }

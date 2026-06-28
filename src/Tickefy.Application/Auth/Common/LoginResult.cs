@@ -6,6 +6,7 @@ namespace Tickefy.Application.Auth.Common
         string FirstName,
         string LastName,
         string Login,
-        string Token
+        string Token,
+        string RefreshToken
     );
 }

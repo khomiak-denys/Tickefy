@@ -23,6 +23,7 @@ using Tickefy.Domain.ActivityLog;
 using Tickefy.Domain.Team;
 using Tickefy.Application.Mapping;
 using Tickefy.Application.Team.AddMember;
+using Tickefy.Domain.RefreshToken;
 using Tickefy.Domain.User;
 
 namespace Tickefy.API
@@ -35,7 +36,7 @@ namespace Tickefy.API
 
 
             builder.Host.UseSerilog((context, services, configuration) => configuration
-                //.ReadFrom.Configuration(context.Configuration) 
+                //.ReadFrom.Configuration(context.Configuration)
                 .ReadFrom.Services(services)
                 .Enrich.FromLogContext()
                 .WriteTo.Console());
@@ -75,6 +76,7 @@ namespace Tickefy.API
             builder.Services.AddScoped<ITicketRepository, EFTicketRepository>();
             builder.Services.AddScoped<IActivityLogRepository, EFLogRepository>();
             builder.Services.AddScoped<ITeamRepository, EFTeamRepository>();
+            builder.Services.AddScoped<IRefreshTokenRepository, EFRefreshTokenRepository>();
 
 
             builder.Services.AddSingleton(sp =>

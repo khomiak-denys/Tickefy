@@ -2,6 +2,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Tickefy.Application.Abstractions.Services;
 using Tickefy.Domain.Common.UserRole;
@@ -42,6 +43,11 @@ namespace Tickefy.Infrastructure.Services
             var accessToken = tokenHandler.WriteToken(securityToken);
 
             return accessToken;
+        }
+
+        public string GenerateRefreshToken()
+        {
+            return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
         }
     }
 }
