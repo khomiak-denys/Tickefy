@@ -92,7 +92,7 @@ public class TakeTicketHandler
             .ReturnsAsync(ticket);
 
         var userRepository = new Mock<IUserRepository>();
-        userRepository.Setup(r => r.GetByIdAsync(It.IsAny<UserId>()))
+        userRepository.Setup(r => r.GetByIdAsync(It.IsAny<UserId>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((Domain.User.User?)null);
         var teamRepository = new Mock<ITeamRepository>();
 
@@ -130,7 +130,7 @@ public class TakeTicketHandler
             .ReturnsAsync(ticket);
 
         var userRepository = new Mock<IUserRepository>();
-        userRepository.Setup(r => r.GetByIdAsync(It.IsAny<UserId>()))
+        userRepository.Setup(r => r.GetByIdAsync(It.IsAny<UserId>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(user);
         var teamRepository = new Mock<ITeamRepository>();
 
@@ -171,11 +171,11 @@ public class TakeTicketHandler
             .ReturnsAsync(ticket);
 
         var userRepository = new Mock<IUserRepository>();
-        userRepository.Setup(r => r.GetByIdAsync(It.IsAny<UserId>()))
+        userRepository.Setup(r => r.GetByIdAsync(It.IsAny<UserId>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(user);
 
         var teamRepository = new Mock<ITeamRepository>();
-        teamRepository.Setup(r => r.GetByIdAsync(It.IsAny<TeamId>()))
+        teamRepository.Setup(r => r.GetByIdAsync(It.IsAny<TeamId>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((Domain.Team.Team?)null);
 
         var logRepository = new Mock<IActivityLogRepository>();
@@ -214,10 +214,10 @@ public class TakeTicketHandler
             .ReturnsAsync(ticket);
 
         var userRepository = new Mock<IUserRepository>();
-        userRepository.Setup(r => r.GetByIdAsync(It.IsAny<UserId>()))
+        userRepository.Setup(r => r.GetByIdAsync(It.IsAny<UserId>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(user);
         var teamRepository = new Mock<ITeamRepository>();
-        teamRepository.Setup(r => r.GetByIdAsync(It.IsAny<TeamId>()))
+        teamRepository.Setup(r => r.GetByIdAsync(It.IsAny<TeamId>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(team);
 
         var logRepository = new Mock<IActivityLogRepository>();

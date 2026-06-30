@@ -47,7 +47,7 @@ namespace Tickefy.Application.Ticket.Take
                 return Result.Failure(new ForbiddenError("Access denied"));
             }
 
-            var user = await _userRepository.GetByIdAsync(command.UserId);
+            var user = await _userRepository.GetByIdAsync(command.UserId, cancellationToken);
             if (user == null)
             {
                 return Result.Failure(new NotFoundError(nameof(user) + " " + command.UserId));
@@ -58,7 +58,7 @@ namespace Tickefy.Application.Ticket.Take
                 return Result.Failure(new ForbiddenError("You should be in team to take tickets"));
             }
 
-            var team = await _teamRepository.GetByIdAsync(user.TeamId);
+            var team = await _teamRepository.GetByIdAsync(user.TeamId, cancellationToken);
             if (team == null)
             {
                 return Result.Failure(new NotFoundError(nameof(team) + " " + user.TeamId));

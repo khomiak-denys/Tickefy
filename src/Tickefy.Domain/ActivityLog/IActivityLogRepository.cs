@@ -19,13 +19,13 @@ namespace Tickefy.Domain.ActivityLog
         /// <param name="page">The page number to retrieve.</param>
         /// <param name="pageSize">The number of entries to include in the page.</param>
         /// <returns>A list of <see cref="ActivityLog"/> entries for the requested page, ordered by creation date descending.</returns>
-        Task<List<ActivityLog>> GetAllAsync(int page, int pageSize);
+        Task<List<ActivityLog>> GetAllAsync(int page, int pageSize, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Gets activity log entries for a ticket.
         /// </summary>
         /// <param name="ticketId">The identifier of the ticket.</param>
         /// <returns>A list of <see cref="ActivityLog"/> entries associated with the specified ticket.</returns>
-        Task<List<ActivityLog>> GetByTicketIdAsync(TicketId ticketId);
+        Task<List<ActivityLog>> GetByTicketIdAsync(TicketId ticketId, CancellationToken cancellationToken = default);
     }
 }

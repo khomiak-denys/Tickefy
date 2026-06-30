@@ -24,15 +24,15 @@ namespace Tickefy.Application.Team.RemoveMember
         }
         public async Task<Result> Handle(RemoveMemberCommand command, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetByIdAsync(command.MemberId);
+            var user = await _userRepository.GetByIdAsync(command.MemberId, cancellationToken);
             if (user == null) return Result.Failure(new NotFoundError(nameof(user) + " " + command.MemberId.Value));
             if (user.Role == UserRoles.Admin || user.Role == UserRoles.Manager) return Result.Failure(new ForbiddenError("Cant remove manager or admin to team"));
 
-            var team = await _teamRepository.GetByIdAsync(command.TeamId);
+            var team = await _teamRepository.GetByIdAsync(command.TeamId, cancellationToken);
 
             if (team == null) return Result.Failure(new NotFoundError(nameof(team) + " " + command.ManagerId.Value));
 
-            var manager = await _userRepository.GetByIdAsync(command.ManagerId);
+            var manager = await _userRepository.GetByIdAsync(command.ManagerId, cancellationToken);
             if (manager == null) return Result.Failure(new NotFoundError(nameof(manager) + " " + command.ManagerId.Value));
             if (team.ManagerId != command.ManagerId && manager.Role != UserRoles.Admin) return Result.Failure(new ForbiddenError("Become a manager to remove users"));
 

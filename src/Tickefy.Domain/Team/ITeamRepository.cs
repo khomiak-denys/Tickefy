@@ -23,27 +23,27 @@ namespace Tickefy.Domain.Team
         /// Gets all teams.
         /// </summary>
         /// <returns>A list of all <see cref="Team"/> entities including manager information.</returns>
-        Task<List<Team>> GetAll();
+        Task<List<Team>> GetAll(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Gets a team by its identifier.
         /// </summary>
         /// <param name="teamId">The identifier of the team.</param>
         /// <returns>The matching <see cref="Team"/> with members and manager included, or <see langword="null"/> if not found.</returns>
-        Task<Team?> GetByIdAsync(TeamId teamId);
+        Task<Team?> GetByIdAsync(TeamId teamId, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Gets teams that contain the specified member.
         /// </summary>
         /// <param name="memberId">The identifier of the team member.</param>
         /// <returns>A list of <see cref="Team"/> entities where the user is a manager or member.</returns>
-        Task<List<Team>> GetByMemberIdAsync(UserId memberId);
+        Task<List<Team>> GetByMemberIdAsync(UserId memberId, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Gets a team by its name.
         /// </summary>
         /// <param name="name">The team name.</param>
         /// <returns>The matching <see cref="Team"/> with members and manager included, or <see langword="null"/> if not found.</returns>
-        Task<Team?> GetByNameAsync(string name);
+        Task<Team?> GetByNameAsync(string name, CancellationToken cancellationToken = default);
     }
 }

@@ -60,7 +60,7 @@ namespace Tickefy.API.Ticket
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateAsync(CreateTicketRequest request)
+        public async Task<IActionResult> CreateAsync(CreateTicketRequest request, CancellationToken cancellationToken)
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
@@ -70,7 +70,7 @@ namespace Tickefy.API.Ticket
             }
 
             var command = request.ToCommand(new UserId(userId));
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken);
 
             return result.Match(Created(), this.ToActionResult);
         }
@@ -89,7 +89,7 @@ namespace Tickefy.API.Ticket
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateDraftAsync(CreateDraftTicketRequest request)
+        public async Task<IActionResult> CreateDraftAsync(CreateDraftTicketRequest request, CancellationToken cancellationToken)
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
@@ -99,7 +99,7 @@ namespace Tickefy.API.Ticket
             }
 
             var command = request.ToCommand(new UserId(userId));
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken);
 
             return result.Match(Created(), this.ToActionResult);
         }
@@ -120,7 +120,7 @@ namespace Tickefy.API.Ticket
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> PublishAsync(Guid ticketId, PublishTicketRequest request)
+        public async Task<IActionResult> PublishAsync(Guid ticketId, PublishTicketRequest request, CancellationToken cancellationToken)
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
@@ -135,7 +135,7 @@ namespace Tickefy.API.Ticket
                 .ToList();
 
             var command = request.ToCommand(new UserId(userId), roles, new TicketId(ticketId));
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken);
 
             return result.Match(Ok(), this.ToActionResult);
         }
@@ -154,7 +154,7 @@ namespace Tickefy.API.Ticket
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetMyTicketsAsync()
+        public async Task<IActionResult> GetMyTicketsAsync(CancellationToken cancellationToken)
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
@@ -164,7 +164,7 @@ namespace Tickefy.API.Ticket
             }
             var query = new GetMyTicketsQuery(new UserId(userId));
 
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(query, cancellationToken);
 
             return result.Match(onSuccess: value => Ok(_mapper.Map<List<TicketResponse>>(value)),
                 onFailure: this.ToActionResult);
@@ -185,7 +185,7 @@ namespace Tickefy.API.Ticket
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetTicketByIdAsync(Guid TicketId)
+        public async Task<IActionResult> GetTicketByIdAsync(Guid TicketId, CancellationToken cancellationToken)
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
@@ -200,7 +200,7 @@ namespace Tickefy.API.Ticket
                 .ToList();
 
             var query = new GetTicketByIdQuery(new UserId(userId), roles, new TicketId(TicketId));
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(query, cancellationToken);
 
             return result.Match(onSuccess: value => Ok(_mapper.Map<TicketDetailsResponse>(value)),
                 onFailure: this.ToActionResult);
@@ -219,10 +219,10 @@ namespace Tickefy.API.Ticket
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAllTicketsAsync()
+        public async Task<IActionResult> GetAllTicketsAsync(CancellationToken cancellationToken)
         {
             var query = new GetAllTicketsQuery();
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(query, cancellationToken);
 
             return result.Match(onSuccess: value => Ok(_mapper.Map<List<TicketResponse>>(value)),
                 onFailure: this.ToActionResult);
@@ -242,7 +242,7 @@ namespace Tickefy.API.Ticket
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetQueueTicketsAsync()
+        public async Task<IActionResult> GetQueueTicketsAsync(CancellationToken cancellationToken)
         {
 
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
@@ -253,7 +253,7 @@ namespace Tickefy.API.Ticket
             }
 
             var query = new GetQueueTicketsQuery(new UserId(userId));
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(query, cancellationToken);
 
             return result.Match(onSuccess: value => Ok(_mapper.Map<List<TicketResponse>>(value)),
                 onFailure: this.ToActionResult);
@@ -275,7 +275,7 @@ namespace Tickefy.API.Ticket
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> PostCommentAsync(Guid ticketId, [FromBody] PostCommentRequest request)
+        public async Task<IActionResult> PostCommentAsync(Guid ticketId, [FromBody] PostCommentRequest request, CancellationToken cancellationToken)
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
@@ -286,7 +286,7 @@ namespace Tickefy.API.Ticket
 
             var command = request.ToCommand(new UserId(userId), new TicketId(ticketId));
 
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken);
             return result.Match(Created(), this.ToActionResult);
         }
 
@@ -305,7 +305,7 @@ namespace Tickefy.API.Ticket
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> TakeTicketAsync(Guid ticketId)
+        public async Task<IActionResult> TakeTicketAsync(Guid ticketId, CancellationToken cancellationToken)
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
@@ -326,7 +326,7 @@ namespace Tickefy.API.Ticket
                 TicketId = new TicketId(ticketId)
             };
 
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken);
 
             return result.Match(Ok(), this.ToActionResult);
         }
@@ -346,7 +346,7 @@ namespace Tickefy.API.Ticket
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CompleteTicketAsync(Guid ticketId)
+        public async Task<IActionResult> CompleteTicketAsync(Guid ticketId, CancellationToken cancellationToken)
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
@@ -367,7 +367,7 @@ namespace Tickefy.API.Ticket
                 TicketId = new TicketId(ticketId)
             };
 
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken);
 
             return result.Match(Ok(), this.ToActionResult);
         }
@@ -388,7 +388,7 @@ namespace Tickefy.API.Ticket
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> ReopenTicketAsync(Guid ticketId, ReasonForTicketActionRequest request)
+        public async Task<IActionResult> ReopenTicketAsync(Guid ticketId, ReasonForTicketActionRequest request, CancellationToken cancellationToken)
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
@@ -410,7 +410,7 @@ namespace Tickefy.API.Ticket
                 Reason = request.Reason
             };
 
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken);
 
             return result.Match(Ok(), this.ToActionResult);
         }
@@ -431,7 +431,7 @@ namespace Tickefy.API.Ticket
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CancelTicketAsync(Guid ticketId, ReasonForTicketActionRequest request)
+        public async Task<IActionResult> CancelTicketAsync(Guid ticketId, ReasonForTicketActionRequest request, CancellationToken cancellationToken)
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
@@ -453,7 +453,7 @@ namespace Tickefy.API.Ticket
                 request.Reason
             );
 
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken);
 
             return result.Match(Ok(), this.ToActionResult);
         }
@@ -474,7 +474,7 @@ namespace Tickefy.API.Ticket
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> FailTicketAsync(Guid ticketId, ReasonForTicketActionRequest request)
+        public async Task<IActionResult> FailTicketAsync(Guid ticketId, ReasonForTicketActionRequest request, CancellationToken cancellationToken)
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
@@ -496,7 +496,7 @@ namespace Tickefy.API.Ticket
                 Reason = request.Reason
             };
 
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken);
 
             return result.Match(Ok(), this.ToActionResult);
         }
@@ -516,7 +516,7 @@ namespace Tickefy.API.Ticket
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> AcceptAsync(Guid ticketId)
+        public async Task<IActionResult> AcceptAsync(Guid ticketId, CancellationToken cancellationToken)
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
@@ -537,7 +537,7 @@ namespace Tickefy.API.Ticket
                 TicketId = new TicketId(ticketId)
             };
 
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken);
 
             return result.Match(Ok(), this.ToActionResult);
         }
@@ -557,7 +557,7 @@ namespace Tickefy.API.Ticket
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> StartWorkAsync(Guid ticketId)
+        public async Task<IActionResult> StartWorkAsync(Guid ticketId, CancellationToken cancellationToken)
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
@@ -578,7 +578,7 @@ namespace Tickefy.API.Ticket
                 TicketId = new TicketId(ticketId)
             };
 
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken);
 
             return result.Match(Ok(), this.ToActionResult);
         }

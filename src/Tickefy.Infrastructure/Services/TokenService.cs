@@ -19,7 +19,7 @@ namespace Tickefy.Infrastructure.Services
         {
             _settings = options.Value;
         }
-        public async Task<string> GetToken(Guid id, string login, UserRoles role)
+        public async Task<string> GetToken(Guid id, string login, UserRoles role, CancellationToken cancellationToken = default)
         {
             var expiresIn = DateTime.UtcNow.AddMinutes(_settings.TokenValidityMins);
 

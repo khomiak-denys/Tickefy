@@ -19,7 +19,7 @@ namespace Tickefy.Application.ActivityLog.GetAll
         }
         public async Task<List<LogResult>> Handle(GetAllLogsQuery query, CancellationToken cancellationToken)
         {
-            var logs = await _logRepository.GetAllAsync(query.Page, query.PageSize);
+            var logs = await _logRepository.GetAllAsync(query.Page, query.PageSize, cancellationToken);
 
             var result = _mapper.Map<List<LogResult>>(logs);
 

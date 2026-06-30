@@ -12,7 +12,7 @@ namespace Tickefy.Domain.Ticket
         /// Gets all tickets.
         /// </summary>
         /// <returns>A collection of all <see cref="Ticket"/> entities including related data.</returns>
-        Task<IEnumerable<Ticket>> GetAll();
+        Task<IEnumerable<Ticket>> GetAll(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Gets a ticket by its identifier.
@@ -20,14 +20,14 @@ namespace Tickefy.Domain.Ticket
         /// <param name="id">The identifier of the ticket.</param>
         /// <param name="cancellationToken">The token used to cancel the operation.</param>
         /// <returns>The matching <see cref="Ticket"/>, or <see langword="null"/> if not found.</returns>
-        Task<Ticket?> GetByIdAsync(TicketId id, CancellationToken cancellationToken);
+        Task<Ticket?> GetByIdAsync(TicketId id, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Gets tickets created by the specified user.
         /// </summary>
         /// <param name="id">The identifier of the user.</param>
         /// <returns>A list of <see cref="Ticket"/> entities associated with the user.</returns>
-        Task<List<Ticket>> GetByUserId(UserId id);
+        Task<List<Ticket>> GetByUserId(UserId id, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Adds a ticket to the repository.
@@ -52,6 +52,6 @@ namespace Tickefy.Domain.Ticket
         /// </summary>
         /// <param name="category">The category used to filter tickets.</param>
         /// <returns>A list of <see cref="Ticket"/> entities with the given category and a <c>Created</c> status.</returns>
-        Task<List<Ticket>> GetCreatedByCategory(Category category);
+        Task<List<Ticket>> GetCreatedByCategory(Category category, CancellationToken cancellationToken = default);
     }
 }

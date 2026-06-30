@@ -18,7 +18,7 @@ namespace Tickefy.Application.User.UpdateProfile
 
         public async Task<Result> Handle(UpdateProfileCommand command, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetByIdAsync(command.UserId);
+            var user = await _userRepository.GetByIdAsync(command.UserId, cancellationToken);
             if (user == null) return Result.Failure(new NotFoundError(nameof(user) + " " + command.UserId));
 
             user.Update(command.FirstName, command.LastName);

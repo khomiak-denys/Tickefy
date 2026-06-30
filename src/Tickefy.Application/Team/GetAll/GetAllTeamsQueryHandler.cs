@@ -20,7 +20,7 @@ namespace Tickefy.Application.Team.GetAll
 
         public async Task<Result<List<TeamResult>>> Handle(GetAllTeamsQuery request, CancellationToken cancellationToken)
         {
-            var teams = await _teamRepository.GetAll();
+            var teams = await _teamRepository.GetAll(cancellationToken);
 
             var result = _mapper.Map<List<TeamResult>>(teams);
             return Result<List<TeamResult>>.Success(result);

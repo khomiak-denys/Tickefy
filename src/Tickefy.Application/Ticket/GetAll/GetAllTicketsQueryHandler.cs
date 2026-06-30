@@ -20,7 +20,7 @@ namespace Tickefy.Application.Ticket.GetAll
         }
         public async Task<Result<List<TicketResult>>> Handle(GetAllTicketsQuery request, CancellationToken cancellationToken)
         {
-            var tickets = await _ticketRepository.GetAll();
+            var tickets = await _ticketRepository.GetAll(cancellationToken);
             var result = _mapper.Map<List<TicketResult>>(tickets);
 
             return Result<List<TicketResult>>.Success(result);

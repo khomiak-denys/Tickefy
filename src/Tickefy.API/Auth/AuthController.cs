@@ -59,10 +59,10 @@ namespace Tickefy.API.Auth
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Register([FromBody] RegisterUserRequest request)
+        public async Task<IActionResult> Register([FromBody] RegisterUserRequest request, CancellationToken cancellationToken)
         {
             var command = request.ToCommand();
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken);
             return result.Match(
                 onSuccess: _ => Created(),
                 onFailure: this.ToActionResult);
@@ -79,10 +79,10 @@ namespace Tickefy.API.Auth
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Login([FromBody] LoginUserRequest request)
+        public async Task<IActionResult> Login([FromBody] LoginUserRequest request, CancellationToken cancellationToken)
         {
             var command = request.ToCommand();
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken);
 
             return result.Match(
                 onSuccess: value =>
@@ -106,7 +106,7 @@ namespace Tickefy.API.Auth
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> SetPassword([FromBody] SetPasswordRequest request)
+        public async Task<IActionResult> SetPassword([FromBody] SetPasswordRequest request, CancellationToken cancellationToken)
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
@@ -117,7 +117,7 @@ namespace Tickefy.API.Auth
 
             var command = request.ToCommand(new UserId(userId));
 
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken);
 
             return result.Match(Ok(), this.ToActionResult);
         }
@@ -131,14 +131,14 @@ namespace Tickefy.API.Auth
         [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Refresh()
+        public async Task<IActionResult> Refresh(CancellationToken cancellationToken)
         {
             if (!Request.Cookies.TryGetValue("refresh_token", out var refreshToken))
             {
                 return Unauthorized();
             }
 
-            var result = await _mediator.Send(new RefreshTokenCommand(refreshToken));
+            var result = await _mediator.Send(new RefreshTokenCommand(refreshToken), cancellationToken);
 
             return result.Match(
                 onSuccess: value =>
@@ -158,14 +158,14 @@ namespace Tickefy.API.Auth
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Logout()
+        public async Task<IActionResult> Logout(CancellationToken cancellationToken)
         {
             if (!Request.Cookies.TryGetValue("refresh_token", out var refreshToken))
             {
                 return Unauthorized();
             }
 
-            var result = await _mediator.Send(new LogoutCommand(refreshToken));
+            var result = await _mediator.Send(new LogoutCommand(refreshToken), cancellationToken);
 
             Response.Cookies.Append("refresh_token", string.Empty, _cookieOptions);
 

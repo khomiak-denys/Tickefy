@@ -30,17 +30,17 @@ namespace Tickefy.Application.Ticket.GetQueue
         }
         public async Task<Result<List<TicketResult>>> Handle(GetQueueTicketsQuery query, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetByIdAsync(query.UserId);
+            var user = await _userRepository.GetByIdAsync(query.UserId, cancellationToken);
             if (user == null) return Result<List<TicketResult>>.Failure(new NotFoundError(nameof(user) + " " + query.UserId));
 
             if (user.Role != UserRoles.Agent) return Result<List<TicketResult>>.Failure(new ForbiddenError("Only for agents"));
 
             if (user.TeamId is null) return Result<List<TicketResult>>.Failure(new ForbiddenError("Agent should be in a team"));
-            var team = await _teamRepository.GetByIdAsync(user.TeamId);
+            var team = await _teamRepository.GetByIdAsync(user.TeamId, cancellationToken);
 
             if (team == null) return Result<List<TicketResult>>.Failure(new NotFoundError(nameof(team)));
 
-            var tickets = await _ticketRepository.GetCreatedByCategory(team.Category);
+            var tickets = await _ticketRepository.GetCreatedByCategory(team.Category, cancellationToken);
 
             return Result<List<TicketResult>>.Success(_mapper.Map<List<TicketResult>>(tickets));
         }

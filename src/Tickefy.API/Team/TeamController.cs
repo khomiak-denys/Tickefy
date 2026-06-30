@@ -49,14 +49,14 @@ namespace Tickefy.API.Team
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateTeamAsync([FromBody] CreateTeamRequest request)
+        public async Task<IActionResult> CreateTeamAsync([FromBody] CreateTeamRequest request, CancellationToken cancellationToken)
         {
             var leaderIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(leaderIdClaim) || !Guid.TryParse(leaderIdClaim, out var leaderGuid))
                 return Unauthorized("User ID is missing or invalid");
 
             var command = request.ToCommand(new UserId(leaderGuid));
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken);
             return result.Match(Created(), this.ToActionResult);
         }
 
@@ -74,7 +74,7 @@ namespace Tickefy.API.Team
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> AddMemberAsync(Guid teamId, [FromBody] AddMemberRequest request)
+        public async Task<IActionResult> AddMemberAsync(Guid teamId, [FromBody] AddMemberRequest request, CancellationToken cancellationToken)
         {
             var leaderIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(leaderIdClaim) || !Guid.TryParse(leaderIdClaim, out var memberGuid))
@@ -82,7 +82,7 @@ namespace Tickefy.API.Team
 
             var command = request.ToCommand(new TeamId(teamId), new UserId(memberGuid));
 
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken);
             return result.Match(Ok(), this.ToActionResult);
         }
 
@@ -100,7 +100,7 @@ namespace Tickefy.API.Team
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> RemoveMemberAsync(Guid teamId, Guid memberId)
+        public async Task<IActionResult> RemoveMemberAsync(Guid teamId, Guid memberId, CancellationToken cancellationToken)
         {
             var leaderIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(leaderIdClaim) || !Guid.TryParse(leaderIdClaim, out var leaderGuid))
@@ -112,7 +112,7 @@ namespace Tickefy.API.Team
                 new TeamId(teamId)
             );
 
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken);
             return result.Match(NoContent(), this.ToActionResult);
         }
 
@@ -129,14 +129,14 @@ namespace Tickefy.API.Team
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> DeleteTeamAsync(Guid teamId)
+        public async Task<IActionResult> DeleteTeamAsync(Guid teamId, CancellationToken cancellationToken)
         {
             var leaderIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(leaderIdClaim) || !Guid.TryParse(leaderIdClaim, out var leaderGuid))
                 return Unauthorized("User ID is missing or invalid");
 
             var command = new DeleteTeamCommand(new TeamId(teamId), new UserId(leaderGuid));
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken);
             return result.Match(NoContent(), this.ToActionResult);
         }
 
@@ -152,10 +152,10 @@ namespace Tickefy.API.Team
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetTeamByIdAsync(Guid teamId)
+        public async Task<IActionResult> GetTeamByIdAsync(Guid teamId, CancellationToken cancellationToken)
         {
             var query = new GetMyTeamQuery(new TeamId(teamId));
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(query, cancellationToken);
 
             return result.Match(onSuccess: value => Ok(_mapper.Map<TeamDetailResponse>(value)),
                 onFailure: this.ToActionResult);
@@ -171,10 +171,10 @@ namespace Tickefy.API.Team
         [ProducesResponseType(typeof(List<TeamResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAllTeamsAsync()
+        public async Task<IActionResult> GetAllTeamsAsync(CancellationToken cancellationToken)
         {
             var query = new GetAllTeamsQuery();
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(query, cancellationToken);
 
             return result.Match(onSuccess: value => Ok(_mapper.Map<List<TeamResponse>>(value)),
                 onFailure: this.ToActionResult);
@@ -191,14 +191,14 @@ namespace Tickefy.API.Team
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetMyTeamAsync()
+        public async Task<IActionResult> GetMyTeamAsync(CancellationToken cancellationToken)
         {
             var leaderIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(leaderIdClaim) || !Guid.TryParse(leaderIdClaim, out var memberGuid))
                 return Unauthorized("User ID is missing or invalid");
 
             var query = new GetTeamByUserIdQuery(new UserId(memberGuid));
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(query, cancellationToken);
 
             return result.Match(onSuccess: value => Ok(_mapper.Map<List<TeamResponse>>(value)),
                 onFailure: this.ToActionResult);

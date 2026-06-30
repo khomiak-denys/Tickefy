@@ -23,23 +23,23 @@ namespace Tickefy.Infrastructure.Repositories
             _dbContext.Users.Remove(user);
         }
 
-        public async Task<List<User>> GetAll()
+        public async Task<List<User>> GetAll(CancellationToken cancellationToken = default)
         {
             return await _dbContext.Users
                 .Include(u => u.Team)
                 .ThenInclude(t => t.Manager)
                 .AsNoTracking()
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
-        public async Task<User?> GetByIdAsync(UserId id)
+        public async Task<User?> GetByIdAsync(UserId id, CancellationToken cancellationToken = default)
         {
-            return await _dbContext.Users.FirstOrDefaultAsync(t => t.Id == id);
+            return await _dbContext.Users.FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
         }
 
-        public async Task<User?> GetByLoginAsync(string login)
+        public async Task<User?> GetByLoginAsync(string login, CancellationToken cancellationToken = default)
         {
-            return await _dbContext.Users.FirstOrDefaultAsync(u => u.Login == login);
+            return await _dbContext.Users.FirstOrDefaultAsync(u => u.Login == login, cancellationToken);
         }
     }
 }

@@ -33,7 +33,7 @@ namespace Tickefy.Application.Auth.Login
 
         public async Task<Result<LoginResult>> Handle(LoginUserCommand command, CancellationToken cancellationToken)
         {
-            var existingUser = await _userRepository.GetByLoginAsync(command.Login);
+            var existingUser = await _userRepository.GetByLoginAsync(command.Login, cancellationToken);
             if (existingUser == null)
             {
                 return Result<LoginResult>.Failure(new NotFoundError("User not found"));
@@ -44,7 +44,7 @@ namespace Tickefy.Application.Auth.Login
                 return Result<LoginResult>.Failure(new InvalidArgumentError("Invalid credentials"));
             }
 
-            var token = await _tokenService.GetToken(existingUser.Id.Value, existingUser.Login, existingUser.Role);
+            var token = await _tokenService.GetToken(existingUser.Id.Value, existingUser.Login, existingUser.Role, cancellationToken);
             var refreshToken = _tokenService.GenerateRefreshToken();
 
             var refreshTokenEntity = Domain.RefreshToken.RefreshToken.Create(existingUser.Id, DateTime.UtcNow.AddDays(7), refreshToken);
