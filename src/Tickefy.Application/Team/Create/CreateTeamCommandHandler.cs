@@ -27,14 +27,14 @@ namespace Tickefy.Application.Team.Create
 
         public async Task<Result> Handle(CreateTeamCommand command, CancellationToken cancellationToken)
         {
-            var manager = await _userRepository.GetByIdAsync(command.UserId);
+            var manager = await _userRepository.GetByIdAsync(command.UserId, cancellationToken);
 
             if (manager is null)
             {
                 return Result.Failure(new NotFoundError("User (Manager) not found."));
             }
 
-            var existingTeam = await _teamRepository.GetByNameAsync(command.Name);
+            var existingTeam = await _teamRepository.GetByNameAsync(command.Name, cancellationToken);
             if (existingTeam is not null) return Result.Failure(new AlreadyExistsError(existingTeam.Name));
 
             var team = Domain.Team.Team.Create(

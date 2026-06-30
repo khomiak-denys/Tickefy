@@ -19,7 +19,7 @@ namespace Tickefy.Application.ActivityLog.GetByTicketId
         }
         public async Task<List<LogResult>> Handle(GetLogsByTicketIdQuery query, CancellationToken cancellationToken)
         {
-            var logs = await _logRepository.GetByTicketIdAsync(query.TicketId);
+            var logs = await _logRepository.GetByTicketIdAsync(query.TicketId, cancellationToken);
 
             var result = _mapper.Map<List<LogResult>>(logs);
 

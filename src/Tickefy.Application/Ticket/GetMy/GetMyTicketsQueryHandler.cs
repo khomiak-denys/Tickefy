@@ -21,7 +21,7 @@ namespace Tickefy.Application.Ticket.GetMy
 
         public async Task<Result<List<TicketResult>>> Handle(GetMyTicketsQuery request, CancellationToken cancellationToken)
         {
-            var tickets = await _ticketRepository.GetByUserId(request.UserId);
+            var tickets = await _ticketRepository.GetByUserId(request.UserId, cancellationToken);
             var result = _mapper.Map<List<TicketResult>>(tickets);
 
             return Result<List<TicketResult>>.Success(result);

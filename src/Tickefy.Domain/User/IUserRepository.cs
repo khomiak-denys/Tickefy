@@ -17,14 +17,14 @@ namespace Tickefy.Domain.User
         /// Gets all users.
         /// </summary>
         /// <returns>A list of all <see cref="User"/> entities including team information.</returns>
-        public Task<List<User>> GetAll();
+        public Task<List<User>> GetAll(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Gets a user by their identifier.
         /// </summary>
         /// <param name="id">The identifier of the user.</param>
         /// <returns>The matching <see cref="User"/>, or <see langword="null"/> if not found.</returns>
-        public Task<User?> GetByIdAsync(UserId id);
+        public Task<User?> GetByIdAsync(UserId id, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Deletes a user from the repository.
@@ -37,6 +37,6 @@ namespace Tickefy.Domain.User
         /// </summary>
         /// <param name="login">The user login.</param>
         /// <returns>The matching <see cref="User"/>, or <see langword="null"/> if not found.</returns>
-        public Task<User?> GetByLoginAsync(string login);
+        public Task<User?> GetByLoginAsync(string login, CancellationToken cancellationToken = default);
     }
 }

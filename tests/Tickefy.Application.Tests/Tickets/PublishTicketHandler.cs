@@ -112,7 +112,7 @@ public class PublishTicketHandlerTests
         var aiResponseParser = new Mock<IAiResponseParser>();
         var logger = new Mock<ILogger<PublishTicketCommandHandler>>();
 
-        aiService.Setup(ai => ai.AnalyzeTicketAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>()))
+        aiService.Setup(ai => ai.AnalyzeTicketAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new Exception());
 
         var command = new PublishTicketCommand

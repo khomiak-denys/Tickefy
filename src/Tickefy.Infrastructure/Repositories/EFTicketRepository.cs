@@ -27,17 +27,17 @@ namespace Tickefy.Infrastructure.Repositories
             _dbContext.Tickets.Remove(ticket);
         }
 
-        public async Task<IEnumerable<Ticket>> GetAll()
+        public async Task<IEnumerable<Ticket>> GetAll(CancellationToken cancellationToken = default)
         {
             return await _dbContext.Tickets
                   .Include(t => t.Requester)
                   .Include(t => t.AssignedAgent)
                   .Include(t => t.AssignedTeam)
                   .AsNoTracking()
-                  .ToListAsync();
+                  .ToListAsync(cancellationToken);
         }
 
-        public async Task<Ticket?> GetByIdAsync(TicketId id, CancellationToken cancellationToken)
+        public async Task<Ticket?> GetByIdAsync(TicketId id, CancellationToken cancellationToken = default)
         {
             return await _dbContext.Tickets
                 .Include(t => t.Requester)
@@ -48,7 +48,7 @@ namespace Tickefy.Infrastructure.Repositories
                 .FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
         }
 
-        public async Task<List<Ticket>> GetByUserId(UserId id)
+        public async Task<List<Ticket>> GetByUserId(UserId id, CancellationToken cancellationToken = default)
         {
             return await _dbContext.Tickets
                 .Where(t => (t.RequesterId == id || t.AssignedAgentId == id) && t.Status != Status.Canceled)
@@ -56,14 +56,14 @@ namespace Tickefy.Infrastructure.Repositories
                 .Include(t => t.AssignedAgent)
                 .Include(t => t.AssignedTeam)
                 .AsNoTracking()
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
-        public async Task<List<Ticket>> GetCreatedByCategory(Category category)
+        public async Task<List<Ticket>> GetCreatedByCategory(Category category, CancellationToken cancellationToken = default)
         {
             return await _dbContext.Tickets
                 .Where(t => t.Category == category && t.Status == Status.Created)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
         public void Update(Ticket ticket)

@@ -18,7 +18,7 @@ namespace Tickefy.Infrastructure.Repositories
             _dbContext.ActivityLogs.Add(log);
         }
 
-        public async Task<List<ActivityLog>> GetAllAsync(int page, int pageSize)
+        public async Task<List<ActivityLog>> GetAllAsync(int page, int pageSize, CancellationToken cancellationToken = default)
         {
             return await _dbContext.ActivityLogs
                 .Include(l => l.User)
@@ -26,12 +26,12 @@ namespace Tickefy.Infrastructure.Repositories
                 .OrderByDescending(l => l.Created)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
-        public async Task<List<ActivityLog>> GetByTicketIdAsync(TicketId ticketId)
+        public async Task<List<ActivityLog>> GetByTicketIdAsync(TicketId ticketId, CancellationToken cancellationToken = default)
         {
-            return await _dbContext.ActivityLogs.Where(l => l.TicketId == ticketId).ToListAsync();
+            return await _dbContext.ActivityLogs.Where(l => l.TicketId == ticketId).ToListAsync(cancellationToken);
         }
     }
 }

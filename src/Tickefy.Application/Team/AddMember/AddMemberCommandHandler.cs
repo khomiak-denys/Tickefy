@@ -15,15 +15,15 @@ namespace Tickefy.Application.Team.AddMember
     {
         public async Task<Result> Handle(AddMemberCommand command, CancellationToken cancellationToken)
         {
-            var user = await userRepository.GetByLoginAsync(command.MemberLogin);
+            var user = await userRepository.GetByLoginAsync(command.MemberLogin, cancellationToken);
             if (user == null) return Result.Failure(new NotFoundError(nameof(user) + " " + command.MemberLogin));
             if (user.Role == UserRoles.Admin || user.Role == UserRoles.Manager) return Result.Failure(new ForbiddenError("Cant add manager or admin to team"));
 
-            var team = await teamRepository.GetByIdAsync(command.TeamId);
+            var team = await teamRepository.GetByIdAsync(command.TeamId, cancellationToken);
 
             if (team == null) return Result.Failure(new NotFoundError(nameof(team) + " " + command.ManagerId.Value));
 
-            var manager = await userRepository.GetByIdAsync(command.ManagerId);
+            var manager = await userRepository.GetByIdAsync(command.ManagerId, cancellationToken);
             if (manager == null) return Result.Failure(new NotFoundError(nameof(manager) + " " + command.ManagerId.Value));
             if (team.ManagerId != command.ManagerId && manager.Role != UserRoles.Admin) return Result.Failure(new ForbiddenError("Become a manager to add users"));
 

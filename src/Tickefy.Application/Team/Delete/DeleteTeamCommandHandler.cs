@@ -24,12 +24,12 @@ namespace Tickefy.Application.Team.Delete
 
         public async Task<Result> Handle(DeleteTeamCommand command, CancellationToken cancellationToken)
         {
-            var team = await _teamRepository.GetByIdAsync(command.TeamId);
+            var team = await _teamRepository.GetByIdAsync(command.TeamId, cancellationToken);
             if (team == null) return Result.Failure(new NotFoundError(nameof(team) + " " + command.TeamId));
 
             if (team.ManagerId != command.ManagerId) return Result.Failure(new ForbiddenError("Not a manager role to delete team"));
 
-            var user = await _userRepository.GetByIdAsync(command.ManagerId);
+            var user = await _userRepository.GetByIdAsync(command.ManagerId, cancellationToken);
             if (user == null) return Result.Failure(new NotFoundError(nameof(user) + " " + command.ManagerId));
 
             foreach (var usr in team.Members)

@@ -21,7 +21,7 @@ namespace Tickefy.Application.User.GetById
         }
         public async Task<Result<UserDetailsResult>> Handle(GetUserByIdQuery query, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetByIdAsync(query.UserId);
+            var user = await _userRepository.GetByIdAsync(query.UserId, cancellationToken);
             if (user == null) return Result<UserDetailsResult>.Failure(new NotFoundError(nameof(user) + " " + query.UserId.ToString()));
 
             var result = _mapper.Map<UserDetailsResult>(user);

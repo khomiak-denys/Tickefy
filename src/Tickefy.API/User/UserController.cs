@@ -46,10 +46,10 @@ namespace Tickefy.API.User
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync(CancellationToken cancellationToken)
         {
             var query = new GetAllUsersQuery();
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(query, cancellationToken);
 
             return result.Match(onSuccess: value => Ok(_mapper.Map<List<UserResponse>>(value)),
                 onFailure: this.ToActionResult);
@@ -68,10 +68,10 @@ namespace Tickefy.API.User
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetByIdAsync(Guid userId)
+        public async Task<IActionResult> GetByIdAsync(Guid userId, CancellationToken cancellationToken)
         {
             var query = new GetUserByIdQuery(new UserId(userId));
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(query, cancellationToken);
             return result.Match(onSuccess: value => Ok(_mapper.Map<UserResponse>(value)),
                 onFailure: this.ToActionResult);
         }
@@ -86,14 +86,14 @@ namespace Tickefy.API.User
         [ProducesResponseType(typeof(UserResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetCurrentUser()
+        public async Task<IActionResult> GetCurrentUser(CancellationToken cancellationToken)
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
                 return Unauthorized("User ID is missing or invalid");
 
             var query = new GetUserByIdQuery(new UserId(userId));
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(query, cancellationToken);
             return result.Match(onSuccess: value => Ok(_mapper.Map<UserResponse>(value)),
                 onFailure: this.ToActionResult);
         }
@@ -111,10 +111,10 @@ namespace Tickefy.API.User
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> DeleteUserAsync(Guid userId)
+        public async Task<IActionResult> DeleteUserAsync(Guid userId, CancellationToken cancellationToken)
         {
             var command = new DeleteUserCommand(new UserId(userId));
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken);
             return result.Match(NoContent(), this.ToActionResult);
         }
 
@@ -132,10 +132,10 @@ namespace Tickefy.API.User
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> SetUserRoleAsync(Guid userId, [FromBody] SetUserRoleRequest request)
+        public async Task<IActionResult> SetUserRoleAsync(Guid userId, [FromBody] SetUserRoleRequest request, CancellationToken cancellationToken)
         {
             var command = request.ToCommand(new UserId(userId));
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken);
             return result.Match(Ok(), this.ToActionResult);
         }
 
@@ -151,14 +151,14 @@ namespace Tickefy.API.User
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request, CancellationToken cancellationToken)
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
                 return Unauthorized("User ID is missing or invalid");
 
             var command = request.ToCommand(new UserId(userId));
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken);
             return result.Match(Ok(), this.ToActionResult);
         }
     }

@@ -23,35 +23,35 @@ namespace Tickefy.Infrastructure.Repositories
             _dbContext.Teams.Remove(team);
         }
 
-        public async Task<List<Team>> GetAll()
+        public async Task<List<Team>> GetAll(CancellationToken cancellationToken = default)
         {
             return await _dbContext.Teams
                 .Include(t => t.Manager)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
-        public async Task<Team?> GetByIdAsync(TeamId teamId)
+        public async Task<Team?> GetByIdAsync(TeamId teamId, CancellationToken cancellationToken = default)
         {
             return await _dbContext.Teams.Where(t => t.Id == teamId)
                 .Include(t => t.Manager)
                 .Include(t => t.Members)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(cancellationToken);
         }
 
-        public async Task<List<Team>> GetByMemberIdAsync(UserId userId)
+        public async Task<List<Team>> GetByMemberIdAsync(UserId userId, CancellationToken cancellationToken = default)
         {
             return await _dbContext.Teams.Where(t => t.ManagerId == userId || t.Members.Any(m => m.Id == userId))
                 .Include(t => t.Manager)
                 .Include(t => t.Members)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
-        public async Task<Team?> GetByNameAsync(string name)
+        public async Task<Team?> GetByNameAsync(string name, CancellationToken cancellationToken = default)
         {
             return await _dbContext.Teams.Where(t => t.Name == name)
                 .Include(t => t.Manager)
                 .Include(t => t.Members)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(cancellationToken);
         }
     }
 }

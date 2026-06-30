@@ -16,10 +16,10 @@ namespace Tickefy.Application.Team.GetMy
 
         public async Task<Result<List<TeamResult>>> Handle(GetTeamByUserIdQuery query, CancellationToken cancellationToken)
         {
-            var user = await userRepository.GetByIdAsync(query.UserId);
+            var user = await userRepository.GetByIdAsync(query.UserId, cancellationToken);
             if (user == null) return Result<List<TeamResult>>.Failure(new NotFoundError(nameof(user) + " " + query.UserId));
 
-            var teams = await teamRepository.GetByMemberIdAsync(query.UserId);
+            var teams = await teamRepository.GetByMemberIdAsync(query.UserId, cancellationToken);
 
             return Result<List<TeamResult>>.Success(mapper.Map<List<TeamResult>>(teams));
         }

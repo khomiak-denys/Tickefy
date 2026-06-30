@@ -19,7 +19,7 @@ namespace Tickefy.Infrastructure.Services.AI
             _logger = logger;
         }
 
-        public async Task<AiResponse> AnalyzeTicketAsync(string title, string description, DateTime deadline)
+        public async Task<AiResponse> AnalyzeTicketAsync(string title, string description, DateTime deadline, CancellationToken cancellationToken = default)
         {
             var prompt =
                 @$"You are an internal Ticketing AI classifier. 

@@ -20,7 +20,7 @@ namespace Tickefy.Application.User.Delete
         }
         public async Task<Result> Handle(DeleteUserCommand command, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetByIdAsync(command.UserId);
+            var user = await _userRepository.GetByIdAsync(command.UserId, cancellationToken);
             if (user == null) return Result.Failure(new NotFoundError(nameof(user) + " " + command.UserId.ToString()));
 
             _userRepository.Delete(user);

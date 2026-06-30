@@ -21,7 +21,7 @@ namespace Tickefy.Application.Team.GetById
 
         public async Task<Result<TeamDetailsResult>> Handle(GetMyTeamQuery query, CancellationToken cancellationToken)
         {
-            var team = await _teamRepository.GetByIdAsync(query.TeamId);
+            var team = await _teamRepository.GetByIdAsync(query.TeamId, cancellationToken);
             if (team == null) return Result<TeamDetailsResult>.Failure(new NotFoundError(nameof(team) + " " + query.TeamId));
 
             var result = _mapper.Map<TeamDetailsResult>(team);

@@ -44,10 +44,10 @@ namespace Tickefy.API.ActivityLog
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAllAsync([FromQuery] GetAllLogsRequest request)
+        public async Task<IActionResult> GetAllAsync([FromQuery] GetAllLogsRequest request, CancellationToken cancellationToken)
         {
             var query = request.ToQuery();
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(query, cancellationToken);
             var response = _mapper.Map<List<LogResponse>>(result);
 
             return Ok(response);
@@ -66,10 +66,10 @@ namespace Tickefy.API.ActivityLog
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetByIdAsync(Guid ticketId)
+        public async Task<IActionResult> GetByIdAsync(Guid ticketId, CancellationToken cancellationToken)
         {
             var query = new GetLogsByTicketIdQuery(new TicketId(ticketId));
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(query, cancellationToken);
             var response = _mapper.Map<List<LogResponse>>(result);
 
             return Ok(response);
