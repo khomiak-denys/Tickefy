@@ -1,6 +1,6 @@
-using Tickefy.Domain.Primitives;
+﻿using Tickefy.Domain.Primitives;
 
-namespace Tickefy.Domain.User
+namespace Tickefy.Domain.Users
 {
     /// <summary>
     /// Provides persistence operations for users.
@@ -17,7 +17,7 @@ namespace Tickefy.Domain.User
         /// Gets all users.
         /// </summary>
         /// <returns>A list of all <see cref="User"/> entities including team information.</returns>
-        public Task<List<User>> GetAll(CancellationToken cancellationToken = default);
+        public Task<List<User>> GetAllAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Gets a user by their identifier.

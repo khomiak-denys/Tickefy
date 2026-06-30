@@ -1,4 +1,4 @@
-namespace Tickefy.Domain.Tests.Ticket.Builders;
+﻿namespace Tickefy.Domain.Tests.Ticket.Builders;
 
 public class TicketBuilder
 {
@@ -7,59 +7,59 @@ public class TicketBuilder
 
     public static TicketBuilder New() => new TicketBuilder();
 
-    public Domain.Ticket.Ticket InDraftState()
+    public Domain.Tickets.Ticket InDraftState()
     {
-        return Domain.Ticket.Ticket.CreateDraft(_title, _description, new UserId(), DateTime.UtcNow);
+        return Domain.Tickets.Ticket.CreateDraft(_title, _description, new UserId(), DateTime.UtcNow);
     }
 
-    public Domain.Ticket.Ticket InCreatedState()
+    public Domain.Tickets.Ticket InCreatedState()
     {
-        return Domain.Ticket.Ticket.Create(_title, _description, new UserId(), DateTime.UtcNow);
+        return Domain.Tickets.Ticket.Create(_title, _description, new UserId(), DateTime.UtcNow);
     }
 
-    public Domain.Ticket.Ticket InAssignedState()
+    public Domain.Tickets.Ticket InAssignedState()
     {
         var ticket = InCreatedState();
         ticket.Take(new UserId(), new TeamId());
         return ticket;
     }
 
-    public Domain.Ticket.Ticket InInProgressState()
+    public Domain.Tickets.Ticket InInProgressState()
     {
         var ticket = InAssignedState();
         ticket.StartWork();
         return ticket;
     }
 
-    public Domain.Ticket.Ticket InCompletedState()
+    public Domain.Tickets.Ticket InCompletedState()
     {
         var ticket = InInProgressState();
         ticket.Complete();
         return ticket;
     }
 
-    public Domain.Ticket.Ticket InReopenedState()
+    public Domain.Tickets.Ticket InReopenedState()
     {
         var ticket = InCompletedState();
         ticket.Reopen();
         return ticket;
     }
 
-    public Domain.Ticket.Ticket InCanceledState()
+    public Domain.Tickets.Ticket InCanceledState()
     {
         var ticket = InCreatedState();
         ticket.Cancel();
         return ticket;
     }
 
-    public Domain.Ticket.Ticket InFailedState()
+    public Domain.Tickets.Ticket InFailedState()
     {
         var ticket = InInProgressState();
         ticket.Fail();
         return ticket;
     }
 
-    public Domain.Ticket.Ticket InAcceptedState()
+    public Domain.Tickets.Ticket InAcceptedState()
     {
         var ticket = InCompletedState();
         ticket.Accept();

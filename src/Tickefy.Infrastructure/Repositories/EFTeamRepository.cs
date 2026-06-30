@@ -1,6 +1,6 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Tickefy.Domain.Primitives;
-using Tickefy.Domain.Team;
+using Tickefy.Domain.Teams;
 using Tickefy.Infrastructure.Database;
 
 namespace Tickefy.Infrastructure.Repositories
@@ -23,7 +23,7 @@ namespace Tickefy.Infrastructure.Repositories
             _dbContext.Teams.Remove(team);
         }
 
-        public async Task<List<Team>> GetAll(CancellationToken cancellationToken = default)
+        public async Task<List<Team>> GetAllAsync(CancellationToken cancellationToken = default)
         {
             return await _dbContext.Teams
                 .Include(t => t.Manager)

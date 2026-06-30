@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -19,7 +19,7 @@ namespace Tickefy.Infrastructure.Services
         {
             _settings = options.Value;
         }
-        public async Task<string> GetToken(Guid id, string login, UserRoles role, CancellationToken cancellationToken = default)
+        public async Task<string> GetTokenAsync(Guid id, string login, UserRoles role, CancellationToken cancellationToken = default)
         {
             var expiresIn = DateTime.UtcNow.AddMinutes(_settings.TokenValidityMins);
 

@@ -1,13 +1,13 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Abstractions.Services;
-using Tickefy.Domain.ActivityLog;
+using Tickefy.Domain.ActivityLogs;
 using Tickefy.Domain.Common.Category;
 using Tickefy.Domain.Common.Event;
 using Tickefy.Domain.Common.Priority;
 using Tickefy.Domain.Common.Results;
-using Tickefy.Domain.Ticket;
+using Tickefy.Domain.Tickets;
 
 namespace Tickefy.Application.Ticket.Create
 {
@@ -38,7 +38,7 @@ namespace Tickefy.Application.Ticket.Create
 
         public async Task<Result> Handle(CreateTicketCommand command, CancellationToken cancellationToken)
         {
-            var ticket = Domain.Ticket.Ticket.Create(command.Title, command.Description, command.UserId, command.Deadline);
+            var ticket = Domain.Tickets.Ticket.Create(command.Title, command.Description, command.UserId, command.Deadline);
 
             try
             {
@@ -59,7 +59,7 @@ namespace Tickefy.Application.Ticket.Create
 
             _ticketRepository.Add(ticket);
 
-            var log = Domain.ActivityLog.ActivityLog.Create(ticket.Id, command.UserId, EventType.RequestCreated, "Created request");
+            var log = Domain.ActivityLogs.ActivityLog.Create(ticket.Id, command.UserId, EventType.RequestCreated, "Created request");
             _logRepository.Add(log);
 
             await _uow.SaveChangesAsync(cancellationToken);

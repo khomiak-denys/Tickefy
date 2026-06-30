@@ -1,10 +1,10 @@
-using Tickefy.Application.Abstractions.Data;
+﻿using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
-using Tickefy.Domain.ActivityLog;
+using Tickefy.Domain.ActivityLogs;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Event;
 using Tickefy.Domain.Common.Results;
-using Tickefy.Domain.Ticket;
+using Tickefy.Domain.Tickets;
 
 namespace Tickefy.Application.Ticket.PostComment
 {
@@ -38,11 +38,11 @@ namespace Tickefy.Application.Ticket.PostComment
                 return Result.Failure(new InvalidArgumentError(nameof(command.UserId.Value)));
             }
 
-            var comment = Domain.Comment.Comment.Create(command.UserId, command.TicketId, command.Content);
+            var comment = Domain.Comments.Comment.Create(command.UserId, command.TicketId, command.Content);
 
             ticket.AddComment(comment);
 
-            var log = Domain.ActivityLog.ActivityLog.Create(ticket.Id, command.UserId, EventType.CommentAdded, "User added comment");
+            var log = Domain.ActivityLogs.ActivityLog.Create(ticket.Id, command.UserId, EventType.CommentAdded, "User added comment");
             _logRepository.Add(log);
 
             await _uow.SaveChangesAsync(cancellationToken);

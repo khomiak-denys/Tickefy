@@ -1,10 +1,10 @@
-using Tickefy.Application.Abstractions.Data;
+﻿using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Abstractions.Services;
 using Tickefy.Application.Auth.Common;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Results;
-using Tickefy.Domain.RefreshToken;
+using Tickefy.Domain.RefreshTokens;
 
 namespace Tickefy.Application.Auth.RefreshToken;
 
@@ -26,7 +26,7 @@ public class RefreshTokenCommandHandler : ICommandHandler<RefreshTokenCommand, R
 
     public async Task<Result<LoginResult>> Handle(RefreshTokenCommand command, CancellationToken cancellationToken)
     {
-        var token = await _refreshTokenRepository.GetToken(command.RefreshToken, cancellationToken);
+        var token = await _refreshTokenRepository.GetTokenAsync(command.RefreshToken, cancellationToken);
 
         if (token is null)
         {
@@ -35,18 +35,18 @@ public class RefreshTokenCommandHandler : ICommandHandler<RefreshTokenCommand, R
 
         if (token.Expires < DateTime.UtcNow)
         {
-            await _refreshTokenRepository.Delete(token, cancellationToken);
+            await _refreshTokenRepository.DeleteAsync(token, cancellationToken);
             return Result<LoginResult>.Failure(new ForbiddenError("Refresh token is expired"));
         }
 
-        await _refreshTokenRepository.Delete(token, cancellationToken);
+        await _refreshTokenRepository.DeleteAsync(token, cancellationToken);
 
         var newRefreshToken = _tokenService.GenerateRefreshToken();
 
-        var newRefreshTokenEntity = Domain.RefreshToken.RefreshToken.Create(token.UserId, DateTime.UtcNow.AddDays(7), newRefreshToken);
-        var accessToken = await _tokenService.GetToken(token.User.Id.Value, token.User.Login, token.User.Role, cancellationToken);
+        var newRefreshTokenEntity = Domain.RefreshTokens.RefreshToken.Create(token.UserId, DateTime.UtcNow.AddDays(7), newRefreshToken);
+        var accessToken = await _tokenService.GetTokenAsync(token.User.Id.Value, token.User.Login, token.User.Role, cancellationToken);
 
-        await _refreshTokenRepository.Add(newRefreshTokenEntity, cancellationToken);
+        await _refreshTokenRepository.AddAsync(newRefreshTokenEntity, cancellationToken);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

@@ -1,5 +1,5 @@
-using Tickefy.Domain.Common.UserRole;
-using Tickefy.Domain.RefreshToken;
+﻿using Tickefy.Domain.Common.UserRole;
+using Tickefy.Domain.RefreshTokens;
 
 namespace Tickefy.Application.Abstractions.Services
 {
@@ -15,7 +15,7 @@ namespace Tickefy.Application.Abstractions.Services
         /// <param name="login">The user login.</param>
         /// <param name="role">The user role.</param>
         /// <returns>A signed JWT access token string.</returns>
-        public Task<string> GetToken(Guid id, string login, UserRoles role, CancellationToken cancellationToken = default);
+        public Task<string> GetTokenAsync(Guid id, string login, UserRoles role, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Generates a cryptographically random refresh token.

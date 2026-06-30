@@ -1,13 +1,13 @@
-using Microsoft.EntityFrameworkCore;
-using Tickefy.Domain.ActivityLog;
-using Tickefy.Domain.Attachment;
-using Tickefy.Domain.Comment;
+﻿using Microsoft.EntityFrameworkCore;
+using Tickefy.Domain.ActivityLogs;
+using Tickefy.Domain.Attachments;
+using Tickefy.Domain.Comments;
 using Tickefy.Domain.Primitives;
 using Tickefy.Domain.Primitives.StronglyTypedId;
-using Tickefy.Domain.RefreshToken;
-using Tickefy.Domain.Team;
-using Tickefy.Domain.Ticket;
-using Tickefy.Domain.User;
+using Tickefy.Domain.RefreshTokens;
+using Tickefy.Domain.Teams;
+using Tickefy.Domain.Tickets;
+using Tickefy.Domain.Users;
 
 namespace Tickefy.Infrastructure.Database
 {

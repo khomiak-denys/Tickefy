@@ -1,11 +1,11 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Ticket.Common;
 using Tickefy.Application.Ticket.Common.Helpers;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.Common.UserRole;
-using Tickefy.Domain.Ticket;
+using Tickefy.Domain.Tickets;
 
 namespace Tickefy.Application.Ticket.GetById
 {

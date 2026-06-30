@@ -1,16 +1,16 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Abstractions.Services;
 using Tickefy.Application.Ticket.Common.Helpers;
-using Tickefy.Domain.ActivityLog;
+using Tickefy.Domain.ActivityLogs;
 using Tickefy.Domain.Common.Action;
 using Tickefy.Domain.Common.Category;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Event;
 using Tickefy.Domain.Common.Priority;
 using Tickefy.Domain.Common.Results;
-using Tickefy.Domain.Ticket;
+using Tickefy.Domain.Tickets;
 
 namespace Tickefy.Application.Ticket.Publish;
 
@@ -71,7 +71,7 @@ public class PublishTicketCommandHandler : ICommandHandler<PublishTicketCommand,
             ticket.SetPriority(Priority.Medium);
         }
 
-        var log = Domain.ActivityLog.ActivityLog.Create(
+        var log = Domain.ActivityLogs.ActivityLog.Create(
             command.TicketId,
             command.UserId,
             EventType.StatusChanged,

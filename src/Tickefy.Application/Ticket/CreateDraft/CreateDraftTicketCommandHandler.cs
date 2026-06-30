@@ -1,7 +1,7 @@
-using Tickefy.Application.Abstractions.Data;
+﻿using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Domain.Common.Results;
-using Tickefy.Domain.Ticket;
+using Tickefy.Domain.Tickets;
 
 namespace Tickefy.Application.Ticket.CreateDraft;
 
@@ -20,7 +20,7 @@ public class CreateDraftTicketCommandHandler : ICommandHandler<CreateDraftTicket
 
     public async Task<Result> Handle(CreateDraftTicketCommand command, CancellationToken cancellationToken)
     {
-        var ticket = Domain.Ticket.Ticket.CreateDraft(command.Title, command.Description, command.UserId, command.Deadline);
+        var ticket = Domain.Tickets.Ticket.CreateDraft(command.Title, command.Description, command.UserId, command.Deadline);
 
         _ticketRepository.Add(ticket);
 

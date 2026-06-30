@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Moq;
 using Tickefy.Application.Ticket.Common;
 using Tickefy.Application.Ticket.GetById;
@@ -8,7 +8,7 @@ using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.UserRole;
 using Tickefy.Domain.Primitives;
 using Tickefy.Domain.Tests.Ticket.Builders;
-using Tickefy.Domain.Ticket;
+using Tickefy.Domain.Tickets;
 
 namespace Tickefy.Application.Tests.Tickets;
 
@@ -19,7 +19,7 @@ public class GetTicketByIdHandler
     {
         var repo = new Mock<ITicketRepository>();
         repo.Setup(r => r.GetByIdAsync(It.IsAny<TicketId>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Domain.Ticket.Ticket?)null);
+            .ReturnsAsync((Domain.Tickets.Ticket?)null);
 
         var mapper = new Mock<IMapper>();
         var handler = new GetTicketByIdQueryHandler(repo.Object, mapper.Object);
@@ -36,7 +36,7 @@ public class GetTicketByIdHandler
     {
         var repo = new Mock<ITicketRepository>();
         repo.Setup(r => r.GetByIdAsync(It.IsAny<TicketId>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Domain.Ticket.Ticket.Create(string.Empty, string.Empty, new UserId(), DateTime.Now));
+            .ReturnsAsync(Domain.Tickets.Ticket.Create(string.Empty, string.Empty, new UserId(), DateTime.Now));
         var mapper = new Mock<IMapper>();
 
         var handler = new GetTicketByIdQueryHandler(repo.Object, mapper.Object);
@@ -75,7 +75,7 @@ public class GetTicketByIdHandler
             AvailableActions = Array.Empty<TicketActionResult>()
         };
 
-        mapper.Setup(m => m.Map<TicketDetailsResult>(It.IsAny<Domain.Ticket.Ticket>()))
+        mapper.Setup(m => m.Map<TicketDetailsResult>(It.IsAny<Domain.Tickets.Ticket>()))
             .Returns(mappedDto);
 
         var handler = new GetTicketByIdQueryHandler(repo.Object, mapper.Object);
@@ -93,7 +93,7 @@ public class GetTicketByIdHandler
         var userId = new UserId();
         var repo = new Mock<ITicketRepository>();
         repo.Setup(r => r.GetByIdAsync(It.IsAny<TicketId>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Domain.Ticket.Ticket.CreateDraft(string.Empty, string.Empty, userId, DateTime.Now));
+            .ReturnsAsync(Domain.Tickets.Ticket.CreateDraft(string.Empty, string.Empty, userId, DateTime.Now));
         var mapper = new Mock<IMapper>();
 
         var mappedDto = new TicketDetailsResult(
@@ -114,7 +114,7 @@ public class GetTicketByIdHandler
             AvailableActions = Array.Empty<TicketActionResult>()
         };
 
-        mapper.Setup(m => m.Map<TicketDetailsResult>(It.IsAny<Domain.Ticket.Ticket>()))
+        mapper.Setup(m => m.Map<TicketDetailsResult>(It.IsAny<Domain.Tickets.Ticket>()))
             .Returns(mappedDto);
 
         var handler = new GetTicketByIdQueryHandler(repo.Object, mapper.Object);
@@ -156,7 +156,7 @@ public class GetTicketByIdHandler
             AvailableActions = Array.Empty<TicketActionResult>()
         };
 
-        mapper.Setup(m => m.Map<TicketDetailsResult>(It.IsAny<Domain.Ticket.Ticket>()))
+        mapper.Setup(m => m.Map<TicketDetailsResult>(It.IsAny<Domain.Tickets.Ticket>()))
             .Returns(mappedDto);
 
         var handler = new GetTicketByIdQueryHandler(repo.Object, mapper.Object);

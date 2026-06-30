@@ -6,8 +6,12 @@ using Tickefy.Domain.Common.Priority;
 using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.Common.Status;
 using Tickefy.Domain.Primitives;
+using Tickefy.Domain.Users;
+using Tickefy.Domain.Teams;
+using Tickefy.Domain.Comments;
+using Tickefy.Domain.Attachments;
 
-namespace Tickefy.Domain.Ticket
+namespace Tickefy.Domain.Tickets
 {
     public class Ticket : EntityBase<TicketId>
     {
@@ -15,13 +19,13 @@ namespace Tickefy.Domain.Ticket
         public string Description { get; private set; }
 
         public UserId RequesterId { get; private set; }
-        public Domain.User.User Requester { get; private set; } = null!;
+        public User Requester { get; private set; } = null!;
 
         public TeamId? AssignedTeamId { get; private set; }
-        public Domain.Team.Team? AssignedTeam { get; private set; }
+        public Team? AssignedTeam { get; private set; }
 
         public UserId? AssignedAgentId { get; private set; }
-        public Domain.User.User? AssignedAgent { get; private set; }
+        public User? AssignedAgent { get; private set; }
 
         public Category? Category { get; private set; }
         public Priority? Priority { get; private set; }
@@ -29,8 +33,8 @@ namespace Tickefy.Domain.Ticket
 
         public DateTime Deadline { get; private set; }
 
-        public List<Domain.Comment.Comment> Comments { get; private set; } = new();
-        public List<Domain.Attachment.Attachment> Attachments { get; private set; } = new();
+        public List<Comment> Comments { get; private set; } = new();
+        public List<Attachment> Attachments { get; private set; } = new();
 
         private Ticket() { }
 
@@ -57,7 +61,7 @@ namespace Tickefy.Domain.Ticket
             Priority = priority;
         }
 
-        public void AddComment(Domain.Comment.Comment comment)
+        public void AddComment(Comment comment)
         {
             Comments.Add(comment);
         }

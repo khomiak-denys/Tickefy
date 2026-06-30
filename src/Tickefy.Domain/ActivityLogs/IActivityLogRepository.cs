@@ -1,6 +1,6 @@
-using Tickefy.Domain.Primitives;
+﻿using Tickefy.Domain.Primitives;
 
-namespace Tickefy.Domain.ActivityLog
+namespace Tickefy.Domain.ActivityLogs
 {
     /// <summary>
     /// Provides persistence operations for activity log entries.

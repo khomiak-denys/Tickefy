@@ -2,7 +2,7 @@
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Results;
-using Tickefy.Domain.RefreshToken;
+using Tickefy.Domain.RefreshTokens;
 
 namespace Tickefy.Application.Auth.Logout;
 
@@ -18,14 +18,14 @@ public class LogoutCommandHandler : ICommandHandler<LogoutCommand, Result>
     }
     public async Task<Result> Handle(LogoutCommand command, CancellationToken cancellationToken)
     {
-        var existingToken = await _refreshTokenRepository.GetToken(command.RefreshToken);
+        var existingToken = await _refreshTokenRepository.GetTokenAsync(command.RefreshToken);
 
         if (existingToken is null)
         {
             return Result.Failure(new NotFoundError("Refresh token not found"));
         }
 
-        await _refreshTokenRepository.Delete(existingToken);
+        await _refreshTokenRepository.DeleteAsync(existingToken);
         await  _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Success();

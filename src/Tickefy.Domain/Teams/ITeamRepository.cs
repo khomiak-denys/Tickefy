@@ -1,6 +1,6 @@
-using Tickefy.Domain.Primitives;
+﻿using Tickefy.Domain.Primitives;
 
-namespace Tickefy.Domain.Team
+namespace Tickefy.Domain.Teams
 {
     /// <summary>
     /// Provides persistence operations for teams.
@@ -23,7 +23,7 @@ namespace Tickefy.Domain.Team
         /// Gets all teams.
         /// </summary>
         /// <returns>A list of all <see cref="Team"/> entities including manager information.</returns>
-        Task<List<Team>> GetAll(CancellationToken cancellationToken = default);
+        Task<List<Team>> GetAllAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Gets a team by its identifier.

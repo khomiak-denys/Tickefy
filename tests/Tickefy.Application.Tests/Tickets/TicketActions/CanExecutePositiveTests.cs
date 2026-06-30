@@ -1,4 +1,4 @@
-using Tickefy.Application.Ticket.Common.Helpers;
+﻿using Tickefy.Application.Ticket.Common.Helpers;
 using Tickefy.Domain.Common.Action;
 using Tickefy.Domain.Tests.Ticket.Builders;
 
@@ -6,7 +6,7 @@ namespace Tickefy.Application.Tests.Tickets.TicketActions;
 
 public class CanExecutePositiveTests
 {
-    public static TheoryData<TicketAction, Domain.Ticket.Ticket, bool, bool, bool, bool> Cases => new()
+    public static TheoryData<TicketAction, Domain.Tickets.Ticket, bool, bool, bool, bool> Cases => new()
     {
         { TicketAction.Cancel, TicketBuilder.New().InCreatedState(), true, false, false, false},
         { TicketAction.Cancel, TicketBuilder.New().InCreatedState(), false, true, false, false},
@@ -30,7 +30,7 @@ public class CanExecutePositiveTests
     [MemberData(nameof(Cases))]
     public void CanExecute_Should_ReturnTrue_When_Parameters_Satisfies(
         TicketAction action,
-        Domain.Ticket.Ticket ticket,
+        Domain.Tickets.Ticket ticket,
         bool isAdmin,
         bool isRequester,
         bool isAssignedAgent,

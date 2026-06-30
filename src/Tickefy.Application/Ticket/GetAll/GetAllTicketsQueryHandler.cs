@@ -1,8 +1,8 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Ticket.Common;
 using Tickefy.Domain.Common.Results;
-using Tickefy.Domain.Ticket;
+using Tickefy.Domain.Tickets;
 
 namespace Tickefy.Application.Ticket.GetAll
 {
@@ -20,7 +20,7 @@ namespace Tickefy.Application.Ticket.GetAll
         }
         public async Task<Result<List<TicketResult>>> Handle(GetAllTicketsQuery request, CancellationToken cancellationToken)
         {
-            var tickets = await _ticketRepository.GetAll(cancellationToken);
+            var tickets = await _ticketRepository.GetAllAsync(cancellationToken);
             var result = _mapper.Map<List<TicketResult>>(tickets);
 
             return Result<List<TicketResult>>.Success(result);

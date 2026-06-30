@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Tickefy.Application.User.Common;
 using Tickefy.Domain.Common.UserRole;
 using Tickefy.Domain.Primitives;
@@ -9,8 +9,8 @@ namespace Tickefy.Application.Mapping
     {
         public UserProfile()
         {
-            CreateMap<Domain.User.User, UserDetailsResult>();
-            CreateMap<Domain.User.User, UserResult>();
+            CreateMap<Domain.Users.User, UserDetailsResult>();
+            CreateMap<Domain.Users.User, UserResult>();
         }
     }
 }

@@ -1,12 +1,12 @@
-using Tickefy.Application.Abstractions.Data;
+﻿using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Ticket.Common.Helpers;
-using Tickefy.Domain.ActivityLog;
+using Tickefy.Domain.ActivityLogs;
 using Tickefy.Domain.Common.Action;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Event;
 using Tickefy.Domain.Common.Results;
-using Tickefy.Domain.Ticket;
+using Tickefy.Domain.Tickets;
 
 namespace Tickefy.Application.Ticket.Accept;
 
@@ -34,7 +34,7 @@ public class AcceptTicketCommandHandler : ICommandHandler<AcceptTicketCommand, R
         if (TicketAction.Accept.CanExecute(ticket, command.UserId, command.Roles))
         {
             ticket.Accept();
-            var log = Domain.ActivityLog.ActivityLog.Create(ticket.Id, command.UserId, EventType.StatusChanged,
+            var log = Domain.ActivityLogs.ActivityLog.Create(ticket.Id, command.UserId, EventType.StatusChanged,
                 $"Requester accepted ticket.");
             _logRepository.Add(log);
             await _uow.SaveChangesAsync(cancellationToken);
