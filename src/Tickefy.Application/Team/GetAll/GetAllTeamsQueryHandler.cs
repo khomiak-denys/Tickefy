@@ -2,7 +2,7 @@
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Team.Common;
 using Tickefy.Domain.Common.Results;
-using Tickefy.Domain.Team;
+using Tickefy.Domain.Teams;
 
 namespace Tickefy.Application.Team.GetAll
 {

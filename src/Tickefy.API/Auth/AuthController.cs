@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +9,7 @@ using Tickefy.API.ErrorHandling;
 using Tickefy.Application.Auth.Logout;
 using Tickefy.Application.Auth.RefreshToken;
 using Tickefy.Domain.Primitives;
-using Tickefy.Domain.RefreshToken;
+using Tickefy.Domain.RefreshTokens;
 
 namespace Tickefy.API.Auth
 {

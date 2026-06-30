@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Tickefy.Domain.Common.Category;
 using Tickefy.Domain.Common.Status;
 using Tickefy.Domain.Primitives;
-using Tickefy.Domain.Ticket;
+using Tickefy.Domain.Tickets;
 using Tickefy.Infrastructure.Database;
 
 namespace Tickefy.Infrastructure.Repositories

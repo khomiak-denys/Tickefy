@@ -1,6 +1,6 @@
 ﻿using Tickefy.Domain.Primitives;
 
-namespace Tickefy.Domain.Team
+namespace Tickefy.Domain.Teams
 {
     /// <summary>
     /// Provides persistence operations for teams.

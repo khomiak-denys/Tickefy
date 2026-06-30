@@ -1,12 +1,12 @@
-using Moq;
+﻿using Moq;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Ticket.Complete;
-using Tickefy.Domain.ActivityLog;
+using Tickefy.Domain.ActivityLogs;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Event;
 using Tickefy.Domain.Common.UserRole;
 using Tickefy.Domain.Primitives;
-using Tickefy.Domain.Ticket;
+using Tickefy.Domain.Tickets;
 
 namespace Tickefy.Application.Tests.Tickets;
 
@@ -17,7 +17,7 @@ public class CompleteTicketHandler
     {
         var repo = new Mock<ITicketRepository>();
         repo.Setup(r => r.GetByIdAsync(It.IsAny<TicketId>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Domain.Ticket.Ticket?)null);
+            .ReturnsAsync((Domain.Tickets.Ticket?)null);
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
@@ -42,7 +42,7 @@ public class CompleteTicketHandler
     {
         var repo = new Mock<ITicketRepository>();
         repo.Setup(r => r.GetByIdAsync(It.IsAny<TicketId>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Domain.Ticket.Ticket.Create(string.Empty, string.Empty, new UserId(), DateTime.UtcNow));
+            .ReturnsAsync(Domain.Tickets.Ticket.Create(string.Empty, string.Empty, new UserId(), DateTime.UtcNow));
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
@@ -64,7 +64,7 @@ public class CompleteTicketHandler
     [Fact]
     public async Task CompleteTicketCommandHandler_Should_CompleteTicketAndLogReason_WhenConditionAllows()
     {
-        var ticket = Domain.Ticket.Ticket.Create(string.Empty, string.Empty, new UserId(), DateTime.UtcNow);
+        var ticket = Domain.Tickets.Ticket.Create(string.Empty, string.Empty, new UserId(), DateTime.UtcNow);
         var ticketId = ticket.Id;
         var agentId = new UserId();
         var eventType = EventType.StatusChanged;
@@ -91,7 +91,7 @@ public class CompleteTicketHandler
 
         result.IsSuccess.Should().BeTrue();
 
-        logRepository.Verify(repo => repo.Add(It.Is<Domain.ActivityLog.ActivityLog>(log =>
+        logRepository.Verify(repo => repo.Add(It.Is<Domain.ActivityLogs.ActivityLog>(log =>
             log.UserId == agentId &&
             log.TicketId == ticketId &&
             log.EventType == eventType

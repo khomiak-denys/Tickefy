@@ -1,8 +1,9 @@
 using Tickefy.Domain.Common.EntityBase;
 using Tickefy.Domain.Common.UserRole;
 using Tickefy.Domain.Primitives;
+using Tickefy.Domain.Teams;
 
-namespace Tickefy.Domain.User
+namespace Tickefy.Domain.Users
 {
     public class User : EntityBase<UserId>
     {
@@ -13,16 +14,17 @@ namespace Tickefy.Domain.User
         public UserRoles Role { get; private set; }
 
         public TeamId? TeamId { get; private set; } = null;
-        public Domain.Team.Team? Team { get; private set; } = null;
-
+        public Team? Team { get; private set; } = null;
 
         private User() : base() { }
+
         public static User Create(string firstName, string lastName, string login, string passwordHash)
         {
             var user = new User(firstName, lastName, login, passwordHash, UserRoles.Requester);
             user.OnCreate();
             return user;
         }
+
         private User(string firstName, string lastName, string login, string passwordHash, UserRoles role) : base()
         {
             Id = new UserId();
@@ -38,12 +40,13 @@ namespace Tickefy.Domain.User
             Role = role;
         }
 
-        public void SetTeam(Domain.Team.Team? team)
+        public void SetTeam(Team? team)
         {
             TeamId = team?.Id;
             Team = team;
             OnModify();
         }
+        
         public void Update(string firstName, string lastName)
         {
             FirstName = firstName;

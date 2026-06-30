@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Tickefy.Domain.Primitives;
-using Tickefy.Domain.RefreshToken;
+using Tickefy.Domain.RefreshTokens;
 using Tickefy.Infrastructure.Database;
 
 namespace Tickefy.Infrastructure.Repositories;

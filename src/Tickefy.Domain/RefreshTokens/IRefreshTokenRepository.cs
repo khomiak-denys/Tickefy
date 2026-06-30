@@ -1,6 +1,6 @@
 ﻿using Tickefy.Domain.Primitives;
 
-namespace Tickefy.Domain.RefreshToken;
+namespace Tickefy.Domain.RefreshTokens;
 
 /// <summary>
 /// Provides persistence operations for refresh tokens.

@@ -1,4 +1,4 @@
-using Tickefy.Domain.Common.Action;
+﻿using Tickefy.Domain.Common.Action;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.Tests.Ticket.Builders;
@@ -157,7 +157,7 @@ public class TicketStatusNegativeTransitionsTests
         result.Error.Message.Should().Be(message);
     }
 
-    private Func<Result> Invoke(Domain.Ticket.Ticket ticket, TicketAction action)
+    private Func<Result> Invoke(Domain.Tickets.Ticket ticket, TicketAction action)
     {
         return action switch
         {

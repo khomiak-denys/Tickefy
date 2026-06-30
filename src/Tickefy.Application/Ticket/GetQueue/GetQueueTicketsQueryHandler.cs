@@ -4,9 +4,9 @@ using Tickefy.Application.Ticket.Common;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.Common.UserRole;
-using Tickefy.Domain.Team;
-using Tickefy.Domain.Ticket;
-using Tickefy.Domain.User;
+using Tickefy.Domain.Teams;
+using Tickefy.Domain.Tickets;
+using Tickefy.Domain.Users;
 
 namespace Tickefy.Application.Ticket.GetQueue
 {

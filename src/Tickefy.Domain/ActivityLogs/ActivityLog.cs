@@ -1,15 +1,17 @@
 using Tickefy.Domain.Common.EntityBase;
 using Tickefy.Domain.Common.Event;
 using Tickefy.Domain.Primitives;
+using Tickefy.Domain.Tickets;
+using Tickefy.Domain.Users;
 
-namespace Tickefy.Domain.ActivityLog
+namespace Tickefy.Domain.ActivityLogs
 {
     public class ActivityLog : EntityBase<ActivityLogId>
     {
         public TicketId TicketId { get; private set; }
-        public Domain.Ticket.Ticket Ticket { get; private set; }
+        public Ticket Ticket { get; private set; }
         public UserId UserId { get; private set; }
-        public Domain.User.User User { get; private set; }
+        public User User { get; private set; }
         public EventType EventType { get; private set; }
         public string Description { get; private set; }
 

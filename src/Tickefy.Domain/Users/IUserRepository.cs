@@ -1,6 +1,6 @@
 ﻿using Tickefy.Domain.Primitives;
 
-namespace Tickefy.Domain.User
+namespace Tickefy.Domain.Users
 {
     /// <summary>
     /// Provides persistence operations for users.

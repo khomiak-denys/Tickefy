@@ -2,7 +2,7 @@
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Results;
-using Tickefy.Domain.RefreshToken;
+using Tickefy.Domain.RefreshTokens;
 
 namespace Tickefy.Application.Auth.Logout;
 

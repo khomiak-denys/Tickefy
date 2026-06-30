@@ -1,5 +1,5 @@
-using Microsoft.EntityFrameworkCore;
-using Tickefy.Domain.ActivityLog;
+﻿using Microsoft.EntityFrameworkCore;
+using Tickefy.Domain.ActivityLogs;
 using Tickefy.Domain.Primitives;
 using Tickefy.Infrastructure.Database;
 

@@ -4,7 +4,7 @@ using Tickefy.Application.Abstractions.Services;
 using Tickefy.Application.Auth.Common;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Results;
-using Tickefy.Domain.RefreshToken;
+using Tickefy.Domain.RefreshTokens;
 
 namespace Tickefy.Application.Auth.RefreshToken;
 
@@ -43,7 +43,7 @@ public class RefreshTokenCommandHandler : ICommandHandler<RefreshTokenCommand, R
 
         var newRefreshToken = _tokenService.GenerateRefreshToken();
 
-        var newRefreshTokenEntity = Domain.RefreshToken.RefreshToken.Create(token.UserId, DateTime.UtcNow.AddDays(7), newRefreshToken);
+        var newRefreshTokenEntity = Domain.RefreshTokens.RefreshToken.Create(token.UserId, DateTime.UtcNow.AddDays(7), newRefreshToken);
         var accessToken = await _tokenService.GetTokenAsync(token.User.Id.Value, token.User.Login, token.User.Role, cancellationToken);
 
         await _refreshTokenRepository.AddAsync(newRefreshTokenEntity, cancellationToken);

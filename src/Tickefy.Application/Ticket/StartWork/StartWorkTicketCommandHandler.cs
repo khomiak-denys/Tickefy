@@ -1,12 +1,12 @@
-using Tickefy.Application.Abstractions.Data;
+﻿using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Ticket.Common.Helpers;
-using Tickefy.Domain.ActivityLog;
+using Tickefy.Domain.ActivityLogs;
 using Tickefy.Domain.Common.Action;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Event;
 using Tickefy.Domain.Common.Results;
-using Tickefy.Domain.Ticket;
+using Tickefy.Domain.Tickets;
 
 namespace Tickefy.Application.Ticket.StartWork;
 
@@ -41,7 +41,7 @@ public class StartWorkTicketCommandHandler : ICommandHandler<StartWorkTicketComm
         }
 
         ticket.StartWork();
-        var log = Domain.ActivityLog.ActivityLog.Create(
+        var log = Domain.ActivityLogs.ActivityLog.Create(
             ticket.Id,
             command.UserId,
             EventType.StatusChanged,

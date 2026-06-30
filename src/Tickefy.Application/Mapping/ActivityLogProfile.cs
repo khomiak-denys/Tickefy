@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Tickefy.Application.ActivityLog.Common;
 
 namespace Tickefy.Application.Mapping
@@ -7,7 +7,7 @@ namespace Tickefy.Application.Mapping
     {
         public ActivityLogProfile()
         {
-            CreateMap<Domain.ActivityLog.ActivityLog, LogResult>();
+            CreateMap<Domain.ActivityLogs.ActivityLog, LogResult>();
         }
     }
 }

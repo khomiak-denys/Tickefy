@@ -1,9 +1,9 @@
-using Tickefy.Application.Abstractions.Data;
+﻿using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Abstractions.Services;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Results;
-using Tickefy.Domain.User;
+using Tickefy.Domain.Users;
 
 namespace Tickefy.Application.Auth.Register
 {
@@ -30,7 +30,7 @@ namespace Tickefy.Application.Auth.Register
                 return Result<Guid>.Failure(new AlreadyExistsError("User already exists"));
             }
             var passwordHash = _passwordHasher.HashPassword(command.Password);
-            var user = Domain.User.User.Create(command.FirstName, command.LastName, command.Login, passwordHash);
+            var user = Domain.Users.User.Create(command.FirstName, command.LastName, command.Login, passwordHash);
 
             _userRepository.Add(user);
             await _uow.SaveChangesAsync(cancellationToken);

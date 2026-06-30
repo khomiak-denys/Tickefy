@@ -1,14 +1,14 @@
-using Moq;
+﻿using Moq;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Ticket.Take;
-using Tickefy.Domain.ActivityLog;
+using Tickefy.Domain.ActivityLogs;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Event;
 using Tickefy.Domain.Common.UserRole;
 using Tickefy.Domain.Primitives;
-using Tickefy.Domain.Team;
-using Tickefy.Domain.Ticket;
-using Tickefy.Domain.User;
+using Tickefy.Domain.Teams;
+using Tickefy.Domain.Tickets;
+using Tickefy.Domain.Users;
 
 namespace Tickefy.Application.Tests.Tickets;
 
@@ -19,7 +19,7 @@ public class TakeTicketHandler
     {
         var ticketRepository = new Mock<ITicketRepository>();
         ticketRepository.Setup(r => r.GetByIdAsync(It.IsAny<TicketId>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Domain.Ticket.Ticket?)null);
+            .ReturnsAsync((Domain.Tickets.Ticket?)null);
 
         var userRepository = new Mock<IUserRepository>();
         var teamRepository = new Mock<ITeamRepository>();
@@ -51,7 +51,7 @@ public class TakeTicketHandler
     {
         var requesterId = new UserId();
 
-        var ticket = Domain.Ticket.Ticket.Create(string.Empty, string.Empty, requesterId, DateTime.UtcNow);
+        var ticket = Domain.Tickets.Ticket.Create(string.Empty, string.Empty, requesterId, DateTime.UtcNow);
 
         var ticketRepository = new Mock<ITicketRepository>();
         ticketRepository.Setup(r => r.GetByIdAsync(It.IsAny<TicketId>(), It.IsAny<CancellationToken>()))
@@ -85,7 +85,7 @@ public class TakeTicketHandler
     [Fact]
     public async Task TakeTicketCommandHandler_Should_Return_NotFoundError_On_Null_Agent()
     {
-        var ticket = Domain.Ticket.Ticket.Create(string.Empty, string.Empty, new UserId(), DateTime.UtcNow);
+        var ticket = Domain.Tickets.Ticket.Create(string.Empty, string.Empty, new UserId(), DateTime.UtcNow);
 
         var ticketRepository = new Mock<ITicketRepository>();
         ticketRepository.Setup(r => r.GetByIdAsync(It.IsAny<TicketId>(), It.IsAny<CancellationToken>()))
@@ -93,7 +93,7 @@ public class TakeTicketHandler
 
         var userRepository = new Mock<IUserRepository>();
         userRepository.Setup(r => r.GetByIdAsync(It.IsAny<UserId>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Domain.User.User?)null);
+            .ReturnsAsync((Domain.Users.User?)null);
         var teamRepository = new Mock<ITeamRepository>();
 
         var logRepository = new Mock<IActivityLogRepository>();
@@ -121,9 +121,9 @@ public class TakeTicketHandler
     [Fact]
     public async Task TakeTicketCommandHandler_Should_Return_ForbiddenError_When_Agent_TeamId_IsNull()
     {
-        var user = Domain.User.User.Create(string.Empty, string.Empty, string.Empty, string.Empty);
+        var user = Domain.Users.User.Create(string.Empty, string.Empty, string.Empty, string.Empty);
 
-        var ticket = Domain.Ticket.Ticket.Create(string.Empty, string.Empty, new UserId(), DateTime.UtcNow);
+        var ticket = Domain.Tickets.Ticket.Create(string.Empty, string.Empty, new UserId(), DateTime.UtcNow);
 
         var ticketRepository = new Mock<ITicketRepository>();
         ticketRepository.Setup(r => r.GetByIdAsync(It.IsAny<TicketId>(), It.IsAny<CancellationToken>()))
@@ -159,12 +159,12 @@ public class TakeTicketHandler
     [Fact]
     public async Task TakeTicketCommandHandler_Should_Return_NotFoundError_When_Agent_Team_IsNotFound()
     {
-        var user = Domain.User.User.Create(string.Empty, string.Empty, string.Empty, string.Empty);
-        var team = Domain.Team.Team.Create(string.Empty, string.Empty);
+        var user = Domain.Users.User.Create(string.Empty, string.Empty, string.Empty, string.Empty);
+        var team = Domain.Teams.Team.Create(string.Empty, string.Empty);
 
         team.AddMember(user);
 
-        var ticket = Domain.Ticket.Ticket.Create(string.Empty, string.Empty, new UserId(), DateTime.UtcNow);
+        var ticket = Domain.Tickets.Ticket.Create(string.Empty, string.Empty, new UserId(), DateTime.UtcNow);
 
         var ticketRepository = new Mock<ITicketRepository>();
         ticketRepository.Setup(r => r.GetByIdAsync(It.IsAny<TicketId>(), It.IsAny<CancellationToken>()))
@@ -176,7 +176,7 @@ public class TakeTicketHandler
 
         var teamRepository = new Mock<ITeamRepository>();
         teamRepository.Setup(r => r.GetByIdAsync(It.IsAny<TeamId>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Domain.Team.Team?)null);
+            .ReturnsAsync((Domain.Teams.Team?)null);
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
@@ -203,11 +203,11 @@ public class TakeTicketHandler
     [Fact]
     public async Task TakeTicketCommandHandler_Should_AssignTicket_And_Log()
     {
-        var user = Domain.User.User.Create(string.Empty, string.Empty, string.Empty, string.Empty);
-        var team = Domain.Team.Team.Create(string.Empty, string.Empty);
+        var user = Domain.Users.User.Create(string.Empty, string.Empty, string.Empty, string.Empty);
+        var team = Domain.Teams.Team.Create(string.Empty, string.Empty);
         team.AddMember(user);
 
-        var ticket = Domain.Ticket.Ticket.Create(string.Empty, string.Empty, new UserId(), DateTime.UtcNow);
+        var ticket = Domain.Tickets.Ticket.Create(string.Empty, string.Empty, new UserId(), DateTime.UtcNow);
 
         var ticketRepository = new Mock<ITicketRepository>();
         ticketRepository.Setup(r => r.GetByIdAsync(It.IsAny<TicketId>(), It.IsAny<CancellationToken>()))
@@ -241,7 +241,7 @@ public class TakeTicketHandler
 
         result.IsSuccess.Should().BeTrue();
 
-        logRepository.Verify(repo => repo.Add(It.Is<Domain.ActivityLog.ActivityLog>(log =>
+        logRepository.Verify(repo => repo.Add(It.Is<Domain.ActivityLogs.ActivityLog>(log =>
             log.UserId == user.Id &&
             log.TicketId == ticket.Id &&
             log.EventType == EventType.UserAssigned &&

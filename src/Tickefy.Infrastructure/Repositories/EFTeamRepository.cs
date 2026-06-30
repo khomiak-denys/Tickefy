@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Tickefy.Domain.Primitives;
-using Tickefy.Domain.Team;
+using Tickefy.Domain.Teams;
 using Tickefy.Infrastructure.Database;
 
 namespace Tickefy.Infrastructure.Repositories

@@ -1,12 +1,12 @@
-using Moq;
+﻿using Moq;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Ticket.Revise;
-using Tickefy.Domain.ActivityLog;
+using Tickefy.Domain.ActivityLogs;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Event;
 using Tickefy.Domain.Common.UserRole;
 using Tickefy.Domain.Primitives;
-using Tickefy.Domain.Ticket;
+using Tickefy.Domain.Tickets;
 
 namespace Tickefy.Application.Tests.Tickets;
 
@@ -17,7 +17,7 @@ public class ReopenTicketHandler
     {
         var repo = new Mock<ITicketRepository>();
         repo.Setup(r => r.GetByIdAsync(It.IsAny<TicketId>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Domain.Ticket.Ticket?)null);
+            .ReturnsAsync((Domain.Tickets.Ticket?)null);
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
@@ -42,7 +42,7 @@ public class ReopenTicketHandler
     {
         var repo = new Mock<ITicketRepository>();
         repo.Setup(r => r.GetByIdAsync(It.IsAny<TicketId>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Domain.Ticket.Ticket.Create(string.Empty, string.Empty, new UserId(), DateTime.UtcNow));
+            .ReturnsAsync(Domain.Tickets.Ticket.Create(string.Empty, string.Empty, new UserId(), DateTime.UtcNow));
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
@@ -66,7 +66,7 @@ public class ReopenTicketHandler
     public async Task ReopenTicketCommandHandler_Should_ReopenTicketAndLogReason_WhenConditionAllows()
     {
         var userId = new UserId();
-        var ticket = Domain.Ticket.Ticket.Create(string.Empty, string.Empty, userId, DateTime.UtcNow);
+        var ticket = Domain.Tickets.Ticket.Create(string.Empty, string.Empty, userId, DateTime.UtcNow);
         var ticketId = ticket.Id;
         var eventType = EventType.StatusChanged;
         var reason = "Test description";
@@ -95,7 +95,7 @@ public class ReopenTicketHandler
 
         result.IsSuccess.Should().BeTrue();
 
-        logRepository.Verify(repo => repo.Add(It.Is<Domain.ActivityLog.ActivityLog>(log =>
+        logRepository.Verify(repo => repo.Add(It.Is<Domain.ActivityLogs.ActivityLog>(log =>
             log.UserId == userId &&
             log.TicketId == ticketId &&
             log.EventType == eventType &&

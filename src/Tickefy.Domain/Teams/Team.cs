@@ -3,8 +3,9 @@ using Tickefy.Domain.Common.EntityBase;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.Primitives;
+using Tickefy.Domain.Users;
 
-namespace Tickefy.Domain.Team
+namespace Tickefy.Domain.Teams
 {
     public class Team : EntityBase<TeamId>
     {
@@ -12,8 +13,8 @@ namespace Tickefy.Domain.Team
         public string? Description { get; private set; }
         public Category Category { get; private set; }
         public UserId ManagerId { get; private set; }
-        public Domain.User.User Manager { get; private set; }
-        public List<Domain.User.User> Members { get; private set; } = new();
+        public User Manager { get; private set; }
+        public List<User> Members { get; private set; } = new();
 
         private Team() { }
 
@@ -30,7 +31,7 @@ namespace Tickefy.Domain.Team
             team.OnCreate();
             return team;
         }
-        public void AddMember(Domain.User.User user)
+        public void AddMember(User user)
         {
             if (Members.Any(m => m.Id == user.Id))
                 return;
@@ -39,7 +40,7 @@ namespace Tickefy.Domain.Team
             user.SetTeam(this);
             OnModify();
         }
-        public Result RemoveMember(Domain.User.User user)
+        public Result RemoveMember(User user)
         {
             if (!Members.Any(m => m.Id == user.Id))
             {

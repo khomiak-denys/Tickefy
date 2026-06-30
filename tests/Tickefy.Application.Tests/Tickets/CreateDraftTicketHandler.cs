@@ -1,8 +1,8 @@
-using Moq;
+﻿using Moq;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Ticket.CreateDraft;
 using Tickefy.Domain.Primitives;
-using Tickefy.Domain.Ticket;
+using Tickefy.Domain.Tickets;
 
 namespace Tickefy.Application.Tests.Tickets;
 
@@ -34,7 +34,7 @@ public class CreateDraftTicketHandlerTests
 
         result.IsSuccess.Should().BeTrue();
 
-        ticketRepository.Verify(repo => repo.Add(It.Is<Domain.Ticket.Ticket>(t =>
+        ticketRepository.Verify(repo => repo.Add(It.Is<Domain.Tickets.Ticket>(t =>
             t.Title == title &&
             t.Description == description &&
             t.Deadline == deadline &&

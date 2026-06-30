@@ -1,10 +1,10 @@
-using Tickefy.Application.Abstractions.Data;
+﻿using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.Common.UserRole;
-using Tickefy.Domain.Team;
-using Tickefy.Domain.User;
+using Tickefy.Domain.Teams;
+using Tickefy.Domain.Users;
 
 
 namespace Tickefy.Application.Team.Create
@@ -37,7 +37,7 @@ namespace Tickefy.Application.Team.Create
             var existingTeam = await _teamRepository.GetByNameAsync(command.Name, cancellationToken);
             if (existingTeam is not null) return Result.Failure(new AlreadyExistsError(existingTeam.Name));
 
-            var team = Domain.Team.Team.Create(
+            var team = Domain.Teams.Team.Create(
                 name: command.Name,
                 description: command.Description
             );

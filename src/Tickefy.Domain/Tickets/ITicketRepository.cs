@@ -1,7 +1,7 @@
 ﻿using Tickefy.Domain.Common.Category;
 using Tickefy.Domain.Primitives;
 
-namespace Tickefy.Domain.Ticket
+namespace Tickefy.Domain.Tickets
 {
     /// <summary>
     /// Provides persistence operations for tickets.

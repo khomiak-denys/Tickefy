@@ -25,7 +25,7 @@ namespace Tickefy.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Tickefy.Domain.ActivityLog.ActivityLog", b =>
+            modelBuilder.Entity("Tickefy.Domain.ActivityLogs.ActivityLog", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
@@ -68,7 +68,7 @@ namespace Tickefy.Infrastructure.Migrations
                     b.ToTable("ActivityLogs");
                 });
 
-            modelBuilder.Entity("Tickefy.Domain.Attachment.Attachment", b =>
+            modelBuilder.Entity("Tickefy.Domain.Attachments.Attachment", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
@@ -111,7 +111,7 @@ namespace Tickefy.Infrastructure.Migrations
                     b.ToTable("Attachments");
                 });
 
-            modelBuilder.Entity("Tickefy.Domain.Comment.Comment", b =>
+            modelBuilder.Entity("Tickefy.Domain.Comments.Comment", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
@@ -147,7 +147,7 @@ namespace Tickefy.Infrastructure.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("Tickefy.Domain.Team.Team", b =>
+            modelBuilder.Entity("Tickefy.Domain.Teams.Team", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
@@ -173,7 +173,7 @@ namespace Tickefy.Infrastructure.Migrations
                     b.ToTable("Teams");
                 });
 
-            modelBuilder.Entity("Tickefy.Domain.Ticket.Ticket", b =>
+            modelBuilder.Entity("Tickefy.Domain.Tickets.Ticket", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
@@ -224,7 +224,7 @@ namespace Tickefy.Infrastructure.Migrations
                     b.ToTable("Tickets");
                 });
 
-            modelBuilder.Entity("Tickefy.Domain.User.User", b =>
+            modelBuilder.Entity("Tickefy.Domain.Users.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
@@ -267,27 +267,27 @@ namespace Tickefy.Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Tickefy.Domain.ActivityLog.ActivityLog", b =>
+            modelBuilder.Entity("Tickefy.Domain.ActivityLogs.ActivityLog", b =>
                 {
-                    b.HasOne("Tickefy.Domain.Ticket.Ticket", null)
+                    b.HasOne("Tickefy.Domain.Tickets.Ticket", null)
                         .WithMany()
                         .HasForeignKey("TicketId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Tickefy.Domain.Ticket.Ticket", "Ticket")
+                    b.HasOne("Tickefy.Domain.Tickets.Ticket", "Ticket")
                         .WithMany()
                         .HasForeignKey("TicketId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Tickefy.Domain.User.User", null)
+                    b.HasOne("Tickefy.Domain.Users.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Tickefy.Domain.User.User", "User")
+                    b.HasOne("Tickefy.Domain.Users.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId1")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -298,15 +298,15 @@ namespace Tickefy.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Tickefy.Domain.Attachment.Attachment", b =>
+            modelBuilder.Entity("Tickefy.Domain.Attachments.Attachment", b =>
                 {
-                    b.HasOne("Tickefy.Domain.Ticket.Ticket", null)
+                    b.HasOne("Tickefy.Domain.Tickets.Ticket", null)
                         .WithMany("Attachments")
                         .HasForeignKey("TicketId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Tickefy.Domain.Ticket.Ticket", "Ticket")
+                    b.HasOne("Tickefy.Domain.Tickets.Ticket", "Ticket")
                         .WithMany()
                         .HasForeignKey("TicketId1")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -315,21 +315,21 @@ namespace Tickefy.Infrastructure.Migrations
                     b.Navigation("Ticket");
                 });
 
-            modelBuilder.Entity("Tickefy.Domain.Comment.Comment", b =>
+            modelBuilder.Entity("Tickefy.Domain.Comments.Comment", b =>
                 {
-                    b.HasOne("Tickefy.Domain.Ticket.Ticket", null)
+                    b.HasOne("Tickefy.Domain.Tickets.Ticket", null)
                         .WithMany("Comments")
                         .HasForeignKey("TicketId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Tickefy.Domain.Ticket.Ticket", "Ticket")
+                    b.HasOne("Tickefy.Domain.Tickets.Ticket", "Ticket")
                         .WithMany()
                         .HasForeignKey("TicketId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Tickefy.Domain.User.User", "User")
+                    b.HasOne("Tickefy.Domain.Users.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -340,19 +340,19 @@ namespace Tickefy.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Tickefy.Domain.Ticket.Ticket", b =>
+            modelBuilder.Entity("Tickefy.Domain.Tickets.Ticket", b =>
                 {
-                    b.HasOne("Tickefy.Domain.User.User", "AssignedAgent")
+                    b.HasOne("Tickefy.Domain.Users.User", "AssignedAgent")
                         .WithMany()
                         .HasForeignKey("AssignedAgentId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("Tickefy.Domain.Team.Team", "AssignedTeam")
+                    b.HasOne("Tickefy.Domain.Teams.Team", "AssignedTeam")
                         .WithMany()
                         .HasForeignKey("AssignedTeamId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("Tickefy.Domain.User.User", "Requester")
+                    b.HasOne("Tickefy.Domain.Users.User", "Requester")
                         .WithMany()
                         .HasForeignKey("RequesterId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -365,9 +365,9 @@ namespace Tickefy.Infrastructure.Migrations
                     b.Navigation("Requester");
                 });
 
-            modelBuilder.Entity("Tickefy.Domain.User.User", b =>
+            modelBuilder.Entity("Tickefy.Domain.Users.User", b =>
                 {
-                    b.HasOne("Tickefy.Domain.Team.Team", "Team")
+                    b.HasOne("Tickefy.Domain.Teams.Team", "Team")
                         .WithMany("Members")
                         .HasForeignKey("TeamId")
                         .OnDelete(DeleteBehavior.SetNull);
@@ -375,12 +375,12 @@ namespace Tickefy.Infrastructure.Migrations
                     b.Navigation("Team");
                 });
 
-            modelBuilder.Entity("Tickefy.Domain.Team.Team", b =>
+            modelBuilder.Entity("Tickefy.Domain.Teams.Team", b =>
                 {
                     b.Navigation("Members");
                 });
 
-            modelBuilder.Entity("Tickefy.Domain.Ticket.Ticket", b =>
+            modelBuilder.Entity("Tickefy.Domain.Tickets.Ticket", b =>
                 {
                     b.Navigation("Attachments");
 

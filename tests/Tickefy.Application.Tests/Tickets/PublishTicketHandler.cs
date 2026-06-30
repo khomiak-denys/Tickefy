@@ -1,17 +1,17 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Moq;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Services;
 using Tickefy.Application.AI.Dtos;
 using Tickefy.Application.Ticket.Publish;
-using Tickefy.Domain.ActivityLog;
+using Tickefy.Domain.ActivityLogs;
 using Tickefy.Domain.Common.Category;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Event;
 using Tickefy.Domain.Common.Priority;
 using Tickefy.Domain.Common.UserRole;
 using Tickefy.Domain.Primitives;
-using Tickefy.Domain.Ticket;
+using Tickefy.Domain.Tickets;
 
 namespace Tickefy.Application.Tests.Tickets;
 
@@ -22,7 +22,7 @@ public class PublishTicketHandlerTests
     {
         var ticketRepository = new Mock<ITicketRepository>();
         ticketRepository.Setup(repo => repo.GetByIdAsync(It.IsAny<TicketId>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Domain.Ticket.Ticket?)null);
+            .ReturnsAsync((Domain.Tickets.Ticket?)null);
 
         var command = new PublishTicketCommand
         {
@@ -59,7 +59,7 @@ public class PublishTicketHandlerTests
     public async Task PublishTicketCommandHandler_Should_Return_ForbiddenError_When_UserIsNotRequester_OfTheTicket()
     {
         var userId = new UserId();
-        var ticket = Domain.Ticket.Ticket.CreateDraft(string.Empty, string.Empty, userId, new DateTime());
+        var ticket = Domain.Tickets.Ticket.CreateDraft(string.Empty, string.Empty, userId, new DateTime());
 
         var ticketRepository = new Mock<ITicketRepository>();
         ticketRepository.Setup(repo => repo.GetByIdAsync(It.IsAny<TicketId>(), It.IsAny<CancellationToken>()))
@@ -100,7 +100,7 @@ public class PublishTicketHandlerTests
     public async Task PublishTicketCommandHandler_Should_SetDefaultsPriorityAndCategory_When_AiServicesInNotWorking()
     {
         var userId = new UserId();
-        var ticket = Domain.Ticket.Ticket.CreateDraft(string.Empty, string.Empty, userId, new DateTime());
+        var ticket = Domain.Tickets.Ticket.CreateDraft(string.Empty, string.Empty, userId, new DateTime());
 
         var ticketRepository = new Mock<ITicketRepository>();
         ticketRepository.Setup(repo => repo.GetByIdAsync(It.IsAny<TicketId>(), It.IsAny<CancellationToken>()))
@@ -139,7 +139,7 @@ public class PublishTicketHandlerTests
         ticket.Priority.Should().Be(Priority.Medium);
         ticket.Category.Should().Be(Category.Other);
 
-        activityLogRepository.Verify(repo => repo.Add(It.Is<Domain.ActivityLog.ActivityLog>(log =>
+        activityLogRepository.Verify(repo => repo.Add(It.Is<Domain.ActivityLogs.ActivityLog>(log =>
             log.TicketId == ticket.Id &&
             log.UserId == userId &&
             log.EventType == EventType.StatusChanged &&
@@ -152,7 +152,7 @@ public class PublishTicketHandlerTests
     public async Task PublishTicketCommandHandler_Should_SetPriorityAndCategory_When_AiServicesInWorking()
     {
         var userId = new UserId();
-        var ticket = Domain.Ticket.Ticket.CreateDraft(string.Empty, string.Empty, userId, new DateTime());
+        var ticket = Domain.Tickets.Ticket.CreateDraft(string.Empty, string.Empty, userId, new DateTime());
 
         var ticketRepository = new Mock<ITicketRepository>();
         ticketRepository.Setup(repo => repo.GetByIdAsync(It.IsAny<TicketId>(), It.IsAny<CancellationToken>()))
@@ -193,7 +193,7 @@ public class PublishTicketHandlerTests
         ticket.Priority.Should().Be(Priority.High);
         ticket.Category.Should().Be(Category.Design);
 
-        activityLogRepository.Verify(repo => repo.Add(It.Is<Domain.ActivityLog.ActivityLog>(log =>
+        activityLogRepository.Verify(repo => repo.Add(It.Is<Domain.ActivityLogs.ActivityLog>(log =>
             log.TicketId == ticket.Id &&
             log.UserId == userId &&
             log.EventType == EventType.StatusChanged &&

@@ -1,4 +1,4 @@
-using Tickefy.Domain.Common.Action;
+﻿using Tickefy.Domain.Common.Action;
 using Tickefy.Domain.Common.Status;
 using Tickefy.Domain.Common.UserRole;
 using Tickefy.Domain.Primitives;
@@ -18,7 +18,7 @@ public static class ActionHelper
         };
     }
 
-    public static bool CanExecute(this TicketAction action, Domain.Ticket.Ticket ticket, bool isAdmin, bool isRequester, bool isAssignedAgent, bool isAgent)
+    public static bool CanExecute(this TicketAction action, Domain.Tickets.Ticket ticket, bool isAdmin, bool isRequester, bool isAssignedAgent, bool isAgent)
     {
         return action switch
         {
@@ -34,7 +34,7 @@ public static class ActionHelper
         };
     }
 
-    public static bool CanExecute(this TicketAction action, Domain.Ticket.Ticket ticket, UserId userId, IEnumerable<string> roles)
+    public static bool CanExecute(this TicketAction action, Domain.Tickets.Ticket ticket, UserId userId, IEnumerable<string> roles)
     {
         var roleSet = roles as ISet<string> ?? roles.ToHashSet(StringComparer.OrdinalIgnoreCase);
 

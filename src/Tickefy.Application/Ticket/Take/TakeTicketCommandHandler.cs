@@ -1,13 +1,13 @@
-using Tickefy.Application.Abstractions.Data;
+﻿using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Ticket.Common.Helpers;
-using Tickefy.Domain.ActivityLog;
+using Tickefy.Domain.ActivityLogs;
 using Tickefy.Domain.Common.Action;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Results;
-using Tickefy.Domain.Team;
-using Tickefy.Domain.Ticket;
-using Tickefy.Domain.User;
+using Tickefy.Domain.Teams;
+using Tickefy.Domain.Tickets;
+using Tickefy.Domain.Users;
 
 namespace Tickefy.Application.Ticket.Take
 {
@@ -66,7 +66,7 @@ namespace Tickefy.Application.Ticket.Take
 
             ticket.Take(user.Id, team.Id);
 
-            var log = Domain.ActivityLog.ActivityLog.Create(
+            var log = Domain.ActivityLogs.ActivityLog.Create(
                 ticket.Id,
                 user.Id,
                 Domain.Common.Event.EventType.UserAssigned,

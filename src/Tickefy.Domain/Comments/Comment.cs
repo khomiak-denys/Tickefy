@@ -1,17 +1,18 @@
-using Tickefy.Domain.Common.EntityBase;
+﻿using Tickefy.Domain.Common.EntityBase;
 using Tickefy.Domain.Primitives;
+using Tickefy.Domain.Tickets;
+using Tickefy.Domain.Users;
 
-namespace Tickefy.Domain.Comment
+namespace Tickefy.Domain.Comments
 {
     public class Comment : EntityBase<CommentId>
     {
         public UserId UserId { get; private set; }
-        public Domain.User.User User { get; private set; }
+        public User User { get; private set; }
         public TicketId TicketId { get; private set; }
-        public Domain.Ticket.Ticket Ticket { get; private set; }
+        public Ticket Ticket { get; private set; }
 
         public string Content { get; init; }
-
 
         private Comment() { }
 

@@ -1,4 +1,4 @@
-using FluentValidation;
+﻿using FluentValidation;
 using MediatR;
 using Serilog;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -14,17 +14,17 @@ using Tickefy.Application.Abstractions.Services;
 using Tickefy.Application.Auth.Login;
 using Tickefy.Application.PipelineBehaviors;
 using Tickefy.Infrastructure.Services.AI;
-using Tickefy.Domain.Ticket;
+using Tickefy.Domain.Tickets;
 using Tickefy.Infrastructure.Database;
 using Tickefy.Infrastructure.Options;
 using Tickefy.Infrastructure.Repositories;
 using Tickefy.Infrastructure.Services;
-using Tickefy.Domain.ActivityLog;
-using Tickefy.Domain.Team;
+using Tickefy.Domain.ActivityLogs;
+using Tickefy.Domain.Teams;
 using Tickefy.Application.Mapping;
 using Tickefy.Application.Team.AddMember;
-using Tickefy.Domain.RefreshToken;
-using Tickefy.Domain.User;
+using Tickefy.Domain.RefreshTokens;
+using Tickefy.Domain.Users;
 
 namespace Tickefy.API
 {

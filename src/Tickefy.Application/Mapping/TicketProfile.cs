@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Tickefy.Application.Ticket.Common;
 
 namespace Tickefy.Application.Mapping
@@ -7,11 +7,11 @@ namespace Tickefy.Application.Mapping
     {
         public TicketProfile()
         {
-            CreateMap<Domain.Comment.Comment, CommentResult>();
-            CreateMap<Domain.Attachment.Attachment, AttachmentResult>();
+            CreateMap<Domain.Comments.Comment, CommentResult>();
+            CreateMap<Domain.Attachments.Attachment, AttachmentResult>();
 
-            CreateMap<Domain.Ticket.Ticket, TicketResult>();
-            CreateMap<Domain.Ticket.Ticket, TicketDetailsResult>()
+            CreateMap<Domain.Tickets.Ticket, TicketResult>();
+            CreateMap<Domain.Tickets.Ticket, TicketDetailsResult>()
                 .ForMember(dest => dest.AvailableActions, opt => opt.Ignore());
         }
     }

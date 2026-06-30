@@ -4,8 +4,8 @@ using Tickefy.Application.Abstractions.Services;
 using Tickefy.Application.Auth.Common;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Results;
-using Tickefy.Domain.RefreshToken;
-using Tickefy.Domain.User;
+using Tickefy.Domain.RefreshTokens;
+using Tickefy.Domain.Users;
 
 namespace Tickefy.Application.Auth.Login
 {
@@ -47,7 +47,7 @@ namespace Tickefy.Application.Auth.Login
             var token = await _tokenService.GetTokenAsync(existingUser.Id.Value, existingUser.Login, existingUser.Role, cancellationToken);
             var refreshToken = _tokenService.GenerateRefreshToken();
 
-            var refreshTokenEntity = Domain.RefreshToken.RefreshToken.Create(existingUser.Id, DateTime.UtcNow.AddDays(7), refreshToken);
+            var refreshTokenEntity = Domain.RefreshTokens.RefreshToken.Create(existingUser.Id, DateTime.UtcNow.AddDays(7), refreshToken);
 
             await _refreshTokenRepository.AddAsync(refreshTokenEntity);
             await _unitOfWork.SaveChangesAsync(cancellationToken);

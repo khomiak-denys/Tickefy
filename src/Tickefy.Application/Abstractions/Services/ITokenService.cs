@@ -1,5 +1,5 @@
 ﻿using Tickefy.Domain.Common.UserRole;
-using Tickefy.Domain.RefreshToken;
+using Tickefy.Domain.RefreshTokens;
 
 namespace Tickefy.Application.Abstractions.Services
 {

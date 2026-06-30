@@ -1,14 +1,15 @@
-﻿using Tickefy.Domain.Common.EntityBase;
+using Tickefy.Domain.Common.EntityBase;
 using Tickefy.Domain.Primitives;
+using Tickefy.Domain.Users;
 
-namespace Tickefy.Domain.RefreshToken;
+namespace Tickefy.Domain.RefreshTokens;
 
 public class RefreshToken : EntityBase<TokenId>
 {
     public UserId UserId { get; private set; }
     public DateTime Expires { get; private set; }
     public string Token { get; private set; }
-    public User.User User { get; private set; }
+    public User User { get; private set; }
 
     private RefreshToken() { }
     private RefreshToken(UserId userId, DateTime expires, string token)

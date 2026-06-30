@@ -1,8 +1,9 @@
-using Tickefy.Domain.Common.Content;
+﻿using Tickefy.Domain.Common.Content;
 using Tickefy.Domain.Common.EntityBase;
 using Tickefy.Domain.Primitives;
+using Tickefy.Domain.Tickets;
 
-namespace Tickefy.Domain.Attachment
+namespace Tickefy.Domain.Attachments
 {
     public class Attachment : EntityBase<AttachmentId>
     {
@@ -11,7 +12,7 @@ namespace Tickefy.Domain.Attachment
         public ContentType ContentType { get; private set; }
         public long SizeBytes { get; private set; }
         public TicketId TicketId { get; private set; }
-        public Domain.Ticket.Ticket Ticket { get; private set; }
+        public Ticket Ticket { get; private set; }
 
         private Attachment() { }
 
