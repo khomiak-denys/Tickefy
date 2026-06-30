@@ -1,4 +1,4 @@
-using Google.GenAI.Types;
+﻿using Google.GenAI.Types;
 using Microsoft.EntityFrameworkCore;
 using Tickefy.Domain.Common.Category;
 using Tickefy.Domain.Common.Status;
@@ -27,7 +27,7 @@ namespace Tickefy.Infrastructure.Repositories
             _dbContext.Tickets.Remove(ticket);
         }
 
-        public async Task<IEnumerable<Ticket>> GetAll(CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<Ticket>> GetAllAsync(CancellationToken cancellationToken = default)
         {
             return await _dbContext.Tickets
                   .Include(t => t.Requester)
@@ -48,7 +48,7 @@ namespace Tickefy.Infrastructure.Repositories
                 .FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
         }
 
-        public async Task<List<Ticket>> GetByUserId(UserId id, CancellationToken cancellationToken = default)
+        public async Task<List<Ticket>> GetByUserIdAsync(UserId id, CancellationToken cancellationToken = default)
         {
             return await _dbContext.Tickets
                 .Where(t => (t.RequesterId == id || t.AssignedAgentId == id) && t.Status != Status.Canceled)
@@ -59,7 +59,7 @@ namespace Tickefy.Infrastructure.Repositories
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<List<Ticket>> GetCreatedByCategory(Category category, CancellationToken cancellationToken = default)
+        public async Task<List<Ticket>> GetCreatedByCategoryAsync(Category category, CancellationToken cancellationToken = default)
         {
             return await _dbContext.Tickets
                 .Where(t => t.Category == category && t.Status == Status.Created)

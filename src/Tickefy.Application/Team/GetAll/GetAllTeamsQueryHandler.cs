@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Team.Common;
 using Tickefy.Domain.Common.Results;
@@ -20,7 +20,7 @@ namespace Tickefy.Application.Team.GetAll
 
         public async Task<Result<List<TeamResult>>> Handle(GetAllTeamsQuery request, CancellationToken cancellationToken)
         {
-            var teams = await _teamRepository.GetAll(cancellationToken);
+            var teams = await _teamRepository.GetAllAsync(cancellationToken);
 
             var result = _mapper.Map<List<TeamResult>>(teams);
             return Result<List<TeamResult>>.Success(result);

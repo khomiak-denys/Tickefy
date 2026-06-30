@@ -18,14 +18,14 @@ public class LogoutCommandHandler : ICommandHandler<LogoutCommand, Result>
     }
     public async Task<Result> Handle(LogoutCommand command, CancellationToken cancellationToken)
     {
-        var existingToken = await _refreshTokenRepository.GetToken(command.RefreshToken);
+        var existingToken = await _refreshTokenRepository.GetTokenAsync(command.RefreshToken);
 
         if (existingToken is null)
         {
             return Result.Failure(new NotFoundError("Refresh token not found"));
         }
 
-        await _refreshTokenRepository.Delete(existingToken);
+        await _refreshTokenRepository.DeleteAsync(existingToken);
         await  _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Success();

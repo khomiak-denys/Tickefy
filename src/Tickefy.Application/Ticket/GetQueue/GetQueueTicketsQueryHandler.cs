@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Ticket.Common;
 using Tickefy.Domain.Common.Errors;
@@ -40,7 +40,7 @@ namespace Tickefy.Application.Ticket.GetQueue
 
             if (team == null) return Result<List<TicketResult>>.Failure(new NotFoundError(nameof(team)));
 
-            var tickets = await _ticketRepository.GetCreatedByCategory(team.Category, cancellationToken);
+            var tickets = await _ticketRepository.GetCreatedByCategoryAsync(team.Category, cancellationToken);
 
             return Result<List<TicketResult>>.Success(_mapper.Map<List<TicketResult>>(tickets));
         }

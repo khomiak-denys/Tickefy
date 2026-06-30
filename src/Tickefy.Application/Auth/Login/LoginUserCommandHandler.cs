@@ -1,4 +1,4 @@
-using Tickefy.Application.Abstractions.Data;
+﻿using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Abstractions.Services;
 using Tickefy.Application.Auth.Common;
@@ -44,12 +44,12 @@ namespace Tickefy.Application.Auth.Login
                 return Result<LoginResult>.Failure(new InvalidArgumentError("Invalid credentials"));
             }
 
-            var token = await _tokenService.GetToken(existingUser.Id.Value, existingUser.Login, existingUser.Role, cancellationToken);
+            var token = await _tokenService.GetTokenAsync(existingUser.Id.Value, existingUser.Login, existingUser.Role, cancellationToken);
             var refreshToken = _tokenService.GenerateRefreshToken();
 
             var refreshTokenEntity = Domain.RefreshToken.RefreshToken.Create(existingUser.Id, DateTime.UtcNow.AddDays(7), refreshToken);
 
-            await _refreshTokenRepository.Add(refreshTokenEntity);
+            await _refreshTokenRepository.AddAsync(refreshTokenEntity);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result<LoginResult>.Success(new LoginResult
