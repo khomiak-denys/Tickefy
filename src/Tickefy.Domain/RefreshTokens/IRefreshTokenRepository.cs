@@ -18,13 +18,13 @@ public interface IRefreshTokenRepository
     /// Adds a token to the repository.
     /// </summary>
     /// <param name="refreshToken">The token to add.</param>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    public Task AddAsync(RefreshToken refreshToken, CancellationToken cancellationToken = default);
+    public void Add(RefreshToken refreshToken);
 
     /// <summary>
     /// Deletes a token from the repository by its string value.
     /// </summary>
     /// <param name="token">The token string to delete.</param>
+    /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     public Task DeleteByTokenAsync(string token, CancellationToken cancellationToken = default);
 
