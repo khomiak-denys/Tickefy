@@ -1,5 +1,5 @@
-using Tickefy.API.User.Responses;
-using Tickefy.Application.User.Common;
+﻿using Tickefy.API.User.Responses;
+using Tickefy.Application.Users.Common;
 
 namespace Tickefy.API.Team.Responses
 {

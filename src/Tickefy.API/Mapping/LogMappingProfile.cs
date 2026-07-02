@@ -1,6 +1,6 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Tickefy.API.ActivityLog.Responses;
-using Tickefy.Application.ActivityLog.Common;
+using Tickefy.Application.ActivityLogs.Common;
 
 namespace Tickefy.API.Mapping
 {

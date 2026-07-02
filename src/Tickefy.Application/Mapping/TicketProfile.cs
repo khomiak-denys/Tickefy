@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Tickefy.Application.Ticket.Common;
+using Tickefy.Application.Tickets.Common;
 
 namespace Tickefy.Application.Mapping
 {

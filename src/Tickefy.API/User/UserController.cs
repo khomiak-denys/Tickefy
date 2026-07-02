@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -6,9 +6,9 @@ using Swashbuckle.AspNetCore.Annotations;
 using Tickefy.API.ErrorHandling;
 using Tickefy.API.User.Requests;
 using Tickefy.API.User.Responses;
-using Tickefy.Application.User.Delete;
-using Tickefy.Application.User.GetAll;
-using Tickefy.Application.User.GetById;
+using Tickefy.Application.Users.Delete;
+using Tickefy.Application.Users.GetAll;
+using Tickefy.Application.Users.GetById;
 using Tickefy.Domain.Primitives;
 
 namespace Tickefy.API.User

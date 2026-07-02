@@ -1,4 +1,4 @@
-using Tickefy.Application.Team.AddMember;
+﻿using Tickefy.Application.Teams.AddMember;
 using Tickefy.Domain.Primitives;
 
 namespace Tickefy.API.Team.Requests

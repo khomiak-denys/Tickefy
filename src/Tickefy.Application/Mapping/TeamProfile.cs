@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Tickefy.Application.Team.Common;
+using Tickefy.Application.Teams.Common;
 using Tickefy.Domain.Primitives;
 
 namespace Tickefy.Application.Mapping

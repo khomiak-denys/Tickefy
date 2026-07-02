@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Moq;
-using Tickefy.Application.Ticket.Common;
-using Tickefy.Application.Ticket.GetById;
-using Tickefy.Application.User.Common;
+using Tickefy.Application.Tickets.Common;
+using Tickefy.Application.Tickets.GetById;
+using Tickefy.Application.Users.Common;
 using Tickefy.Domain.Common.Action;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.UserRole;

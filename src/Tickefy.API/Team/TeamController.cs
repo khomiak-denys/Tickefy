@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,11 +7,11 @@ using Tickefy.API.ErrorHandling;
 using Tickefy.API.Team.Requests;
 using Tickefy.API.Team.Responses;
 using Tickefy.Domain.Primitives;
-using Tickefy.Application.Team.Delete;
-using Tickefy.Application.Team.RemoveMember;
-using Tickefy.Application.Team.GetById;
-using Tickefy.Application.Team.GetAll;
-using Tickefy.Application.Team.GetMy;
+using Tickefy.Application.Teams.Delete;
+using Tickefy.Application.Teams.RemoveMember;
+using Tickefy.Application.Teams.GetById;
+using Tickefy.Application.Teams.GetAll;
+using Tickefy.Application.Teams.GetMy;
 
 namespace Tickefy.API.Team
 {

@@ -1,0 +1,31 @@
+﻿using Tickefy.Application.Abstractions.Data;
+using Tickefy.Application.Abstractions.Messaging;
+using Tickefy.Domain.Common.Errors;
+using Tickefy.Domain.Common.Results;
+using Tickefy.Domain.Users;
+
+namespace Tickefy.Application.Users.UpdateProfile
+{
+    public class UpdateProfileCommandHandler : ICommandHandler<UpdateProfileCommand, Result>
+    {
+        private readonly IUserRepository _userRepository;
+        private readonly IUnitOfWork _uow;
+        public UpdateProfileCommandHandler(IUserRepository userRepository, IUnitOfWork uow)
+        {
+            _userRepository = userRepository;
+            _uow = uow;
+        }
+
+        public async Task<Result> Handle(UpdateProfileCommand command, CancellationToken cancellationToken)
+        {
+            var user = await _userRepository.GetByIdAsync(command.UserId, cancellationToken);
+            if (user == null) return Result.Failure(new NotFoundError(nameof(user) + " " + command.UserId));
+
+            user.Update(command.FirstName, command.LastName);
+
+            await _uow.SaveChangesAsync(cancellationToken);
+
+            return Result.Success();
+        }
+    }
+}

@@ -1,4 +1,4 @@
-using Tickefy.Application.User.UpdateProfile;
+﻿using Tickefy.Application.Users.UpdateProfile;
 using Tickefy.Domain.Primitives;
 
 namespace Tickefy.API.User.Requests

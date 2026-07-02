@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,17 +7,17 @@ using System.Security.Claims;
 using Tickefy.API.ErrorHandling;
 using Tickefy.API.Ticket.Requests;
 using Tickefy.API.Ticket.Responses;
-using Tickefy.Application.Ticket.Accept;
-using Tickefy.Application.Ticket.Cancel;
-using Tickefy.Application.Ticket.Complete;
-using Tickefy.Application.Ticket.Fail;
-using Tickefy.Application.Ticket.GetAll;
-using Tickefy.Application.Ticket.GetById;
-using Tickefy.Application.Ticket.GetMy;
-using Tickefy.Application.Ticket.GetQueue;
-using Tickefy.Application.Ticket.Revise;
-using Tickefy.Application.Ticket.StartWork;
-using Tickefy.Application.Ticket.Take;
+using Tickefy.Application.Tickets.Accept;
+using Tickefy.Application.Tickets.Cancel;
+using Tickefy.Application.Tickets.Complete;
+using Tickefy.Application.Tickets.Fail;
+using Tickefy.Application.Tickets.GetAll;
+using Tickefy.Application.Tickets.GetById;
+using Tickefy.Application.Tickets.GetMy;
+using Tickefy.Application.Tickets.GetQueue;
+using Tickefy.Application.Tickets.Revise;
+using Tickefy.Application.Tickets.StartWork;
+using Tickefy.Application.Tickets.Take;
 using Tickefy.Domain.Primitives;
 
 namespace Tickefy.API.Ticket

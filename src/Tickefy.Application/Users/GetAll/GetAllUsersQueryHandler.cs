@@ -1,0 +1,29 @@
+﻿using AutoMapper;
+using Tickefy.Application.Abstractions.Messaging;
+using Tickefy.Application.Users.Common;
+using Tickefy.Domain.Common.Results;
+using Tickefy.Domain.Users;
+
+namespace Tickefy.Application.Users.GetAll
+{
+    public class GetAllUsersQueryHandler : IQueryHandler<GetAllUsersQuery, Result<List<UserDetailsResult>>>
+    {
+        private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
+
+        public GetAllUsersQueryHandler(
+            IUserRepository userRepository,
+            IMapper mapper)
+        {
+            _userRepository = userRepository;
+            _mapper = mapper;
+        }
+        public async Task<Result<List<UserDetailsResult>>> Handle(GetAllUsersQuery query, CancellationToken cancellationToken)
+        {
+            var tickets = await _userRepository.GetAllAsync(cancellationToken);
+            var result = _mapper.Map<List<UserDetailsResult>>(tickets);
+
+            return Result<List<UserDetailsResult>>.Success(result);
+        }
+    }
+}

@@ -1,4 +1,4 @@
-using Tickefy.Application.ActivityLog.GetAll;
+﻿using Tickefy.Application.ActivityLogs.GetAll;
 
 namespace Tickefy.API.ActivityLog.Requests
 {

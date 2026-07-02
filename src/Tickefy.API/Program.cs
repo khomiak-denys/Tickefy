@@ -22,7 +22,7 @@ using Tickefy.Infrastructure.Services;
 using Tickefy.Domain.ActivityLogs;
 using Tickefy.Domain.Teams;
 using Tickefy.Application.Mapping;
-using Tickefy.Application.Team.AddMember;
+using Tickefy.Application.Teams.AddMember;
 using Tickefy.Domain.RefreshTokens;
 using Tickefy.Domain.Users;
 

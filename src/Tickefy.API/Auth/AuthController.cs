@@ -7,7 +7,7 @@ using Tickefy.API.Auth.Requests;
 using Tickefy.API.Auth.Responses;
 using Tickefy.API.ErrorHandling;
 using Tickefy.Application.Auth.Logout;
-using Tickefy.Application.Auth.RefreshToken;
+using Tickefy.Application.Auth.RefreshTokens;
 using Tickefy.Domain.Primitives;
 
 namespace Tickefy.API.Auth

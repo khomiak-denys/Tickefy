@@ -1,4 +1,4 @@
-using Tickefy.Application.Team.Create;
+﻿using Tickefy.Application.Teams.Create;
 using Tickefy.Domain.Common.Category;
 using Tickefy.Domain.Primitives;
 

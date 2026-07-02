@@ -1,4 +1,4 @@
-using Tickefy.Application.User.SetRole;
+﻿using Tickefy.Application.Users.SetRole;
 using Tickefy.Domain.Primitives;
 
 namespace Tickefy.API.User.Requests

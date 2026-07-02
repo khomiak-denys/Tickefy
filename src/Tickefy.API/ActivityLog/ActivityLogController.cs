@@ -1,11 +1,11 @@
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tickefy.API.ActivityLog.Requests;
 using Tickefy.API.ActivityLog.Responses;
-using Tickefy.Application.ActivityLog.GetAll;
-using Tickefy.Application.ActivityLog.GetByTicketId;
+using Tickefy.Application.ActivityLogs.GetAll;
+using Tickefy.Application.ActivityLogs.GetByTicketId;
 using Tickefy.Domain.Primitives;
 
 namespace Tickefy.API.ActivityLog

@@ -1,6 +1,6 @@
 ﻿using Moq;
 using Tickefy.Application.Abstractions.Data;
-using Tickefy.Application.Ticket.Complete;
+using Tickefy.Application.Tickets.Complete;
 using Tickefy.Domain.ActivityLogs;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Event;
