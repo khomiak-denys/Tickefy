@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -48,13 +48,14 @@ namespace Tickefy.API.Auth
         }
 
         /// <summary>
-        /// Registers a new user.
+        /// Registers a new user and returns authentication tokens.
         /// </summary>
         /// <param name="request">The user registration request.</param>
-        /// <returns>HTTP 201 Created on success; 400 Bad Request if validation fails; 409 Conflict if the login is already taken.</returns>
+        /// <param name="cancellationToken">A token to cancel the operation.</param>
+        /// <returns>HTTP 201 Created with a <see cref="LoginResponse"/> and a <c>refresh_token</c> cookie on success; 400 Bad Request if validation fails; 409 Conflict if the login is already taken.</returns>
         [AllowAnonymous]
         [HttpPost("register")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
@@ -63,7 +64,11 @@ namespace Tickefy.API.Auth
             var command = request.ToCommand();
             var result = await _mediator.Send(command, cancellationToken);
             return result.Match(
-                onSuccess: _ => Created(),
+                onSuccess: value =>
+                {
+                    Response.Cookies.Append("refresh_token", result.Value.RefreshToken, _cookieOptions);
+                    return StatusCode(StatusCodes.Status201Created, _mapper.Map<LoginResponse>(value));
+                },
                 onFailure: this.ToActionResult);
         }
 
