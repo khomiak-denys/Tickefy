@@ -9,7 +9,6 @@ using Tickefy.API.ErrorHandling;
 using Tickefy.Application.Auth.Logout;
 using Tickefy.Application.Auth.RefreshToken;
 using Tickefy.Domain.Primitives;
-using Tickefy.Domain.RefreshTokens;
 
 namespace Tickefy.API.Auth
 {
@@ -28,8 +27,8 @@ namespace Tickefy.API.Auth
         {
             Expires = DateTime.Now.AddDays(7),
             HttpOnly = true,
-            Secure = false,
-            SameSite = SameSiteMode.Strict
+            Secure = true,
+            SameSite = SameSiteMode.None
         };
 
         /// <summary>
@@ -135,6 +134,7 @@ namespace Tickefy.API.Auth
         {
             if (!Request.Cookies.TryGetValue("refresh_token", out var refreshToken))
             {
+                _logger.LogInformation("Cookie not found");
                 return Unauthorized();
             }
 
