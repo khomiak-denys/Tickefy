@@ -49,7 +49,7 @@ namespace Tickefy.Application.Auth.Login
 
             var refreshTokenEntity = Domain.RefreshTokens.RefreshToken.Create(existingUser.Id, DateTime.UtcNow.AddDays(7), refreshToken);
 
-            await _refreshTokenRepository.AddAsync(refreshTokenEntity);
+            _refreshTokenRepository.Add(refreshTokenEntity);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result<LoginResult>.Success(new LoginResult

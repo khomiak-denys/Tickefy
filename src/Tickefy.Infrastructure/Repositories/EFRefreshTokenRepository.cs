@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Tickefy.Domain.Primitives;
 using Tickefy.Domain.RefreshTokens;
 using Tickefy.Infrastructure.Database;
 
@@ -21,9 +20,9 @@ public class EFRefreshTokenRepository : IRefreshTokenRepository
             .FirstOrDefaultAsync(cancellationToken);
     }
 
-    public async Task AddAsync(RefreshToken refreshToken, CancellationToken cancellationToken = default)
+    public void Add(RefreshToken refreshToken)
     {
-        await _dbContext.RefreshTokens.AddAsync(refreshToken, cancellationToken);
+        _dbContext.RefreshTokens.Add(refreshToken);
     }
 
     public async Task DeleteByTokenAsync(string token, CancellationToken cancellationToken = default)
