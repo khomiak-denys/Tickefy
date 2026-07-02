@@ -1,4 +1,4 @@
-﻿using Tickefy.Application.Ticket.Common.Helpers;
+﻿using Tickefy.Application.Tickets.Common.Helpers;
 using Tickefy.Domain.Common.Action;
 using Tickefy.Domain.Tests.Ticket.Builders;
 

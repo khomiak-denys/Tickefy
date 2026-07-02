@@ -3,7 +3,7 @@ using Moq;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Services;
 using Tickefy.Application.AI.Dtos;
-using Tickefy.Application.Ticket.Publish;
+using Tickefy.Application.Tickets.Publish;
 using Tickefy.Domain.ActivityLogs;
 using Tickefy.Domain.Common.Category;
 using Tickefy.Domain.Common.Errors;

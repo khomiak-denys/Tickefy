@@ -1,6 +1,6 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Tickefy.API.Ticket.Responses;
-using Tickefy.Application.Ticket.Common;
+using Tickefy.Application.Tickets.Common;
 
 namespace Tickefy.API.Mapping
 {

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Tickefy.Application.User.Common;
+using Tickefy.Application.Users.Common;
 using Tickefy.Domain.Common.UserRole;
 using Tickefy.Domain.Primitives;
 

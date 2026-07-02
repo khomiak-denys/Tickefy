@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Tickefy.Application.ActivityLog.Common;
+using Tickefy.Application.ActivityLogs.Common;
 
 namespace Tickefy.Application.Mapping
 {

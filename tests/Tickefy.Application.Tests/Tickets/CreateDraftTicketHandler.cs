@@ -1,6 +1,6 @@
 ﻿using Moq;
 using Tickefy.Application.Abstractions.Data;
-using Tickefy.Application.Ticket.CreateDraft;
+using Tickefy.Application.Tickets.CreateDraft;
 using Tickefy.Domain.Primitives;
 using Tickefy.Domain.Tickets;
 

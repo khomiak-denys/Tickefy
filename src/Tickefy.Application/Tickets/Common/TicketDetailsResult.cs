@@ -1,0 +1,24 @@
+﻿using Tickefy.Application.Teams.Common;
+using Tickefy.Application.Users.Common;
+
+namespace Tickefy.Application.Tickets.Common
+{
+    public record TicketDetailsResult(
+        Guid Id,
+        string Title,
+        string Description,
+        UserResult Requester,
+        TeamResult? AssignedTeam,
+        UserResult? AssignedAgent,
+        string Category,
+        string Priority,
+        string Status,
+        DateTime Created,
+        DateTime Deadline,
+        List<CommentResult> Comments,
+        List<AttachmentResult> Attachments
+    )
+    {
+        public required IEnumerable<TicketActionResult> AvailableActions { get; set; }
+    }
+}
