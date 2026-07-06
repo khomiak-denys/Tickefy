@@ -12,12 +12,12 @@ using Tickefy.Domain.Primitives;
 
 namespace Tickefy.API.Auth
 {
+    /// <summary>
+    /// Provides RESTful HTTP endpoints for orchestrating user authentication, identity onboarding, session token lifecycle management, and credential updates.
+    /// </summary>
     [ApiController]
     [Route("api/v1/auth")]
     [Produces("application/json")]
-    /// <summary>
-    /// Handles API requests for authentication and password management.
-    /// </summary>
     public class AuthController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -32,11 +32,11 @@ namespace Tickefy.API.Auth
         };
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AuthController"/> class.
+        /// Initializes a new instance of the <see cref="AuthController"/> class with required command mediation, response mapping, and diagnostic logging dependencies.
         /// </summary>
-        /// <param name="mediator">The mediator used to send authentication commands.</param>
-        /// <param name="mapper">The mapper used to convert authentication results to responses.</param>
-        /// <param name="logger">The logger used to write authentication logs.</param>
+        /// <param name="mediator">The MediatR instance used to dispatch authentication and registration commands to domain handlers.</param>
+        /// <param name="mapper">The AutoMapper instance used to transform internal domain results into externally consumable HTTP response DTOs.</param>
+        /// <param name="logger">The diagnostic logger used to capture authentication flows, cookie parsing errors, and security events.</param>
         public AuthController(
             IMediator mediator,
             IMapper mapper,
@@ -48,11 +48,16 @@ namespace Tickefy.API.Auth
         }
 
         /// <summary>
-        /// Registers a new user and returns authentication tokens.
+        /// Processes a new user account onboarding request, validates account uniqueness, creates domain records, and issues initial cryptographic authentication credentials.
         /// </summary>
-        /// <param name="request">The user registration request.</param>
-        /// <param name="cancellationToken">A token to cancel the operation.</param>
-        /// <returns>HTTP 201 Created with a <see cref="LoginResponse"/> and a <c>refresh_token</c> cookie on success; 400 Bad Request if validation fails; 409 Conflict if the login is already taken.</returns>
+        /// <param name="request">The data transfer object containing user identity attributes and plaintext secret credentials. Must pass model validation rules prior to execution.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>
+        /// An HTTP 201 Created response containing a <see cref="LoginResponse"/> payload and an HttpOnly <c>refresh_token</c> cookie upon success; HTTP 400 Bad Request if validation rules fail; or HTTP 409 Conflict if the requested login identifier is already in use.
+        /// </returns>
+        /// <remarks>
+        /// This endpoint sets a secure, HTTP-only cookie with a 7-day expiration duration. Clients must be configured to accept and transmit credentials/cookies for seamless token refreshing.
+        /// </remarks>
         [AllowAnonymous]
         [HttpPost("register")]
         [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status201Created)]
@@ -73,10 +78,16 @@ namespace Tickefy.API.Auth
         }
 
         /// <summary>
-        /// Authenticates a user and returns a login response.
+        /// Evaluates user credentials against stored cryptographic hashes, establishing an authenticated session and issuing JWT access and refresh token credentials upon success.
         /// </summary>
-        /// <param name="request">The user login request.</param>
-        /// <returns>HTTP 200 OK with a <see cref="LoginResponse"/> and a <c>refresh_token</c> cookie on success; 400 or 401 on failure.</returns>
+        /// <param name="request">The login credentials payload containing the account username and candidate plaintext password.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>
+        /// An HTTP 200 OK response containing a <see cref="LoginResponse"/> with an access token and an HttpOnly <c>refresh_token</c> cookie upon successful verification; HTTP 401 Unauthorized if authentication fails; or HTTP 400 Bad Request for malformed payloads.
+        /// </returns>
+        /// <remarks>
+        /// To mitigate brute-force credential stuffing attacks, clients should implement appropriate rate limiting and account lockout strategies when repeated 401 responses occur.
+        /// </remarks>
         [AllowAnonymous]
         [HttpPost("login")]
         [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
@@ -98,10 +109,16 @@ namespace Tickefy.API.Auth
         }
 
         /// <summary>
-        /// Updates the current user's password.
+        /// Updates the cryptographic password hash for the currently authenticated user session after validating the existing password secret.
         /// </summary>
-        /// <param name="request">The password update request.</param>
-        /// <returns>HTTP 200 OK on success; 400, 401, or 404 on failure.</returns>
+        /// <param name="request">The credential change payload specifying the existing current password and the proposed new password secret.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>
+        /// An HTTP 200 OK status on successful credential update; HTTP 401 Unauthorized if the authentication context is missing or invalid; or HTTP 400 Bad Request if the new password fails password complexity validation.
+        /// </returns>
+        /// <remarks>
+        /// This endpoint requires a valid JWT access token bearing a NameIdentifier claim. Modifying the password does not automatically revoke active refresh tokens across other devices unless explicitly handled by session revocation policies.
+        /// </remarks>
         [Authorize]
         [HttpPatch("password")]
         [SwaggerOperation(Summary = "Handles request to reset user password")]
@@ -127,9 +144,15 @@ namespace Tickefy.API.Auth
         }
 
         /// <summary>
-        /// Refreshes the current session using the <c>refresh_token</c> cookie.
+        /// Exchanges a valid, non-expired refresh token cookie for a newly minted JWT access token and a rotated refresh token cookie to extend session lifetime.
         /// </summary>
-        /// <returns>HTTP 200 OK with a new <see cref="LoginResponse"/> and updated <c>refresh_token</c> cookie on success; 401 if the cookie is missing; 403 if the token is invalid or expired.</returns>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>
+        /// An HTTP 200 OK response containing a fresh <see cref="LoginResponse"/> and updated HttpOnly <c>refresh_token</c> cookie; HTTP 401 Unauthorized if the cookie is missing from the request headers; or HTTP 403 Forbidden if the token has been revoked, expired, or tampered with.
+        /// </returns>
+        /// <remarks>
+        /// This method enforces refresh token rotation; upon successful exchange, the previously presented refresh token is invalidated to prevent replay attacks.
+        /// </remarks>
         [AllowAnonymous]
         [HttpPost("refresh")]
         [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
@@ -155,9 +178,15 @@ namespace Tickefy.API.Auth
         }
 
         /// <summary>
-        /// Logs out the current user by invalidating the <c>refresh_token</c> cookie.
+        /// Terminates the current authenticated user session by revoking the stored refresh token record and clearing the client browser cookie value to an empty string.
         /// </summary>
-        /// <returns>HTTP 200 OK on success; 401 if the cookie is missing; 404 if the token is not found.</returns>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>
+        /// An HTTP 200 OK response confirming session termination; HTTP 401 Unauthorized if the refresh token cookie is absent; or HTTP 404 Not Found if the token was already removed or unrecognized in persistence storage.
+        /// </returns>
+        /// <remarks>
+        /// Note that logging out invalidates refresh capabilities but cannot remotely revoke stateless JWT access tokens until their natural expiration timestamp is reached.
+        /// </remarks>
         [Authorize]
         [HttpPost("logout")]
         [ProducesResponseType(StatusCodes.Status200OK)]

@@ -1,7 +1,7 @@
-﻿namespace Tickefy.Domain.Attachments
+namespace Tickefy.Domain.Attachments
 {
     /// <summary>
-    /// Defines persistence operations for attachments.
+    /// Defines contract requirements for persistence operations and lifecycle management of file attachment domain entities.
     /// </summary>
     internal interface IAttachmentRepository 
     { }

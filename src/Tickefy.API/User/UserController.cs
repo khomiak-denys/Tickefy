@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,22 +13,22 @@ using Tickefy.Domain.Primitives;
 
 namespace Tickefy.API.User
 {
+    /// <summary>
+    /// Provides RESTful HTTP endpoints for administering user identity accounts, retrieving profile metadata, modifying system role assignments, and removing accounts.
+    /// </summary>
     [ApiController]
     [Route("api/v1/users")]
     [Produces("application/json")]
-    /// <summary>
-    /// Handles API requests for users.
-    /// </summary>
     public class UserController : ControllerBase
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UserController"/> class.
+        /// Initializes a new instance of the <see cref="UserController"/> class with required command dispatching and DTO mapping dependencies.
         /// </summary>
-        /// <param name="mediator">The mediator used to send user commands and queries.</param>
-        /// <param name="mapper">The mapper used to convert user results to responses.</param>
+        /// <param name="mediator">The MediatR instance used to dispatch user domain commands and queries to their corresponding handlers.</param>
+        /// <param name="mapper">The AutoMapper instance used to transform internal user aggregates into API profile response DTOs.</param>
         public UserController(IMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
@@ -36,9 +36,15 @@ namespace Tickefy.API.User
         }
 
         /// <summary>
-        /// Gets all users.
+        /// Retrieves a complete directory of all registered user accounts in the application for administrative management.
         /// </summary>
-        /// <returns>HTTP 200 OK with a list of <see cref="UserResponse"/>; 401 or 403 if unauthorized.</returns>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>
+        /// An HTTP 200 OK response containing a list of <see cref="UserResponse"/> models; or HTTP 403 Forbidden if the caller lacks administrative privileges.
+        /// </returns>
+        /// <remarks>
+        /// This endpoint is restricted strictly to administrators. Callers should be aware that querying unpaginated user lists in large systems may cause increased memory consumption.
+        /// </remarks>
         [HttpGet]
         [Authorize(Roles = "Admin")]
         [SwaggerOperation(Summary = "Retrieve all users (Admin only)")]
@@ -56,10 +62,16 @@ namespace Tickefy.API.User
         }
 
         /// <summary>
-        /// Gets a user by identifier.
+        /// Retrieves profile details and assigned roles for a specific user account by its unique identifier.
         /// </summary>
-        /// <param name="userId">The identifier of the user.</param>
-        /// <returns>HTTP 200 OK with a <see cref="UserResponse"/>; 401, 403, or 404 on failure.</returns>
+        /// <param name="userId">The unique primary key GUID of the target user account to inspect.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>
+        /// An HTTP 200 OK response containing the target <see cref="UserResponse"/> data; HTTP 403 Forbidden if unauthorized; or HTTP 404 Not Found if the user ID does not exist.
+        /// </returns>
+        /// <remarks>
+        /// Administrative privilege is required to inspect arbitrary user profiles by ID; regular users should use the `/me` endpoint to query their own data.
+        /// </remarks>
         [HttpGet("{userId}")]
         [Authorize(Roles = "Admin")]
         [SwaggerOperation(Summary = "Retrieve user by id (Admin only)")]
@@ -77,9 +89,15 @@ namespace Tickefy.API.User
         }
 
         /// <summary>
-        /// Gets the current user's profile.
+        /// Retrieves profile metadata and assigned role claims for the currently authenticated user session.
         /// </summary>
-        /// <returns>HTTP 200 OK with the current user's <see cref="UserResponse"/>; 401 if not authenticated.</returns>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>
+        /// An HTTP 200 OK response containing the authenticated user's <see cref="UserResponse"/> profile; or HTTP 401 Unauthorized if session authentication is missing or invalid.
+        /// </returns>
+        /// <remarks>
+        /// This endpoint extracts the user identity directly from the NameIdentifier claim within the request authorization token or cookie context.
+        /// </remarks>
         [HttpGet("me")]
         [Authorize]
         [SwaggerOperation(Summary = "Retrieve current user profile")]
@@ -99,10 +117,16 @@ namespace Tickefy.API.User
         }
 
         /// <summary>
-        /// Deletes a user by identifier.
+        /// Permanently deletes a user account record and revokes all associated identity access privileges from the system.
         /// </summary>
-        /// <param name="userId">The identifier of the user to delete.</param>
-        /// <returns>HTTP 204 No Content on success; 401, 403, or 404 on failure.</returns>
+        /// <param name="userId">The unique primary key GUID of the user account to delete.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>
+        /// An HTTP 204 No Content status on successful deletion; HTTP 403 Forbidden if attempted by a non-administrator; or HTTP 404 Not Found if the account does not exist.
+        /// </returns>
+        /// <remarks>
+        /// Deleting a user account cannot be undone. Administrators must ensure any active tickets or team leadership assignments held by this user are transferred prior to deletion.
+        /// </remarks>
         [HttpDelete("{userId}")]
         [Authorize(Roles = "Admin")]
         [SwaggerOperation(Summary = "Delete user by id (Admin only)")]
@@ -119,11 +143,17 @@ namespace Tickefy.API.User
         }
 
         /// <summary>
-        /// Sets a user's role.
+        /// Updates system authorization role assignments for a specific user account, altering their operational privileges within the platform.
         /// </summary>
-        /// <param name="userId">The identifier of the user.</param>
-        /// <param name="request">The user role update request.</param>
-        /// <returns>HTTP 200 OK on success; 400, 401, or 403 on failure.</returns>
+        /// <param name="userId">The unique primary key GUID of the user whose role assignments are being modified.</param>
+        /// <param name="request">The role update payload specifying the target authorization role name (e.g., Admin, Agent, Manager, Requester).</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>
+        /// An HTTP 200 OK status on successful role modification; HTTP 400 Bad Request if the specified role is invalid; or HTTP 403 Forbidden if invoked by a non-administrator.
+        /// </returns>
+        /// <remarks>
+        /// Role updates take effect immediately for authorization checks on new requests, though active JWT tokens may still carry old role claims until re-issued.
+        /// </remarks>
         [HttpPatch("{userId}")]
         [Authorize(Roles = "Admin")]
         [SwaggerOperation(Summary = "Set user role (Admin only)")]
@@ -140,10 +170,16 @@ namespace Tickefy.API.User
         }
 
         /// <summary>
-        /// Updates the current user's profile.
+        /// Updates profile attributes such as display name or contact preferences for the currently authenticated user account.
         /// </summary>
-        /// <param name="request">The profile update request.</param>
-        /// <returns>HTTP 200 OK on success; 400 or 401 on failure.</returns>
+        /// <param name="request">The profile modification payload containing the updated personal identity attributes.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>
+        /// An HTTP 200 OK status confirming profile update; HTTP 400 Bad Request if validation rules fail; or HTTP 401 Unauthorized if unauthenticated.
+        /// </returns>
+        /// <remarks>
+        /// Users can only modify their own personal profile attributes via this endpoint; role assignments and account identifiers remain immutable here.
+        /// </remarks>
         [HttpPatch("update-profile")]
         [Authorize]
         [SwaggerOperation(Summary = "Update current user profile")]

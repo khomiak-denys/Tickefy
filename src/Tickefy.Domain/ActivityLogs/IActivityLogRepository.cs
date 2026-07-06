@@ -1,31 +1,48 @@
-﻿using Tickefy.Domain.Primitives;
+using Tickefy.Domain.Primitives;
 
 namespace Tickefy.Domain.ActivityLogs
 {
     /// <summary>
-    /// Provides persistence operations for activity log entries.
+    /// Defines contract requirements for persistence operations and structured retrieval of audit and activity log entries.
     /// </summary>
     public interface IActivityLogRepository
     {
         /// <summary>
-        /// Adds an activity log entry to the repository.
+        /// Stages a new audit log entry for insertion into the persistence database upon transaction commit.
         /// </summary>
-        /// <param name="log">The activity log entry to add.</param>
+        /// <param name="log">
+        /// The instantiated activity log aggregate root to add. Must contain a valid timestamp, event classification, and associated entity identifiers; passing a null reference or duplicate entity may result in persistence failures.
+        /// </param>
+        /// <remarks>
+        /// This method registers the log entity in the change tracker; actual insertion into the audit log storage table occurs when the unit of work saves changes.
+        /// </remarks>
         void Add(ActivityLog log);
 
         /// <summary>
-        /// Gets a paged list of activity log entries.
+        /// Asynchronously retrieves a paginated slice of activity log records from the persistent audit store, ordered by creation date in descending sequence.
         /// </summary>
-        /// <param name="page">The page number to retrieve.</param>
-        /// <param name="pageSize">The number of entries to include in the page.</param>
-        /// <returns>A list of <see cref="ActivityLog"/> entries for the requested page, ordered by creation date descending.</returns>
+        /// <param name="page">
+        /// The 1-based index of the page to retrieve. Passing a page number less than 1 may cause pagination offset calculation errors or throw argument exceptions depending on provider configuration.
+        /// </param>
+        /// <param name="pageSize">
+        /// The maximum number of log records to return per page. Excessively large page sizes can lead to memory exhaustion and degraded database query performance; small values increase network round-trips.
+        /// </param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>
+        /// A task representing the asynchronous paginated query. The task result contains the requested page of <see cref="ActivityLog"/> entries ordered from most recent to oldest.
+        /// </returns>
         Task<List<ActivityLog>> GetAllAsync(int page, int pageSize, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Gets activity log entries for a ticket.
+        /// Asynchronously queries and retrieves the chronological audit trail of activity log records associated with a specific ticket.
         /// </summary>
-        /// <param name="ticketId">The identifier of the ticket.</param>
-        /// <returns>A list of <see cref="ActivityLog"/> entries associated with the specified ticket.</returns>
+        /// <param name="ticketId">
+        /// The strongly-typed identifier of the target ticket. Passing an uninitialized or empty ticket ID will result in an empty list return value without throwing an exception.
+        /// </param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>
+        /// A task representing the asynchronous query operation. The task result contains all matching <see cref="ActivityLog"/> records linked to the specified ticket identifier.
+        /// </returns>
         Task<List<ActivityLog>> GetByTicketIdAsync(TicketId ticketId, CancellationToken cancellationToken = default);
     }
 }

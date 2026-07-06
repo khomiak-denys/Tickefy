@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Tickefy.API.ErrorHandling.ExceptionMapper
 {
+    /// <summary>
+    /// Implements dictionary-based exception translation to convert runtime exceptions and validation failures into RFC 7807 problem details payloads.
+    /// </summary>
     public class ExceptionProblemDetailsMapper : IExceptionProblemDetailsMapper
     {
         private readonly Dictionary<Type, Func<Exception, ProblemDetails>> _mappings;
@@ -34,6 +37,7 @@ namespace Tickefy.API.ErrorHandling.ExceptionMapper
         };
         }
 
+        /// <inheritdoc />
         public ProblemDetails Map(Exception exception)
         {
             if (_mappings.TryGetValue(exception.GetType(), out var factory))

@@ -3,13 +3,15 @@ using MediatR;
 namespace Tickefy.Application.Abstractions.Messaging
 {
     /// <summary>
-    /// Represents a command that does not return a response.
+    /// Represents a transactional request that mutates system state without returning a payload, in accordance with CQRS principles.
     /// </summary>
     public interface ICommand : IRequest { }
 
     /// <summary>
-    /// Represents a command that returns a response.
+    /// Represents a transactional request that mutates system state and returns a response payload, in accordance with CQRS principles.
     /// </summary>
-    /// <typeparam name="TResponse">The response type returned by the command.</typeparam>
+    /// <typeparam name="TResponse">
+    /// The type of data or outcome model returned upon command completion. Callers should expect domain results encapsulating success or validation failure states.
+    /// </typeparam>
     public interface ICommand<out TResponse> : IRequest<TResponse> { }
 }

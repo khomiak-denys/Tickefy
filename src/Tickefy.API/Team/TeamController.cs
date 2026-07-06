@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,22 +15,22 @@ using Tickefy.Application.Teams.GetMy;
 
 namespace Tickefy.API.Team
 {
+    /// <summary>
+    /// Provides RESTful HTTP endpoints for managing organizational support teams, including creation, leadership assignment, member roster administration, and team lookup.
+    /// </summary>
     [ApiController]
     [Route("api/v1/teams")]
     [Produces("application/json")]
-    /// <summary>
-    /// Handles API requests for teams and team membership.
-    /// </summary>
     public class TeamController : ControllerBase
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TeamController"/> class.
+        /// Initializes a new instance of the <see cref="TeamController"/> class with required MediatR command orchestration and AutoMapper DTO translation dependencies.
         /// </summary>
-        /// <param name="mediator">The mediator used to send team commands and queries.</param>
-        /// <param name="mapper">The mapper used to convert team results to responses.</param>
+        /// <param name="mediator">The MediatR mediator instance used to dispatch team administration commands and queries.</param>
+        /// <param name="mapper">The AutoMapper instance used to transform internal team domain models into API response DTOs.</param>
         public TeamController(IMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
@@ -38,10 +38,16 @@ namespace Tickefy.API.Team
         }
 
         /// <summary>
-        /// Creates a new team for the current user.
+        /// Registers a new support team and assigns the currently authenticated user as the initial team leader.
         /// </summary>
-        /// <param name="request">The team creation request.</param>
-        /// <returns>HTTP 201 Created on success; 400 or 401 on failure.</returns>
+        /// <param name="request">The team creation payload specifying the unique team name and optional descriptive metadata.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>
+        /// An HTTP 201 Created status upon successful team registration; HTTP 400 Bad Request if the team name is missing or invalid; or HTTP 401 Unauthorized if unauthenticated.
+        /// </returns>
+        /// <remarks>
+        /// The creator automatically inherits leadership privileges for the newly established team roster.
+        /// </remarks>
         [HttpPost]
         [Authorize(Roles = "Admin, Requester")]
         [SwaggerOperation(Summary = "Handles request to create a new team")]
@@ -61,11 +67,17 @@ namespace Tickefy.API.Team
         }
 
         /// <summary>
-        /// Adds a member to a team.
+        /// Appends a user account to an existing team roster, granting them operator rights within the team's ticket queue.
         /// </summary>
-        /// <param name="teamId">The identifier of the team.</param>
-        /// <param name="request">The member addition request.</param>
-        /// <returns>HTTP 200 OK on success; 400, 401, or 403 on failure.</returns>
+        /// <param name="teamId">The unique primary key GUID of the team to modify.</param>
+        /// <param name="request">The member addition request specifying the user account identifier to add to the team.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>
+        /// An HTTP 200 OK status on successful roster addition; HTTP 403 Forbidden if the caller is not the designated team leader or an administrator; or HTTP 400 Bad Request if the target user is already a member.
+        /// </returns>
+        /// <remarks>
+        /// Adding a member makes team-assigned queue tickets visible to that user for triage and work acceptance.
+        /// </remarks>
         [HttpPatch("{teamId}/members")]
         [Authorize(Roles = "Admin, Manager")]
         [SwaggerOperation(Summary = "Add a member to the team (ONLY TEAM LEADER)")]
@@ -87,11 +99,17 @@ namespace Tickefy.API.Team
         }
 
         /// <summary>
-        /// Removes a member from a team.
+        /// Revokes team membership for a specified user account, removing their access to team-specific support queues.
         /// </summary>
-        /// <param name="teamId">The identifier of the team.</param>
-        /// <param name="memberId">The identifier of the member to remove.</param>
-        /// <returns>HTTP 204 No Content on success; 400, 401, or 403 on failure.</returns>
+        /// <param name="teamId">The unique primary key GUID of the target team.</param>
+        /// <param name="memberId">The unique primary key GUID of the user to remove from the team roster.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>
+        /// An HTTP 204 No Content status confirming removal; HTTP 403 Forbidden if attempted by an unauthorized user; or HTTP 400 Bad Request if removing the user would leave the team without a valid leader or if the user is not a member.
+        /// </returns>
+        /// <remarks>
+        /// Removing an agent from a team does not automatically reassign any tickets currently assigned to that individual operator.
+        /// </remarks>
         [HttpDelete("{teamId}/members/{memberId}")]
         [Authorize(Roles = "Admin, Manager")]
         [SwaggerOperation(Summary = "Remove a member from the team (ONLY TEAM LEADER)")]
@@ -117,10 +135,16 @@ namespace Tickefy.API.Team
         }
 
         /// <summary>
-        /// Deletes a team by identifier.
+        /// Permanently disbands and deletes a support team record from the system.
         /// </summary>
-        /// <param name="teamId">The identifier of the team to delete.</param>
-        /// <returns>HTTP 204 No Content on success; 401, 403, or 404 on failure.</returns>
+        /// <param name="teamId">The unique primary key GUID of the team to delete.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>
+        /// An HTTP 204 No Content status on successful deletion; HTTP 403 Forbidden if the caller is not the team leader or an administrator; or HTTP 404 Not Found if the team record does not exist.
+        /// </returns>
+        /// <remarks>
+        /// Deleting a team requires that all assigned tickets are either re-routed or completed prior to deletion to prevent orphaned support workflows.
+        /// </remarks>
         [HttpDelete("{teamId}")]
         [Authorize(Roles = "Admin, Manager")]
         [SwaggerOperation(Summary = "Delete a team by id (ONLY TEAM LEADER OR ADMIN)")]
@@ -141,10 +165,16 @@ namespace Tickefy.API.Team
         }
 
         /// <summary>
-        /// Gets a team by identifier.
+        /// Retrieves detailed information for a specific team, including its identity, leadership assignment, and complete member roster.
         /// </summary>
-        /// <param name="teamId">The identifier of the team.</param>
-        /// <returns>HTTP 200 OK with a <see cref="TeamDetailResponse"/>; 401 or 404 on failure.</returns>
+        /// <param name="teamId">The unique primary key GUID of the target team to inspect.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>
+        /// An HTTP 200 OK response containing the <see cref="TeamDetailResponse"/> view model; HTTP 401 Unauthorized if unauthenticated; or HTTP 404 Not Found if the team GUID is invalid.
+        /// </returns>
+        /// <remarks>
+        /// Accessible by agents, managers, and administrators to facilitate collaboration and workload visibility.
+        /// </remarks>
         [HttpGet("{teamId}")]
         [Authorize(Roles = "Agent, Admin, Manager")]
         [SwaggerOperation(Summary = "Retrieve team by id")]
@@ -162,9 +192,15 @@ namespace Tickefy.API.Team
         }
 
         /// <summary>
-        /// Gets all teams.
+        /// Retrieves a complete directory of all registered support teams across the organization for administrative oversight.
         /// </summary>
-        /// <returns>HTTP 200 OK with a list of <see cref="TeamResponse"/>; 401 on failure.</returns>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>
+        /// An HTTP 200 OK response containing a list of <see cref="TeamResponse"/> summaries; or HTTP 403 Forbidden if the caller lacks administrative role privileges.
+        /// </returns>
+        /// <remarks>
+        /// This endpoint is restricted to administrators and provides high-level organizational structure summaries without expanding full member rosters.
+        /// </remarks>
         [HttpGet]
         [Authorize(Roles = "Admin")]
         [SwaggerOperation(Summary = "Retrieve all teams")]
@@ -181,9 +217,15 @@ namespace Tickefy.API.Team
         }
 
         /// <summary>
-        /// Gets teams for the current user.
+        /// Retrieves all teams in which the currently authenticated user participates as either a leader or a roster member.
         /// </summary>
-        /// <returns>HTTP 200 OK with a list of <see cref="TeamResponse"/>; 401 or 404 on failure.</returns>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>
+        /// An HTTP 200 OK response containing a list of matching <see cref="TeamResponse"/> records; or HTTP 401 Unauthorized if the user claim context is missing or malformed.
+        /// </returns>
+        /// <remarks>
+        /// Used by the client interface to populate team-specific navigation menus and ticket queue filters for the logged-in user.
+        /// </remarks>
         [HttpGet("my")]
         [Authorize]
         [SwaggerOperation(Summary = "Retrieve teams of the current user")]
