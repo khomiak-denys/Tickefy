@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,22 +10,22 @@ using Tickefy.Domain.Primitives;
 
 namespace Tickefy.API.ActivityLog
 {
+    /// <summary>
+    /// Provides RESTful HTTP endpoints for querying system-wide audit trails, historical event records, and ticket lifecycle transitions.
+    /// </summary>
     [ApiController]
     [Route("api/v1/logs")]
     [Produces("application/json")]
-    /// <summary>
-    /// Handles API requests for activity log entries.
-    /// </summary>
     public class ActivityLogController : ControllerBase
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ActivityLogController"/> class.
+        /// Initializes a new instance of the <see cref="ActivityLogController"/> class with required command mediation and result mapping dependencies.
         /// </summary>
-        /// <param name="mediator">The mediator used to send activity log queries.</param>
-        /// <param name="mapper">The mapper used to convert activity log results to responses.</param>
+        /// <param name="mediator">The MediatR mediator instance used to dispatch activity log retrieval queries to application handlers.</param>
+        /// <param name="mapper">The AutoMapper instance used to translate internal activity log domain entities into API response DTOs.</param>
         public ActivityLogController(IMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
@@ -33,10 +33,16 @@ namespace Tickefy.API.ActivityLog
         }
 
         /// <summary>
-        /// Gets all activity log entries using the specified paging request.
+        /// Retrieves a paginated and filtered list of activity audit logs across the entire platform for security and compliance monitoring.
         /// </summary>
-        /// <param name="request">The activity log query request.</param>
-        /// <returns>HTTP 200 OK with a list of <see cref="LogResponse"/>; 400, 401, or 403 on failure.</returns>
+        /// <param name="request">The query parameters specifying pagination offsets, limits, date ranges, and entity filters.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>
+        /// An HTTP 200 OK response containing a list of matching <see cref="LogResponse"/> records; or HTTP 403 Forbidden if the caller lacks administrative privileges.
+        /// </returns>
+        /// <remarks>
+        /// Due to high log ingestion volumes, callers should always specify appropriate page size and date filters to avoid excessive query execution times.
+        /// </remarks>
         [HttpGet]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(List<LogResponse>), StatusCodes.Status200OK)]
@@ -54,10 +60,16 @@ namespace Tickefy.API.ActivityLog
         }
 
         /// <summary>
-        /// Gets activity log entries for a ticket.
+        /// Retrieves the complete audit history of all state changes, comments, and operator actions recorded against a specific support ticket.
         /// </summary>
-        /// <param name="ticketId">The identifier of the ticket.</param>
-        /// <returns>HTTP 200 OK with a list of <see cref="LogResponse"/>; 400, 401, 403, or 404 on failure.</returns>
+        /// <param name="ticketId">The unique primary key GUID of the target ticket whose audit logs are being requested.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>
+        /// An HTTP 200 OK response containing the historical <see cref="LogResponse"/> timeline; HTTP 403 Forbidden if unauthorized; or HTTP 404 Not Found if the ticket does not exist.
+        /// </returns>
+        /// <remarks>
+        /// Currently restricted to system administrators for audit verification and dispute resolution.
+        /// </remarks>
         [HttpGet("ticket/{ticketId}")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(List<LogResponse>), StatusCodes.Status200OK)]
