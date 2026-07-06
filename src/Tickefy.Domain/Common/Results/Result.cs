@@ -41,7 +41,7 @@ public class Result : IResult
     /// Creates a failed operation outcome encapsulating the specific domain error that caused the termination.
     /// </summary>
     /// <param name="error">
-    /// The structured domain error explaining the failure reason. Must not be null or <see cref="Error.None"/>; passing an empty error to a failure result violates domain error invariants.
+    /// The structured domain error explaining the failure reason. Must not be <see langword="null"/>; supplying a null error violates domain error invariants.
     /// </param>
     /// <returns>A new <see cref="Result"/> instance where <see cref="IsFailure"/> is <see langword="true"/>.</returns>
     public static Result Failure(Error error)
@@ -99,7 +99,7 @@ public class Result<T> : IResult<T>
     /// Creates a failed generic operation outcome encapsulating the specific domain error that prevented value generation.
     /// </summary>
     /// <param name="error">
-    /// The structured domain error detailing the failure reason. Must represent an actual error state; passing <see cref="Error.None"/> will create an inconsistent failure state.
+    /// The structured domain error detailing the failure reason. Must not be <see langword="null"/>; supplying a null error will create an inconsistent failure state.
     /// </param>
     /// <returns>A new <see cref="Result{T}"/> instance where <see cref="IsFailure"/> is <see langword="true"/> and <see cref="Value"/> is uninitialized.</returns>
     public static Result<T> Failure(Error error)

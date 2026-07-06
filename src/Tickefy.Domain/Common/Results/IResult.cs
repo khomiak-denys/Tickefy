@@ -11,7 +11,7 @@ public interface IResult
     /// Gets the structured domain error detailing why the operation failed.
     /// </summary>
     /// <remarks>
-    /// This property is expected to be <see cref="Error.None"/> or <see langword="null"/> when <see cref="IsSuccess"/> is <see langword="true"/>. Attempting to access or evaluate this error during a successful outcome should be avoided.
+    /// This property is expected to be <see langword="null"/> when <see cref="IsSuccess"/> is <see langword="true"/>. Avoid accessing or evaluating this error during a successful outcome.
     /// </remarks>
     public Error Error { get; }
 
