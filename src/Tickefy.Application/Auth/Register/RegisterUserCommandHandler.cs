@@ -10,7 +10,7 @@ using Tickefy.Domain.Users;
 namespace Tickefy.Application.Auth.Register
 {
     /// <summary>
-    /// Handles user registration and issues authentication tokens.
+    /// Coordinates the orchestration of user account registration, including uniqueness validation, password cryptographic hashing, domain entity persistence, and token issuance.
     /// </summary>
     public class RegisterUserCommandHandler : ICommandHandler<RegisterUserCommand, Result<LoginResult>>
     {
@@ -34,9 +34,7 @@ namespace Tickefy.Application.Auth.Register
             _tokenService = tokenService;
         }
 
-        /// <summary>
-        /// Registers the user, generates a JWT and refresh token, and returns the login result.
-        /// </summary>
+        /// <inheritdoc />
         public async Task<Result<LoginResult>> Handle(RegisterUserCommand command, CancellationToken cancellationToken)
         {
             var existingUser = await _userRepository.GetByLoginAsync(command.Login, cancellationToken);

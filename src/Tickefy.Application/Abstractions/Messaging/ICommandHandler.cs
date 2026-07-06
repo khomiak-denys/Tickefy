@@ -3,18 +3,24 @@ using MediatR;
 namespace Tickefy.Application.Abstractions.Messaging
 {
     /// <summary>
-    /// Handles a command that does not return a response.
+    /// Defines a contract for processing command requests that execute state transitions without returning a data payload.
     /// </summary>
-    /// <typeparam name="TCommand">The command type to handle.</typeparam>
+    /// <typeparam name="TCommand">
+    /// The specific type of the command message being handled. Must enforce command invariants and implement <see cref="ICommand"/>.
+    /// </typeparam>
     public interface ICommandHandler<in TCommand> : IRequestHandler<TCommand>
         where TCommand : ICommand
     { }
 
     /// <summary>
-    /// Handles a command and returns a response.
+    /// Defines a contract for processing command requests that execute state transitions and return a resultant data payload or domain result.
     /// </summary>
-    /// <typeparam name="TCommand">The command type to handle.</typeparam>
-    /// <typeparam name="TResponse">The response type returned by the command.</typeparam>
+    /// <typeparam name="TCommand">
+    /// The specific type of the command message being handled. Must implement <see cref="ICommand{TResponse}"/>.
+    /// </typeparam>
+    /// <typeparam name="TResponse">
+    /// The type of the response payload returned upon successful command completion. Typically structured as a <see cref="Domain.Common.Results.Result{T}"/> to avoid exception-driven control flow.
+    /// </typeparam>
     public interface ICommandHandler<in TCommand, TResponse> : IRequestHandler<TCommand, TResponse>
         where TCommand : ICommand<TResponse>
     { }

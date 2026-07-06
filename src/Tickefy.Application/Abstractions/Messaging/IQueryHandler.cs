@@ -3,10 +3,14 @@ using MediatR;
 namespace Tickefy.Application.Abstractions.Messaging
 {
     /// <summary>
-    /// Handles a query and returns a response.
+    /// Defines a contract for processing read-only query requests, evaluating system state without executing side effects or persistence mutations.
     /// </summary>
-    /// <typeparam name="TQuery">The query type to handle.</typeparam>
-    /// <typeparam name="TResponse">The response type returned by the query.</typeparam>
+    /// <typeparam name="TQuery">
+    /// The specific type of the query message being handled. Must enforce read-only semantics and implement <see cref="IQuery{TResponse}"/>.
+    /// </typeparam>
+    /// <typeparam name="TResponse">
+    /// The return payload type produced by evaluating the query. Typically structured as a <see cref="Domain.Common.Results.Result{T}"/> containing view models or DTO collections.
+    /// </typeparam>
     public interface IQueryHandler<in TQuery, TResponse> : IRequestHandler<TQuery, TResponse>
         where TQuery : IQuery<TResponse>
     { }
