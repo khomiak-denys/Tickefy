@@ -19,7 +19,7 @@ namespace Tickefy.Application.Abstractions.Messaging
     /// The specific type of the command message being handled. Must implement <see cref="ICommand{TResponse}"/>.
     /// </typeparam>
     /// <typeparam name="TResponse">
-    /// The type of the response payload returned upon successful command completion. Typically structured as a <see cref="Domain.Common.Results.Result{T}"/> to avoid exception-driven control flow.
+    /// The type of the response payload returned upon successful command completion. Typically structured as a <see cref="Tickefy.Domain.Common.Results.Result{TResponse}"/> to avoid exception-driven control flow.
     /// </typeparam>
     public interface ICommandHandler<in TCommand, TResponse> : IRequestHandler<TCommand, TResponse>
         where TCommand : ICommand<TResponse>

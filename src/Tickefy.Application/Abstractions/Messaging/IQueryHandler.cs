@@ -9,7 +9,7 @@ namespace Tickefy.Application.Abstractions.Messaging
     /// The specific type of the query message being handled. Must enforce read-only semantics and implement <see cref="IQuery{TResponse}"/>.
     /// </typeparam>
     /// <typeparam name="TResponse">
-    /// The return payload type produced by evaluating the query. Typically structured as a <see cref="Domain.Common.Results.Result{T}"/> containing view models or DTO collections.
+    /// The return payload type produced by evaluating the query. Typically structured as a <see cref="Tickefy.Domain.Common.Results.Result{TResponse}"/> containing view models or DTO collections.
     /// </typeparam>
     public interface IQueryHandler<in TQuery, TResponse> : IRequestHandler<TQuery, TResponse>
         where TQuery : IQuery<TResponse>
