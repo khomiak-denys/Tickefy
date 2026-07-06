@@ -178,7 +178,7 @@ namespace Tickefy.API.Auth
         }
 
         /// <summary>
-        /// Terminates the current authenticated user session by revoking the stored refresh token record and overwriting the client browser cookie with an empty expiration payload.
+        /// Terminates the current authenticated user session by revoking the stored refresh token record and clearing the client browser cookie value to an empty string.
         /// </summary>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>
