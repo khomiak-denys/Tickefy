@@ -9,7 +9,7 @@ namespace Tickefy.Domain.Tickets
     public interface ITicketRepository
     {
         /// <summary>
-        /// Asynchronously retrieves the complete collection of tickets stored within the database, including related entities such as attachments and comments where configured by eager loading.
+        /// Asynchronously retrieves the complete collection of tickets stored within the database, including related navigation entities such as requester, assigned agent, and assigned team where configured by eager loading.
         /// </summary>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>

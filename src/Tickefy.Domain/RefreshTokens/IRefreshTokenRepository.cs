@@ -34,7 +34,7 @@ public interface IRefreshTokenRepository
     public void Add(RefreshToken refreshToken);
 
     /// <summary>
-    /// Asynchronously deletes any stored refresh token record matching the specified string value directly from the persistence store.
+    /// Asynchronously locates and stages for deletion any stored refresh token record matching the specified string value.
     /// </summary>
     /// <param name="token">
     /// The exact string value of the token to delete. If no matching token exists in storage, the operation completes silently without throwing an exception.
@@ -44,7 +44,7 @@ public interface IRefreshTokenRepository
     /// A task representing the asynchronous deletion operation.
     /// </returns>
     /// <remarks>
-    /// Unlike in-memory deletion staging, this method may execute an immediate database command or batch removal depending on repository implementation.
+    /// This method may execute an immediate lookup query, but actual deletion is deferred until the unit of work commits changes.
     /// </remarks>
     public Task DeleteByTokenAsync(string token, CancellationToken cancellationToken = default);
 
