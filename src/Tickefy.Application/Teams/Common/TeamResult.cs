@@ -15,7 +15,7 @@ namespace Tickefy.Application.Teams.Common
             team.Id.Value,
             team.Name,
             team.Category.ToString(),
-            UserResult.FromEntity(team.Manager)
+            team.Manager is not null ? UserResult.FromEntity(team.Manager) : new UserResult(team.ManagerId?.Value ?? Guid.Empty, string.Empty, string.Empty)
         );
     }
 }

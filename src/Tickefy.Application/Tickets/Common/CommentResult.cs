@@ -12,7 +12,7 @@ namespace Tickefy.Application.Tickets.Common
     {
         public static CommentResult FromEntity(Comment comment) => new(
             comment.Id.Value,
-            UserResult.FromEntity(comment.User),
+            comment.User is not null ? UserResult.FromEntity(comment.User) : new UserResult(comment.UserId.Value, string.Empty, string.Empty),
             comment.Content,
             comment.Created
         );

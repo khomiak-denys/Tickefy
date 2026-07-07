@@ -26,7 +26,7 @@ namespace Tickefy.Application.Tickets.Common
             ticket.Id.Value,
             ticket.Title,
             ticket.Description,
-            UserResult.FromEntity(ticket.Requester),
+            ticket.Requester is not null ? UserResult.FromEntity(ticket.Requester) : new UserResult(ticket.RequesterId.Value, string.Empty, string.Empty),
             ticket.AssignedTeam is not null ? TeamResult.FromEntity(ticket.AssignedTeam) : null,
             ticket.AssignedAgent is not null ? UserResult.FromEntity(ticket.AssignedAgent) : null,
             ticket.Category?.ToString() ?? string.Empty,

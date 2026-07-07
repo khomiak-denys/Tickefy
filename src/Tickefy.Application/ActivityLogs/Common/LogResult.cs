@@ -15,7 +15,7 @@ namespace Tickefy.Application.ActivityLogs.Common
         public static LogResult FromEntity(ActivityLog log) => new(
             log.Id.Value,
             log.TicketId.Value,
-            UserResult.FromEntity(log.User),
+            log.User is not null ? UserResult.FromEntity(log.User) : new UserResult(log.UserId.Value, string.Empty, string.Empty),
             log.EventType.ToString(),
             log.Description,
             log.Created

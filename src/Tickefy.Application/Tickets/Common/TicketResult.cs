@@ -19,7 +19,7 @@ namespace Tickefy.Application.Tickets.Common
         public static TicketResult FromEntity(Ticket ticket) => new(
             ticket.Id.Value,
             ticket.Title,
-            UserResult.FromEntity(ticket.Requester),
+            ticket.Requester is not null ? UserResult.FromEntity(ticket.Requester) : new UserResult(ticket.RequesterId.Value, string.Empty, string.Empty),
             ticket.AssignedTeam is not null ? TeamResult.FromEntity(ticket.AssignedTeam) : null,
             ticket.AssignedAgent is not null ? UserResult.FromEntity(ticket.AssignedAgent) : null,
             ticket.Category?.ToString() ?? string.Empty,

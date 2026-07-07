@@ -8,10 +8,10 @@ namespace Tickefy.Application.Users.Common
         string LastName
         )
     {
-        public static UserResult FromEntity(User user) => new(
+        public static UserResult FromEntity(User? user) => user is not null ? new(
             user.Id.Value,
             user.FirstName,
             user.LastName
-        );
+        ) : new(Guid.Empty, string.Empty, string.Empty);
     }
 }
