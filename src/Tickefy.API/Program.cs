@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using MediatR;
 using Serilog;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -8,7 +8,6 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using Tickefy.API.ErrorHandling;
 using Tickefy.API.ErrorHandling.ExceptionMapper;
-using Tickefy.API.Mapping;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Services;
 using Tickefy.Application.Auth.Login;
@@ -21,7 +20,6 @@ using Tickefy.Infrastructure.Repositories;
 using Tickefy.Infrastructure.Services;
 using Tickefy.Domain.ActivityLogs;
 using Tickefy.Domain.Teams;
-using Tickefy.Application.Mapping;
 using Tickefy.Application.Teams.AddMember;
 using Tickefy.Domain.RefreshTokens;
 using Tickefy.Domain.Users;
@@ -84,20 +82,6 @@ namespace Tickefy.API
                 var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY");
                 return new Google.GenAI.Client(apiKey: apiKey);
             });
-
-
-            builder.Services.AddAutoMapper(
-                cfg =>
-                {
-                    cfg.AllowNullCollections = true;
-                },
-                new[]
-                {
-                    typeof(LoginMappingProfile).Assembly,
-                    typeof(TicketProfile).Assembly
-
-                }
-            );
 
             var postgresConnection =
                 $"Host={Environment.GetEnvironmentVariable("DB_HOST")};" +
