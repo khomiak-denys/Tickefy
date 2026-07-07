@@ -1,4 +1,3 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,17 +23,14 @@ namespace Tickefy.API.Team
     public class TeamController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly IMapper _mapper;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TeamController"/> class with required MediatR command orchestration and AutoMapper DTO translation dependencies.
+        /// Initializes a new instance of the <see cref="TeamController"/> class with required MediatR command orchestration dependencies.
         /// </summary>
         /// <param name="mediator">The MediatR mediator instance used to dispatch team administration commands and queries.</param>
-        /// <param name="mapper">The AutoMapper instance used to transform internal team domain models into API response DTOs.</param>
-        public TeamController(IMediator mediator, IMapper mapper)
+        public TeamController(IMediator mediator)
         {
             _mediator = mediator;
-            _mapper = mapper;
         }
 
         /// <summary>
@@ -187,7 +183,7 @@ namespace Tickefy.API.Team
             var query = new GetMyTeamQuery(new TeamId(teamId));
             var result = await _mediator.Send(query, cancellationToken);
 
-            return result.Match(onSuccess: value => Ok(_mapper.Map<TeamDetailResponse>(value)),
+            return result.Match(onSuccess: value => Ok(TeamDetailResponse.FromResult(value)),
                 onFailure: this.ToActionResult);
         }
 
@@ -212,7 +208,7 @@ namespace Tickefy.API.Team
             var query = new GetAllTeamsQuery();
             var result = await _mediator.Send(query, cancellationToken);
 
-            return result.Match(onSuccess: value => Ok(_mapper.Map<List<TeamResponse>>(value)),
+            return result.Match(onSuccess: value => Ok(value.Select(TeamResponse.FromResult).ToList()),
                 onFailure: this.ToActionResult);
         }
 
@@ -242,7 +238,7 @@ namespace Tickefy.API.Team
             var query = new GetTeamByUserIdQuery(new UserId(memberGuid));
             var result = await _mediator.Send(query, cancellationToken);
 
-            return result.Match(onSuccess: value => Ok(_mapper.Map<List<TeamResponse>>(value)),
+            return result.Match(onSuccess: value => Ok(value.Select(TeamResponse.FromResult).ToList()),
                 onFailure: this.ToActionResult);
         }
     }
