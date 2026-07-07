@@ -34,6 +34,7 @@ public class TicketMappingTests
         var agent = User.Create("Test", "Agent", "agent", "pwd");
         agent.SetRole(UserRoles.Agent);
         var team = Team.Create("Helpdesk", null);
+        team.SetManager(new Domain.Primitives.UserId());
         
         ticket.Take(agent.Id, team.Id);
         typeof(Domain.Tickets.Ticket).GetProperty(nameof(Domain.Tickets.Ticket.AssignedTeam))?.SetValue(ticket, team);
