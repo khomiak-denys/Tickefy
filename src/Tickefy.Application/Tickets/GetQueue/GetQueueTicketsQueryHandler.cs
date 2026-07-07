@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Tickets.Common;
 using Tickefy.Domain.Common.Errors;
@@ -15,18 +14,15 @@ namespace Tickefy.Application.Tickets.GetQueue
         private readonly IUserRepository _userRepository;
         private readonly ITeamRepository _teamRepository;
         private readonly ITicketRepository _ticketRepository;
-        private readonly IMapper _mapper;
 
         public GetQueueTicketsQueryHandler(
             IUserRepository userRepository,
             ITeamRepository teamRepository,
-            ITicketRepository ticketRepository,
-            IMapper mapper)
+            ITicketRepository ticketRepository)
         {
             _userRepository = userRepository;
             _teamRepository = teamRepository;
             _ticketRepository = ticketRepository;
-            _mapper = mapper;
         }
         public async Task<Result<List<TicketResult>>> Handle(GetQueueTicketsQuery query, CancellationToken cancellationToken)
         {
@@ -42,7 +38,7 @@ namespace Tickefy.Application.Tickets.GetQueue
 
             var tickets = await _ticketRepository.GetCreatedByCategoryAsync(team.Category, cancellationToken);
 
-            return Result<List<TicketResult>>.Success(_mapper.Map<List<TicketResult>>(tickets));
+            return Result<List<TicketResult>>.Success(tickets.Select(TicketResult.FromEntity).ToList());
         }
     }
 }
