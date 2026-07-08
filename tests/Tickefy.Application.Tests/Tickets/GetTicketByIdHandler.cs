@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using Moq;
 using Tickefy.Application.Tickets.Common;
 using Tickefy.Application.Tickets.GetById;
@@ -21,8 +20,7 @@ public class GetTicketByIdHandler
         repo.Setup(r => r.GetByIdAsync(It.IsAny<TicketId>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((Domain.Tickets.Ticket?)null);
 
-        var mapper = new Mock<IMapper>();
-        var handler = new GetTicketByIdQueryHandler(repo.Object, mapper.Object);
+        var handler = new GetTicketByIdQueryHandler(repo.Object);
 
         var query = new GetTicketByIdQuery(new UserId(), new List<string>(), new TicketId());
         var result = await handler.Handle(query, CancellationToken.None);
@@ -37,9 +35,8 @@ public class GetTicketByIdHandler
         var repo = new Mock<ITicketRepository>();
         repo.Setup(r => r.GetByIdAsync(It.IsAny<TicketId>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(Domain.Tickets.Ticket.Create(string.Empty, string.Empty, new UserId(), DateTime.Now));
-        var mapper = new Mock<IMapper>();
 
-        var handler = new GetTicketByIdQueryHandler(repo.Object, mapper.Object);
+        var handler = new GetTicketByIdQueryHandler(repo.Object);
 
         var query = new GetTicketByIdQuery(new UserId(), new List<string>(), new TicketId());
         var result = await handler.Handle(query, CancellationToken.None);
@@ -54,31 +51,8 @@ public class GetTicketByIdHandler
         var repo = new Mock<ITicketRepository>();
         repo.Setup(r => r.GetByIdAsync(It.IsAny<TicketId>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(TicketBuilder.New().InInProgressState());
-        var mapper = new Mock<IMapper>();
 
-        var mappedDto = new TicketDetailsResult(
-            Id: Guid.Empty,
-            Title: string.Empty,
-            Description: string.Empty,
-            Requester: default!,
-            AssignedTeam: null,
-            AssignedAgent: null,
-            Category: string.Empty,
-            Priority: string.Empty,
-            Status: string.Empty,
-            Created: DateTime.UtcNow,
-            Deadline: DateTime.UtcNow,
-            Comments: new(),
-            Attachments: new()
-        )
-        {
-            AvailableActions = Array.Empty<TicketActionResult>()
-        };
-
-        mapper.Setup(m => m.Map<TicketDetailsResult>(It.IsAny<Domain.Tickets.Ticket>()))
-            .Returns(mappedDto);
-
-        var handler = new GetTicketByIdQueryHandler(repo.Object, mapper.Object);
+        var handler = new GetTicketByIdQueryHandler(repo.Object);
         var query = new GetTicketByIdQuery(new UserId(), [nameof(UserRoles.Admin)], new TicketId());
 
         var result = await handler.Handle(query, CancellationToken.None);
@@ -94,30 +68,8 @@ public class GetTicketByIdHandler
         var repo = new Mock<ITicketRepository>();
         repo.Setup(r => r.GetByIdAsync(It.IsAny<TicketId>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(Domain.Tickets.Ticket.CreateDraft(string.Empty, string.Empty, userId, DateTime.Now));
-        var mapper = new Mock<IMapper>();
 
-        var mappedDto = new TicketDetailsResult(
-            Guid.Empty,
-            "", "",
-            Requester: new UserResult(userId.Value, string.Empty, string.Empty),
-            AssignedTeam: null,
-            AssignedAgent: null,
-            Category: "",
-            Priority: "",
-            Status: "",
-            Created: DateTime.UtcNow,
-            Deadline: DateTime.UtcNow,
-            Comments: new(),
-            Attachments: new()
-        )
-        {
-            AvailableActions = Array.Empty<TicketActionResult>()
-        };
-
-        mapper.Setup(m => m.Map<TicketDetailsResult>(It.IsAny<Domain.Tickets.Ticket>()))
-            .Returns(mappedDto);
-
-        var handler = new GetTicketByIdQueryHandler(repo.Object, mapper.Object);
+        var handler = new GetTicketByIdQueryHandler(repo.Object);
         var query = new GetTicketByIdQuery(userId, [nameof(UserRoles.Requester)], new TicketId());
 
         var result = await handler.Handle(query, CancellationToken.None);
@@ -136,30 +88,8 @@ public class GetTicketByIdHandler
         var repo = new Mock<ITicketRepository>();
         repo.Setup(r => r.GetByIdAsync(It.IsAny<TicketId>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(ticket);
-        var mapper = new Mock<IMapper>();
 
-        var mappedDto = new TicketDetailsResult(
-            Guid.Empty,
-            "", "",
-            Requester: default!,
-            AssignedTeam: null,
-            AssignedAgent: null,
-            Category: "",
-            Priority: "",
-            Status: "",
-            Created: DateTime.UtcNow,
-            Deadline: DateTime.UtcNow,
-            Comments: new(),
-            Attachments: new()
-        )
-        {
-            AvailableActions = Array.Empty<TicketActionResult>()
-        };
-
-        mapper.Setup(m => m.Map<TicketDetailsResult>(It.IsAny<Domain.Tickets.Ticket>()))
-            .Returns(mappedDto);
-
-        var handler = new GetTicketByIdQueryHandler(repo.Object, mapper.Object);
+        var handler = new GetTicketByIdQueryHandler(repo.Object);
         var query = new GetTicketByIdQuery(agentId, [nameof(UserRoles.Agent)], new TicketId());
 
         var result = await handler.Handle(query, CancellationToken.None);

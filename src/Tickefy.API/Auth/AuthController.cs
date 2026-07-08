@@ -1,4 +1,3 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +20,6 @@ namespace Tickefy.API.Auth
     public class AuthController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly IMapper _mapper;
         private readonly ILogger<AuthController> _logger;
         private CookieOptions _cookieOptions = new CookieOptions
         {
@@ -32,18 +30,15 @@ namespace Tickefy.API.Auth
         };
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AuthController"/> class with required command mediation, response mapping, and diagnostic logging dependencies.
+        /// Initializes a new instance of the <see cref="AuthController"/> class with required command mediation and diagnostic logging dependencies.
         /// </summary>
         /// <param name="mediator">The MediatR instance used to dispatch authentication and registration commands to domain handlers.</param>
-        /// <param name="mapper">The AutoMapper instance used to transform internal domain results into externally consumable HTTP response DTOs.</param>
         /// <param name="logger">The diagnostic logger used to capture authentication flows, cookie parsing errors, and security events.</param>
         public AuthController(
             IMediator mediator,
-            IMapper mapper,
             ILogger<AuthController> logger)
         {
             _mediator = mediator;
-            _mapper = mapper;
             _logger = logger;
         }
 
@@ -72,7 +67,7 @@ namespace Tickefy.API.Auth
                 onSuccess: value =>
                 {
                     Response.Cookies.Append("refresh_token", result.Value.RefreshToken, _cookieOptions);
-                    return StatusCode(StatusCodes.Status201Created, _mapper.Map<LoginResponse>(value));
+                    return StatusCode(StatusCodes.Status201Created, LoginResponse.FromResult(value));
                 },
                 onFailure: this.ToActionResult);
         }
@@ -103,7 +98,7 @@ namespace Tickefy.API.Auth
                 onSuccess: value =>
                 {
                     Response.Cookies.Append("refresh_token", result.Value.RefreshToken, _cookieOptions);
-                    return Ok(_mapper.Map<LoginResponse>(value));
+                    return Ok(LoginResponse.FromResult(value));
                 },
                 onFailure: this.ToActionResult);
         }
@@ -172,7 +167,7 @@ namespace Tickefy.API.Auth
                 onSuccess: value =>
                 {
                     Response.Cookies.Append("refresh_token", result.Value.RefreshToken, _cookieOptions);
-                    return Ok(_mapper.Map<LoginResponse>(value));
+                    return Ok(LoginResponse.FromResult(value));
                 },
                 onFailure: this.ToActionResult);
         }

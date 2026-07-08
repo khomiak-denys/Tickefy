@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.ActivityLogs.Common;
 using Tickefy.Domain.ActivityLogs;
@@ -8,22 +7,17 @@ namespace Tickefy.Application.ActivityLogs.GetAll
     public class GetAllLogsQueryHandler : IQueryHandler<GetAllLogsQuery, List<LogResult>>
     {
         private readonly IActivityLogRepository _logRepository;
-        private readonly IMapper _mapper;
 
         public GetAllLogsQueryHandler(
-            IActivityLogRepository logRepository,
-            IMapper mapper)
+            IActivityLogRepository logRepository)
         {
             _logRepository = logRepository;
-            _mapper = mapper;
         }
         public async Task<List<LogResult>> Handle(GetAllLogsQuery query, CancellationToken cancellationToken)
         {
             var logs = await _logRepository.GetAllAsync(query.Page, query.PageSize, cancellationToken);
 
-            var result = _mapper.Map<List<LogResult>>(logs);
-
-            return result;
+            return logs.Select(LogResult.FromEntity).ToList();
         }
     }
 }

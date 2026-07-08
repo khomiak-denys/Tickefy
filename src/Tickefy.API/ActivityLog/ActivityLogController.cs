@@ -1,4 +1,3 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,17 +18,14 @@ namespace Tickefy.API.ActivityLog
     public class ActivityLogController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly IMapper _mapper;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ActivityLogController"/> class with required command mediation and result mapping dependencies.
+        /// Initializes a new instance of the <see cref="ActivityLogController"/> class with required command mediation dependencies.
         /// </summary>
         /// <param name="mediator">The MediatR mediator instance used to dispatch activity log retrieval queries to application handlers.</param>
-        /// <param name="mapper">The AutoMapper instance used to translate internal activity log domain entities into API response DTOs.</param>
-        public ActivityLogController(IMediator mediator, IMapper mapper)
+        public ActivityLogController(IMediator mediator)
         {
             _mediator = mediator;
-            _mapper = mapper;
         }
 
         /// <summary>
@@ -54,7 +50,7 @@ namespace Tickefy.API.ActivityLog
         {
             var query = request.ToQuery();
             var result = await _mediator.Send(query, cancellationToken);
-            var response = _mapper.Map<List<LogResponse>>(result);
+            var response = result.Select(LogResponse.FromResult).ToList();
 
             return Ok(response);
         }
@@ -82,7 +78,7 @@ namespace Tickefy.API.ActivityLog
         {
             var query = new GetLogsByTicketIdQuery(new TicketId(ticketId));
             var result = await _mediator.Send(query, cancellationToken);
-            var response = _mapper.Map<List<LogResponse>>(result);
+            var response = result.Select(LogResponse.FromResult).ToList();
 
             return Ok(response);
         }

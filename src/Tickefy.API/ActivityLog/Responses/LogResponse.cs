@@ -1,4 +1,5 @@
 using Tickefy.API.User.Responses;
+using Tickefy.Application.ActivityLogs.Common;
 
 namespace Tickefy.API.ActivityLog.Responses
 {
@@ -9,5 +10,15 @@ namespace Tickefy.API.ActivityLog.Responses
         string EventType,
         string Description,
         DateTime Created
+        )
+    {
+        public static LogResponse FromResult(LogResult result) => new(
+            result.Id,
+            result.TicketId,
+            MinimalUserResponse.FromResult(result.User),
+            result.EventType,
+            result.Description,
+            result.Created
         );
+    }
 }

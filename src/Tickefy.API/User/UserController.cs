@@ -1,4 +1,3 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,17 +21,14 @@ namespace Tickefy.API.User
     public class UserController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly IMapper _mapper;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UserController"/> class with required command dispatching and DTO mapping dependencies.
+        /// Initializes a new instance of the <see cref="UserController"/> class with required command dispatching dependencies.
         /// </summary>
         /// <param name="mediator">The MediatR instance used to dispatch user domain commands and queries to their corresponding handlers.</param>
-        /// <param name="mapper">The AutoMapper instance used to transform internal user aggregates into API profile response DTOs.</param>
-        public UserController(IMediator mediator, IMapper mapper)
+        public UserController(IMediator mediator)
         {
             _mediator = mediator;
-            _mapper = mapper;
         }
 
         /// <summary>
@@ -57,7 +53,7 @@ namespace Tickefy.API.User
             var query = new GetAllUsersQuery();
             var result = await _mediator.Send(query, cancellationToken);
 
-            return result.Match(onSuccess: value => Ok(_mapper.Map<List<UserResponse>>(value)),
+            return result.Match(onSuccess: value => Ok(value.Select(UserResponse.FromResult).ToList()),
                 onFailure: this.ToActionResult);
         }
 
@@ -84,7 +80,7 @@ namespace Tickefy.API.User
         {
             var query = new GetUserByIdQuery(new UserId(userId));
             var result = await _mediator.Send(query, cancellationToken);
-            return result.Match(onSuccess: value => Ok(_mapper.Map<UserResponse>(value)),
+            return result.Match(onSuccess: value => Ok(UserResponse.FromResult(value)),
                 onFailure: this.ToActionResult);
         }
 
@@ -112,7 +108,7 @@ namespace Tickefy.API.User
 
             var query = new GetUserByIdQuery(new UserId(userId));
             var result = await _mediator.Send(query, cancellationToken);
-            return result.Match(onSuccess: value => Ok(_mapper.Map<UserResponse>(value)),
+            return result.Match(onSuccess: value => Ok(UserResponse.FromResult(value)),
                 onFailure: this.ToActionResult);
         }
 

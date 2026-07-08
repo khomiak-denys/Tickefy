@@ -1,4 +1,3 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -31,19 +30,15 @@ namespace Tickefy.API.Ticket
     public class TicketController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly IMapper _mapper;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TicketController"/> class with required command dispatching and data transformation dependencies.
+        /// Initializes a new instance of the <see cref="TicketController"/> class with required command dispatching dependencies.
         /// </summary>
         /// <param name="mediator">The MediatR mediator instance used to dispatch domain commands and queries to their corresponding application handlers.</param>
-        /// <param name="mapper">The AutoMapper instance used to transform domain models and query results into standardized HTTP response DTOs.</param>
         public TicketController(
-            IMediator mediator,
-            IMapper mapper)
+            IMediator mediator)
         {
             _mediator = mediator;
-            _mapper = mapper;
         }
 
         /// <summary>
@@ -190,7 +185,7 @@ namespace Tickefy.API.Ticket
 
             var result = await _mediator.Send(query, cancellationToken);
 
-            return result.Match(onSuccess: value => Ok(_mapper.Map<List<TicketResponse>>(value)),
+            return result.Match(onSuccess: value => Ok(value.Select(TicketResponse.FromResult).ToList()),
                 onFailure: this.ToActionResult);
         }
 
@@ -232,7 +227,7 @@ namespace Tickefy.API.Ticket
             var query = new GetTicketByIdQuery(new UserId(userId), roles, new TicketId(TicketId));
             var result = await _mediator.Send(query, cancellationToken);
 
-            return result.Match(onSuccess: value => Ok(_mapper.Map<TicketDetailsResponse>(value)),
+            return result.Match(onSuccess: value => Ok(TicketDetailsResponse.FromResult(value)),
                 onFailure: this.ToActionResult);
         }
 
@@ -260,7 +255,7 @@ namespace Tickefy.API.Ticket
             var query = new GetAllTicketsQuery();
             var result = await _mediator.Send(query, cancellationToken);
 
-            return result.Match(onSuccess: value => Ok(_mapper.Map<List<TicketResponse>>(value)),
+            return result.Match(onSuccess: value => Ok(value.Select(TicketResponse.FromResult).ToList()),
                 onFailure: this.ToActionResult);
         }
 
@@ -297,7 +292,7 @@ namespace Tickefy.API.Ticket
             var query = new GetQueueTicketsQuery(new UserId(userId));
             var result = await _mediator.Send(query, cancellationToken);
 
-            return result.Match(onSuccess: value => Ok(_mapper.Map<List<TicketResponse>>(value)),
+            return result.Match(onSuccess: value => Ok(value.Select(TicketResponse.FromResult).ToList()),
                 onFailure: this.ToActionResult);
         }
 
@@ -674,4 +669,3 @@ namespace Tickefy.API.Ticket
         }
     }
 }
-

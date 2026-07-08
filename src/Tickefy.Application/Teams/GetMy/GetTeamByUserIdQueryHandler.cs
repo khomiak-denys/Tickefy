@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Teams.Common;
 using Tickefy.Domain.Common.Errors;
@@ -10,8 +9,7 @@ namespace Tickefy.Application.Teams.GetMy
 {
     public class GetTeamByUserIdQueryHandler(
         ITeamRepository teamRepository,
-        IUserRepository userRepository,
-        IMapper mapper) : IQueryHandler<GetTeamByUserIdQuery, Result<List<TeamResult>>>
+        IUserRepository userRepository) : IQueryHandler<GetTeamByUserIdQuery, Result<List<TeamResult>>>
     {
 
         public async Task<Result<List<TeamResult>>> Handle(GetTeamByUserIdQuery query, CancellationToken cancellationToken)
@@ -21,7 +19,7 @@ namespace Tickefy.Application.Teams.GetMy
 
             var teams = await teamRepository.GetByMemberIdAsync(query.UserId, cancellationToken);
 
-            return Result<List<TeamResult>>.Success(mapper.Map<List<TeamResult>>(teams));
+            return Result<List<TeamResult>>.Success(teams.Select(TeamResult.FromEntity).ToList());
         }
     }
 }
