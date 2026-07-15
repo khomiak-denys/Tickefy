@@ -14,7 +14,6 @@ public class RefreshToken : EntityBase<TokenId>
     private RefreshToken() { }
     private RefreshToken(UserId userId, DateTime expires, string token)
     {
-        Id = new TokenId();
         UserId = userId;
         Expires = expires;
         Token = token;

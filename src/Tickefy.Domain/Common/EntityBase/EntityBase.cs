@@ -2,9 +2,9 @@ using Tickefy.Domain.Primitives.StronglyTypedId;
 
 namespace Tickefy.Domain.Common.EntityBase
 {
-    public class EntityBase<T> where T : StronglyTypedId<T>
+    public class EntityBase<T> where T : StronglyTypedId<T>, new()
     {
-        public T Id { get; protected init; } = null!;
+        public T Id { get; private init; }
         public DateTime Created { get; private set; }
         public DateTime? Modified { get; private set; }
 
@@ -18,7 +18,10 @@ namespace Tickefy.Domain.Common.EntityBase
             Id = id;
         }
 
-        protected EntityBase() { }
+        protected EntityBase()
+        {
+            Id = new T();
+        }
 
         protected void OnCreate()
         {

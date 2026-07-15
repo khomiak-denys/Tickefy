@@ -68,7 +68,6 @@ namespace Tickefy.Domain.Tickets
 
         private Ticket(string title, string? description, Status status, UserId requesterId, DateTime deadline)
         {
-            Id = new TicketId();
             Title = title;
             Description = description;
             Status = status;

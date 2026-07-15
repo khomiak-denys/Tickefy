@@ -20,7 +20,6 @@ namespace Tickefy.Domain.Teams
 
         private Team(string name, string? description)
         {
-            Id = new TeamId();
             Name = name;
             Description = description;
         }

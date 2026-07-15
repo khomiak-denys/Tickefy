@@ -25,7 +25,7 @@ namespace Tickefy.Domain.Users
             return user;
         }
 
-        private User(string firstName, string lastName, string login, string passwordHash, UserRoles role): base()
+        private User(string firstName, string lastName, string login, string passwordHash, UserRoles role)
         {
             FirstName = firstName;
             LastName = lastName;
