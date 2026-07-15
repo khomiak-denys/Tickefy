@@ -5,7 +5,7 @@ namespace Tickefy.API.Ticket.Requests
 {
     public class PostCommentRequest
     {
-        public string Content { get; init; }
+        public required string Content { get; init; }
 
         public PostCommentCommand ToCommand(UserId userId, TicketId ticketId)
         {

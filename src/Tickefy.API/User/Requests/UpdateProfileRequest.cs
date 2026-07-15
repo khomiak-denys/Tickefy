@@ -5,8 +5,8 @@ namespace Tickefy.API.User.Requests
 {
     public class UpdateProfileRequest
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public string? FirstName { get; init; }
+        public string? LastName { get; init; }
 
         public UpdateProfileCommand ToCommand(UserId userId)
         {

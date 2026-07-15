@@ -5,9 +5,9 @@ namespace Tickefy.API.Ticket.Requests
 {
     public class CreateTicketRequest
     {
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public DateTime Deadline { get; set; }
+        public required string Title { get; init; }
+        public required string Description { get; init; }
+        public required DateTime Deadline { get; init; }
         //public List<string> FileNames { get; set; }
 
         public CreateTicketCommand ToCommand(UserId userId)

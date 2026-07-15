@@ -5,8 +5,8 @@ namespace Tickefy.API.Auth.Requests
 {
     public class SetPasswordRequest
     {
-        public string OldPassword { get; set; }
-        public string NewPassword { get; set; }
+        public required string OldPassword { get; init; }
+        public required string NewPassword { get; init; }
 
         public SetPasswordCommand ToCommand(UserId userId)
         {
