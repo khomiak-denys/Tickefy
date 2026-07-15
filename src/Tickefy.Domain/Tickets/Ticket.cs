@@ -15,10 +15,10 @@ namespace Tickefy.Domain.Tickets
 {
     public class Ticket : EntityBase<TicketId>
     {
-        public string Title { get; private set; }
-        public string Description { get; private set; }
+        public string Title { get; private set; } = null!;
+        public string? Description { get; private set; }
 
-        public UserId RequesterId { get; private set; }
+        public UserId RequesterId { get; private set; } = null!;
         public User Requester { get; private set; } = null!;
 
         public TeamId? AssignedTeamId { get; private set; }
@@ -45,7 +45,7 @@ namespace Tickefy.Domain.Tickets
             return ticket;
         }
 
-        public static Ticket CreateDraft(string title, string description, UserId requesterId, DateTime deadline)
+        public static Ticket CreateDraft(string title, string? description, UserId requesterId, DateTime deadline)
         {
             var ticket = new Ticket(title, description, Status.Draft, requesterId, deadline);
             ticket.OnCreate();
@@ -66,9 +66,8 @@ namespace Tickefy.Domain.Tickets
             Comments.Add(comment);
         }
 
-        private Ticket(string title, string description, Status status, UserId requesterId, DateTime deadline)
+        private Ticket(string title, string? description, Status status, UserId requesterId, DateTime deadline)
         {
-            Id = new TicketId();
             Title = title;
             Description = description;
             Status = status;

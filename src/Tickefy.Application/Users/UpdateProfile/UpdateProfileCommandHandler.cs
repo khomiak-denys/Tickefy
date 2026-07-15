@@ -21,7 +21,7 @@ namespace Tickefy.Application.Users.UpdateProfile
             var user = await _userRepository.GetByIdAsync(command.UserId, cancellationToken);
             if (user == null) return Result.Failure(new NotFoundError(nameof(user) + " " + command.UserId));
 
-            user.Update(command.FirstName, command.LastName);
+            user.Update(command.FirstName ?? user.FirstName, command.LastName ?? user.LastName);
 
             await _uow.SaveChangesAsync(cancellationToken);
 

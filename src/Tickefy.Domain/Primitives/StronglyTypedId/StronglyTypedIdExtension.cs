@@ -11,7 +11,7 @@ namespace Tickefy.Domain.Primitives.StronglyTypedId
             this EntityTypeBuilder<TEntity> builder,
             Expression<Func<TEntity, TId>> propertySelector)
             where TEntity : EntityBase<TId>
-            where TId : StronglyTypedId<TId>
+            where TId : StronglyTypedId<TId>, new()
         {
 
             return builder

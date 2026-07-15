@@ -7,12 +7,12 @@ namespace Tickefy.Domain.Attachments
 {
     public class Attachment : EntityBase<AttachmentId>
     {
-        public string FilePath { get; private set; }
-        public string FileName { get; private set; }
+        public string FilePath { get; private set; } = null!;
+        public string FileName { get; private set; } = null!;
         public ContentType ContentType { get; private set; }
         public long SizeBytes { get; private set; }
-        public TicketId TicketId { get; private set; }
-        public Ticket Ticket { get; private set; }
+        public TicketId TicketId { get; private set; } = null!;
+        public Ticket Ticket { get; private set; } = null!;
 
         private Attachment() { }
 

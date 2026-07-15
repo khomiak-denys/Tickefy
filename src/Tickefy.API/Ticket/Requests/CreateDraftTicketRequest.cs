@@ -5,7 +5,7 @@ namespace Tickefy.API.Ticket.Requests;
 
 public class CreateDraftTicketRequest
 {
-    public string? Title { get; init; }
+    public required string Title { get; init; }
     public string? Description { get; init; }
     public DateTime Deadline { get; init; } = DateTime.UtcNow;
 

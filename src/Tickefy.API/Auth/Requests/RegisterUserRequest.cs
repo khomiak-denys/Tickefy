@@ -4,10 +4,10 @@ namespace Tickefy.API.Auth.Requests
 {
     public class RegisterUserRequest
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Login { get; set; }
-        public string Password { get; set; }
+        public required string FirstName { get; init; }
+        public required string LastName { get; init; }
+        public required string Login { get; init; }
+        public required string Password { get; init; }
 
         public RegisterUserCommand ToCommand()
         {

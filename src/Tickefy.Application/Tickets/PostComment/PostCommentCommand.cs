@@ -6,8 +6,8 @@ namespace Tickefy.Application.Tickets.PostComment
 {
     public class PostCommentCommand : ICommand<Result>
     {
-        public UserId UserId { get; init; }
-        public TicketId TicketId { get; init; }
-        public string Content { get; init; }
+        public required UserId UserId { get; init; }
+        public required TicketId TicketId { get; init; }
+        public required string Content { get; init; }
     }
 }

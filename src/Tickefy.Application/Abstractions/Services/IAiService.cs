@@ -26,7 +26,7 @@ namespace Tickefy.Application.Abstractions.Services
         /// <remarks>
         /// Callers must implement appropriate resilience and fallback handling (such as retry policies or default category assignment), as network latency or third-party rate limits may cause AI service timeouts.
         /// </remarks>
-        Task<AiResponse> AnalyzeTicketAsync(string title, string description, DateTime deadline, CancellationToken cancellationToken = default);
+        Task<AiResponse> AnalyzeTicketAsync(string title, string? description, DateTime deadline, CancellationToken cancellationToken = default);
 
     }
 }

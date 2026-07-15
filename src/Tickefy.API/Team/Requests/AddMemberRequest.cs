@@ -5,7 +5,7 @@ namespace Tickefy.API.Team.Requests
 {
     public class AddMemberRequest
     {
-        public string Login { get; init; }
+        public required string Login { get; init; }
 
         public AddMemberCommand ToCommand(TeamId teamId, UserId userId)
         {

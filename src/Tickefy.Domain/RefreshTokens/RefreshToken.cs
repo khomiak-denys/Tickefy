@@ -6,15 +6,14 @@ namespace Tickefy.Domain.RefreshTokens;
 
 public class RefreshToken : EntityBase<TokenId>
 {
-    public UserId UserId { get; private set; }
+    public UserId UserId { get; private set; } = null!;
     public DateTime Expires { get; private set; }
-    public string Token { get; private set; }
-    public User User { get; private set; }
+    public string Token { get; private set; } = null!;
+    public User User { get; private set; } = null!;
 
     private RefreshToken() { }
     private RefreshToken(UserId userId, DateTime expires, string token)
     {
-        Id = new TokenId();
         UserId = userId;
         Expires = expires;
         Token = token;

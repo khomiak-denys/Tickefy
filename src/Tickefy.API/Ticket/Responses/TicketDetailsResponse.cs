@@ -7,7 +7,7 @@ namespace Tickefy.API.Ticket.Responses
     public record TicketDetailsResponse(
         Guid Id,
         string Title,
-        string Description,
+        string? Description,
         MinimalUserResponse Requester,
         TeamResponse? AssignedTeam,
         MinimalUserResponse? AssignedAgent,

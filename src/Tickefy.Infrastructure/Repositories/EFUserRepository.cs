@@ -26,7 +26,7 @@ namespace Tickefy.Infrastructure.Repositories
         public async Task<List<User>> GetAllAsync(CancellationToken cancellationToken = default)
         {
             return await _dbContext.Users
-                .Include(u => u.Team)
+                .Include(u => u.Team!)
                 .ThenInclude(t => t.Manager)
                 .AsNoTracking()
                 .ToListAsync(cancellationToken);

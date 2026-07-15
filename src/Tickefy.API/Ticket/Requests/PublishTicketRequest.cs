@@ -5,9 +5,9 @@ namespace Tickefy.API.Ticket.Requests;
 
 public class PublishTicketRequest
 {
-    public string Title { get; init; }
-    public string Description { get; init; }
-    public DateTime Deadline { get; init; }
+    public required string Title { get; init; }
+    public required string Description { get; init; }
+    public required DateTime Deadline { get; init; }
     public PublishTicketCommand ToCommand(UserId userId, IEnumerable<string> roles, TicketId ticketId)
     {
         return new PublishTicketCommand

@@ -9,18 +9,17 @@ namespace Tickefy.Domain.Teams
 {
     public class Team : EntityBase<TeamId>
     {
-        public string Name { get; private set; }
+        public string Name { get; private set; } = null!;
         public string? Description { get; private set; }
         public Category Category { get; private set; }
-        public UserId ManagerId { get; private set; }
-        public User Manager { get; private set; }
+        public UserId ManagerId { get; private set; } = null!;
+        public User Manager { get; private set; } = null!;
         public List<User> Members { get; private set; } = new();
 
         private Team() { }
 
         private Team(string name, string? description)
         {
-            Id = new TeamId();
             Name = name;
             Description = description;
         }

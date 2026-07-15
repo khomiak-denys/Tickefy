@@ -4,8 +4,8 @@ namespace Tickefy.API.Auth.Requests
 {
     public class LoginUserRequest
     {
-        public string Login { get; set; }
-        public string Password { get; set; }
+        public required string Login { get; init; }
+        public required string Password { get; init; }
 
         public LoginUserCommand ToCommand()
         {

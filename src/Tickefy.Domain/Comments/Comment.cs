@@ -7,12 +7,12 @@ namespace Tickefy.Domain.Comments
 {
     public class Comment : EntityBase<CommentId>
     {
-        public UserId UserId { get; private set; }
-        public User User { get; private set; }
-        public TicketId TicketId { get; private set; }
-        public Ticket Ticket { get; private set; }
+        public UserId UserId { get; private init; } = null!;
+        public User User { get; private set; } = null!;
+        public TicketId TicketId { get;  init; } = null!;
+        public Ticket Ticket { get; private set; } = null!;
 
-        public string Content { get; init; }
+        public string Content { get; init; } = null!;
 
         private Comment() { }
 
@@ -25,7 +25,6 @@ namespace Tickefy.Domain.Comments
 
         private Comment(UserId userId, TicketId ticketId, string content)
         {
-            Id = new CommentId();
             UserId = userId;
             TicketId = ticketId;
             Content = content;

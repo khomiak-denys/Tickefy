@@ -7,7 +7,7 @@ namespace Tickefy.Application.Tickets.Common
     public record TicketDetailsResult(
         Guid Id,
         string Title,
-        string Description,
+        string? Description,
         UserResult Requester,
         TeamResult? AssignedTeam,
         UserResult? AssignedAgent,
@@ -26,7 +26,7 @@ namespace Tickefy.Application.Tickets.Common
             ticket.Id.Value,
             ticket.Title,
             ticket.Description,
-            ticket.Requester is not null ? UserResult.FromEntity(ticket.Requester) : new UserResult(ticket.RequesterId.Value, string.Empty, string.Empty),
+            UserResult.FromEntity(ticket.Requester),
             ticket.AssignedTeam is not null ? TeamResult.FromEntity(ticket.AssignedTeam) : null,
             ticket.AssignedAgent is not null ? UserResult.FromEntity(ticket.AssignedAgent) : null,
             ticket.Category?.ToString() ?? string.Empty,

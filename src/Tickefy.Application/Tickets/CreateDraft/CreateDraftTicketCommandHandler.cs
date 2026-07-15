@@ -20,7 +20,7 @@ public class CreateDraftTicketCommandHandler : ICommandHandler<CreateDraftTicket
 
     public async Task<Result> Handle(CreateDraftTicketCommand command, CancellationToken cancellationToken)
     {
-        var ticket = Domain.Tickets.Ticket.CreateDraft(command.Title, command.Description, command.UserId, command.Deadline);
+        var ticket = Ticket.CreateDraft(command.Title, command.Description, command.UserId, command.Deadline);
 
         _ticketRepository.Add(ticket);
 

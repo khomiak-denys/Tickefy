@@ -8,13 +8,12 @@ namespace Tickefy.Domain.ActivityLogs
 {
     public class ActivityLog : EntityBase<ActivityLogId>
     {
-        public TicketId TicketId { get; private set; }
-        public Ticket Ticket { get; private set; }
-        public UserId UserId { get; private set; }
-        public User User { get; private set; }
+        public TicketId TicketId { get; private set; } = null!;
+        public Ticket Ticket { get; private set; } = null!;
+        public UserId UserId { get; private set; } = null!;
+        public User User { get; private set; } = null!;
         public EventType EventType { get; private set; }
-        public string Description { get; private set; }
-
+        public string Description { get; private set; } = null!;
 
         private ActivityLog() { }
 
@@ -27,7 +26,6 @@ namespace Tickefy.Domain.ActivityLogs
 
         private ActivityLog(TicketId ticketId, UserId userId, EventType eventType, string description)
         {
-            Id = new ActivityLogId();
             TicketId = ticketId;
             UserId = userId;
             EventType = eventType;
