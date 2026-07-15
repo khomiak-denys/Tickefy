@@ -7,16 +7,16 @@ namespace Tickefy.Domain.Users
 {
     public class User : EntityBase<UserId>
     {
-        public string FirstName { get; private set; }
-        public string LastName { get; private set; }
-        public string Login { get; init; }
-        public string PasswordHash { get; private set; }
+        public string FirstName { get; private set; } = null!;
+        public string LastName { get; private set; } = null!;
+        public string Login { get; init; } = null!;
+        public string PasswordHash { get; private set; } = null!;
         public UserRoles Role { get; private set; }
 
         public TeamId? TeamId { get; private set; } = null;
         public Team? Team { get; private set; } = null;
 
-        private User() : base() { }
+        private User() { }
 
         public static User Create(string firstName, string lastName, string login, string passwordHash)
         {
@@ -25,9 +25,8 @@ namespace Tickefy.Domain.Users
             return user;
         }
 
-        private User(string firstName, string lastName, string login, string passwordHash, UserRoles role) : base()
+        private User(string firstName, string lastName, string login, string passwordHash, UserRoles role): base()
         {
-            Id = new UserId();
             FirstName = firstName;
             LastName = lastName;
             Login = login;
@@ -46,7 +45,7 @@ namespace Tickefy.Domain.Users
             Team = team;
             OnModify();
         }
-        
+
         public void Update(string firstName, string lastName)
         {
             FirstName = firstName;
