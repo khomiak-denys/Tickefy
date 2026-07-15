@@ -6,8 +6,8 @@ namespace Tickefy.Application.Tickets.CreateDraft;
 
 public class CreateDraftTicketCommand : ICommand<Result>
 {
-    public UserId UserId { get; init; }
-    public string? Title { get; init; }
+    public required UserId UserId { get; init; }
+    public required string Title { get; init; }
     public string? Description { get; init; }
     public DateTime Deadline { get; init; } = DateTime.Today;
 }

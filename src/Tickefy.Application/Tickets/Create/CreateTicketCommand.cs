@@ -6,9 +6,9 @@ namespace Tickefy.Application.Tickets.Create
 {
     public class CreateTicketCommand : ICommand<Result>
     {
-        public UserId UserId { get; init; }
-        public string Title { get; init; }
-        public string Description { get; init; }
+        public required UserId UserId { get; init; }
+        public required string Title { get; init; }
+        public required string Description { get; init; }
         public DateTime Deadline { get; init; }
     }
 }

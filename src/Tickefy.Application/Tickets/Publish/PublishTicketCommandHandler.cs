@@ -56,7 +56,7 @@ public class PublishTicketCommandHandler : ICommandHandler<PublishTicketCommand,
 
         try
         {
-            var response = await _aiService.AnalyzeTicketAsync(ticket.Title, ticket.Description, ticket.Deadline);
+            var response = await _aiService.AnalyzeTicketAsync(ticket.Title, ticket.Description, ticket.Deadline, cancellationToken);
 
             var category = _responseParser.ParseCategory(response);
             var priority = _responseParser.ParsePriority(response);
@@ -71,7 +71,7 @@ public class PublishTicketCommandHandler : ICommandHandler<PublishTicketCommand,
             ticket.SetPriority(Priority.Medium);
         }
 
-        var log = Domain.ActivityLogs.ActivityLog.Create(
+        var log = ActivityLog.Create(
             command.TicketId,
             command.UserId,
             EventType.StatusChanged,

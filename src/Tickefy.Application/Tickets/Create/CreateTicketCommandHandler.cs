@@ -38,11 +38,11 @@ namespace Tickefy.Application.Tickets.Create
 
         public async Task<Result> Handle(CreateTicketCommand command, CancellationToken cancellationToken)
         {
-            var ticket = Domain.Tickets.Ticket.Create(command.Title, command.Description, command.UserId, command.Deadline);
+            var ticket = Ticket.Create(command.Title, command.Description, command.UserId, command.Deadline);
 
             try
             {
-                var response = await _aiService.AnalyzeTicketAsync(ticket.Title, ticket.Description, ticket.Deadline);
+                var response = await _aiService.AnalyzeTicketAsync(ticket.Title, ticket.Description, ticket.Deadline, cancellationToken);
 
                 var category = _responseParser.ParseCategory(response);
                 var priority = _responseParser.ParsePriority(response);
@@ -59,7 +59,7 @@ namespace Tickefy.Application.Tickets.Create
 
             _ticketRepository.Add(ticket);
 
-            var log = Domain.ActivityLogs.ActivityLog.Create(ticket.Id, command.UserId, EventType.RequestCreated, "Created request");
+            var log = ActivityLog.Create(ticket.Id, command.UserId, EventType.RequestCreated, "Created request");
             _logRepository.Add(log);
 
             await _uow.SaveChangesAsync(cancellationToken);

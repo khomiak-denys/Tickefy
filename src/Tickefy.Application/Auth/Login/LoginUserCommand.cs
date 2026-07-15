@@ -6,7 +6,7 @@ namespace Tickefy.Application.Auth.Login
 {
     public class LoginUserCommand : ICommand<Result<LoginResult>>
     {
-        public string Login { get; init; }
-        public string Password { get; init; }
+        public required string Login { get; init; }
+        public required string Password { get; init; }
     }
 }

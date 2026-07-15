@@ -6,10 +6,10 @@ namespace Tickefy.Application.Tickets.Publish;
 
 public class PublishTicketCommand : ICommand<Result>
 {
-    public UserId UserId { get; init; }
-    public IEnumerable<string> Roles { get; init; }
-    public TicketId TicketId { get; init; }
-    public string Title { get; init; }
-    public string Description { get; init; }
-    public DateTime Deadline { get; init; }
+    public required UserId UserId { get; init; }
+    public required IEnumerable<string> Roles { get; init; }
+    public required TicketId TicketId { get; init; }
+    public required string Title { get; init; }
+    public required string Description { get; init; }
+    public required DateTime Deadline { get; init; }
 }
