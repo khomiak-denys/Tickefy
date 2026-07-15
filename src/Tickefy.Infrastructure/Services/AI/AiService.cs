@@ -1,5 +1,6 @@
 using Google.GenAI;
 using System.Text.Json;
+using Google.GenAI.Types;
 using Microsoft.Extensions.Logging;
 using Tickefy.Application.Abstractions.Services;
 using Tickefy.Application.AI.Dtos;
@@ -19,11 +20,11 @@ namespace Tickefy.Infrastructure.Services.AI
             _logger = logger;
         }
 
-        public async Task<AiResponse> AnalyzeTicketAsync(string title, string description, DateTime deadline, CancellationToken cancellationToken = default)
+        public async Task<AiResponse> AnalyzeTicketAsync(string title, string? description, DateTime deadline, CancellationToken cancellationToken = default)
         {
             var prompt =
-                @$"You are an internal Ticketing AI classifier. 
-                 Your task is to analyze the ticket details and assign a Category and Priority. 
+                @$"You are an internal Ticketing AI classifier.
+                 Your task is to analyze the ticket details and assign a Category and Priority.
                  Only return a JSON object.
 
                  Available Categories: Finance, IT, Design, Marketing, HumanResources, Legal, AccessAndSecurity, Other
@@ -36,9 +37,9 @@ namespace Tickefy.Infrastructure.Services.AI
                  Description: {description}
                  Deadline: {deadline:O}
 
-                 Return ONLY raw JSON. 
-                 Do NOT use markdown formatting. 
-                 Do NOT wrap anything in backticks. 
+                 Return ONLY raw JSON.
+                 Do NOT use markdown formatting.
+                 Do NOT wrap anything in backticks.
                  Output must start with '{{' and end with '}}'.
 
                  Strictly return JSON in the exact format:
@@ -49,17 +50,15 @@ namespace Tickefy.Infrastructure.Services.AI
                 contents: prompt
             );
 
-
-            var parts = response?.Candidates?
-                .SelectMany(c => c.Content.Parts)
-                .ToList();
-
-            var json = string.Join("", parts
+            var json = string.Join("", response.Candidates?
+                .SelectMany(c => c.Content?.Parts ?? Enumerable.Empty<Part>())
                 .Where(p => p.Text != null)
-                .Select(p => p.Text));
+                .Select(p => p.Text!) ??  Enumerable.Empty<string>());
 
             if (string.IsNullOrWhiteSpace(json))
+            {
                 throw new InvalidOperationException("AI returned empty response.");
+            }
 
             _logger.LogInformation("Raw AI JSON: {Json}", json);
 
@@ -73,6 +72,5 @@ namespace Tickefy.Infrastructure.Services.AI
 
             return parsed;
         }
-
     }
 }
