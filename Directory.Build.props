@@ -1,0 +1,36 @@
+<Project>
+
+  <PropertyGroup>
+    <!-- Enforce Roslyn code-style rules during build, not just in IDE -->
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+
+    <!-- Use the Recommended rule set: catches real bugs without overwhelming noise.
+         Covers: null checks, unused variables, incorrect async/await, IDisposable, etc.
+         Switch to 'All' when the team is ready for stricter enforcement. -->
+    <AnalysisMode>Recommended</AnalysisMode>
+
+    <!-- Treat all analyzer warnings as build errors.
+         Safe to enable because the current baseline is 0 warnings. -->
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+    <!-- Nullable reference types are already enabled per-project;
+         this makes it consistent across the whole solution. -->
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <!-- Apply only to src/ projects, not test projects.
+       Test projects have relaxed rules (e.g. public fields in fixtures are fine). -->
+  <PropertyGroup Condition="'$(IsTestProject)' != 'true'">
+    <WarningLevel>9999</WarningLevel>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(IsTestProject)' != 'true'">
+    <!-- Microsoft's extended .NET analyzer pack — covers CA rules:
+         performance, reliability, security, design, and naming. -->
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="8.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>
