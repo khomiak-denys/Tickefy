@@ -30,7 +30,7 @@ public class UserMappingTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Id.Should().Be(1);
+        result.Id.Should().Be(Guid.Empty);
         result.FirstName.Should().BeEmpty();
         result.LastName.Should().BeEmpty();
     }
