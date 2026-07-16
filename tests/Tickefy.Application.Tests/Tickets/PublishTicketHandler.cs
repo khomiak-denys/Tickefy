@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Services;
@@ -113,7 +113,7 @@ public class PublishTicketHandlerTests
         var logger = new Mock<ILogger<PublishTicketCommandHandler>>();
 
         aiService.Setup(ai => ai.AnalyzeTicketAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new Exception());
+            .ThrowsAsync(new InvalidOperationException("AI service failed"));
 
         var command = new PublishTicketCommand
         {

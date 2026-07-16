@@ -11,6 +11,9 @@ namespace Tickefy.Infrastructure.Services.AI
 
     public class AiService : IAiService
     {
+        private static readonly JsonSerializerOptions CaseInsensitiveOptions =
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
         private readonly Client _client;
         private readonly ILogger<AiService> _logger;
 
@@ -53,7 +56,7 @@ namespace Tickefy.Infrastructure.Services.AI
             var json = string.Join("", response.Candidates?
                 .SelectMany(c => c.Content?.Parts ?? Enumerable.Empty<Part>())
                 .Where(p => p.Text != null)
-                .Select(p => p.Text!) ??  Enumerable.Empty<string>());
+                .Select(p => p.Text!) ?? Enumerable.Empty<string>());
 
             if (string.IsNullOrWhiteSpace(json))
             {
@@ -62,8 +65,7 @@ namespace Tickefy.Infrastructure.Services.AI
 
             _logger.LogInformation("Raw AI JSON: {Json}", json);
 
-            var parsed = JsonSerializer.Deserialize<AiResponse>(json,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var parsed = JsonSerializer.Deserialize<AiResponse>(json, CaseInsensitiveOptions);
 
             if (parsed == null)
                 throw new InvalidOperationException("Invalid AI JSON format.");

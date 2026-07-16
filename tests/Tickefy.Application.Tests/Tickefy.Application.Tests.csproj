@@ -7,6 +7,9 @@
 
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
+
+        <!-- CA1707: xUnit BDD naming convention uses underscores: Method_Should_X_When_Y -->
+        <NoWarn>$(NoWarn);CA1707</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
