@@ -1,4 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-"$(dirname "$0")/_/husky" run --group pre-commit
+dotnet husky run --group pre-commit
