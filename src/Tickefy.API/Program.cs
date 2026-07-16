@@ -83,13 +83,7 @@ namespace Tickefy.API
                 return new Google.GenAI.Client(apiKey: apiKey);
             });
 
-            var postgresConnection =
-                $"Host={Environment.GetEnvironmentVariable("DB_HOST")};" +
-                $"Port={Environment.GetEnvironmentVariable("DB_PORT")};" +
-                $"Database={Environment.GetEnvironmentVariable("DB_NAME")};" +
-                $"Username={Environment.GetEnvironmentVariable("DB_USER")};" +
-                $"Password={Environment.GetEnvironmentVariable("DB_PASSWORD")}";
-
+            var postgresConnection = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING"); // technical debt
 
             var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
             var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER");
@@ -172,6 +166,12 @@ namespace Tickefy.API
             });
 
             var app = builder.Build();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                dbContext.Database.Migrate();
+            }
 
             app.UseExceptionHandler();
 
