@@ -34,4 +34,11 @@
     <WarningLevel>9999</WarningLevel>
   </PropertyGroup>
 
+  <!-- Test projects follow xUnit naming conventions that intentionally violate CA rules:
+       CA1707 - underscores in method names are the standard BDD pattern: Method_Should_X_When_Y
+       CA1822 - test helper methods are left as instance methods intentionally for readability -->
+  <PropertyGroup Condition="'$(IsTestProject)' == 'true'">
+    <NoWarn>$(NoWarn);CA1707;CA1822</NoWarn>
+  </PropertyGroup>
+
 </Project>
