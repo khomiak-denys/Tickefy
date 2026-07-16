@@ -13,8 +13,8 @@ namespace Tickefy.Domain.Users
         public string PasswordHash { get; private set; } = null!;
         public UserRoles Role { get; private set; }
 
-        public TeamId? TeamId { get; private set; } = null;
-        public Team? Team { get; private set; } = null;
+        public TeamId? TeamId { get; private set; }
+        public Team? Team { get; private set; }
 
         private User() { }
 

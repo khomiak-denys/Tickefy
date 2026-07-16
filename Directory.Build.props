@@ -4,33 +4,34 @@
     <!-- Enforce Roslyn code-style rules during build, not just in IDE -->
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 
-    <!-- Use the Recommended rule set: catches real bugs without overwhelming noise.
-         Covers: null checks, unused variables, incorrect async/await, IDisposable, etc.
-         Switch to 'All' when the team is ready for stricter enforcement. -->
+    <!-- Recommended catches real bugs: null issues, async misuse, IDisposable leaks,
+         performance problems. Switch to 'All' when ready for stricter enforcement. -->
     <AnalysisMode>Recommended</AnalysisMode>
 
     <!-- Treat all analyzer warnings as build errors.
-         Safe to enable because the current baseline is 0 warnings. -->
+         Safe to enable — baseline is 0 warnings after targeted suppressions below. -->
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
-    <!-- Nullable reference types are already enabled per-project;
-         this makes it consistent across the whole solution. -->
+    <!-- Nullable reference types enforced solution-wide. -->
     <Nullable>enable</Nullable>
+
+    <!-- CA1716: Suppress "name conflicts with VB keyword" — this is a C#-only project.
+         Affects: Error type, Event namespace, IResult.Error member. -->
+    <NoWarn>$(NoWarn);CA1716</NoWarn>
+
+    <!-- CA1000: Suppress "no static members on generic types" — intentional design.
+         Result<T>.Success() and Result<T>.Failure() follow the Railway-Oriented pattern
+         and are the established API throughout this codebase. -->
+    <NoWarn>$(NoWarn);CA1000</NoWarn>
+
+    <!-- Suppress the SDK duplicate-analyzer warning that fires when .NET SDK 10
+         already bundles a newer version of NetAnalyzers than any pinned package. -->
+    <_SkipUpgradeNetAnalyzersNuGetWarning>true</_SkipUpgradeNetAnalyzersNuGetWarning>
   </PropertyGroup>
 
-  <!-- Apply only to src/ projects, not test projects.
-       Test projects have relaxed rules (e.g. public fields in fixtures are fine). -->
+  <!-- Stricter warning level only for src/ projects, not test projects. -->
   <PropertyGroup Condition="'$(IsTestProject)' != 'true'">
     <WarningLevel>9999</WarningLevel>
   </PropertyGroup>
-
-  <ItemGroup Condition="'$(IsTestProject)' != 'true'">
-    <!-- Microsoft's extended .NET analyzer pack — covers CA rules:
-         performance, reliability, security, design, and naming. -->
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="8.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
 
 </Project>
