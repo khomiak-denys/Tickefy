@@ -4,6 +4,9 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <!-- CA1848: LoggerMessage source-generator not applied — too noisy for controllers. -->
+    <!-- CA1305: locale-specific parsing — Serilog Console sink and env-var int.Parse are fine. -->
+    <NoWarn>$(NoWarn);CA1848;CA1305</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

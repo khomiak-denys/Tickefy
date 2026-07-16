@@ -1,0 +1,45 @@
+<Project>
+
+  <PropertyGroup>
+    <!-- Enforce Roslyn code-style rules during build, not just in IDE -->
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+
+    <!-- Recommended catches real bugs: null issues, async misuse, IDisposable leaks,
+         performance problems. Switch to 'All' when ready for stricter enforcement. -->
+    <AnalysisMode>Recommended</AnalysisMode>
+
+    <!-- Treat all analyzer warnings as build errors.
+         Safe to enable — baseline is 0 warnings after targeted suppressions below. -->
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+    <!-- Nullable reference types enforced solution-wide. -->
+    <Nullable>enable</Nullable>
+
+    <!-- CA1716: Suppress "name conflicts with VB keyword" — this is a C#-only project.
+         Affects: Error type, Event namespace, IResult.Error member. -->
+    <NoWarn>$(NoWarn);CA1716</NoWarn>
+
+    <!-- CA1000: Suppress "no static members on generic types" — intentional design.
+         Result<T>.Success() and Result<T>.Failure() follow the Railway-Oriented pattern
+         and are the established API throughout this codebase. -->
+    <NoWarn>$(NoWarn);CA1000</NoWarn>
+
+    <!-- Suppress the SDK duplicate-analyzer warning that fires when .NET SDK 10
+         already bundles a newer version of NetAnalyzers than any pinned package. -->
+    <_SkipUpgradeNetAnalyzersNuGetWarning>true</_SkipUpgradeNetAnalyzersNuGetWarning>
+  </PropertyGroup>
+
+  <!-- Stricter warning level only for src/ projects, not test projects. -->
+  <PropertyGroup Condition="'$(IsTestProject)' != 'true'">
+    <WarningLevel>9999</WarningLevel>
+  </PropertyGroup>
+
+  <!-- Test projects follow xUnit naming conventions that intentionally violate CA rules:
+       CA1707 - underscores in method names are the standard BDD pattern: Method_Should_X_When_Y
+       CA1822 - test helper methods are left as instance methods intentionally for readability
+       Using WarningsNotAsErrors instead of NoWarn keeps them visible in IDE but non-blocking. -->
+  <PropertyGroup Condition="'$(IsTestProject)' == 'true'">
+    <WarningsNotAsErrors>$(WarningsNotAsErrors);CA1707;CA1822</WarningsNotAsErrors>
+  </PropertyGroup>
+
+</Project>

@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Tickefy.Domain.Primitives;
 using Tickefy.Domain.Teams;
 using Tickefy.Infrastructure.Database;
@@ -38,9 +38,9 @@ namespace Tickefy.Infrastructure.Repositories
                 .FirstOrDefaultAsync(cancellationToken);
         }
 
-        public async Task<List<Team>> GetByMemberIdAsync(UserId userId, CancellationToken cancellationToken = default)
+        public async Task<List<Team>> GetByMemberIdAsync(UserId memberId, CancellationToken cancellationToken = default)
         {
-            return await _dbContext.Teams.Where(t => t.ManagerId == userId || t.Members.Any(m => m.Id == userId))
+            return await _dbContext.Teams.Where(t => t.ManagerId == memberId || t.Members.Any(m => m.Id == memberId))
                 .Include(t => t.Manager)
                 .Include(t => t.Members)
                 .ToListAsync(cancellationToken);

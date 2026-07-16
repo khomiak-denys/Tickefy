@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Abstractions.Services;
@@ -11,7 +11,7 @@ using Tickefy.Domain.Tickets;
 
 namespace Tickefy.Application.Tickets.Create
 {
-    internal class CreateTicketCommandHandler : ICommandHandler<CreateTicketCommand, Result>
+    internal sealed class CreateTicketCommandHandler : ICommandHandler<CreateTicketCommand, Result>
     {
         private readonly IUnitOfWork _uow;
         private readonly ITicketRepository _ticketRepository;
