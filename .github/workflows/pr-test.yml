@@ -6,8 +6,11 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
 
     steps:
     - uses: actions/checkout@v4
@@ -20,4 +23,11 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test --no-build --logger "GitHubActions;summary.includePassedTests=true" --logger "console;verbosity=minimal" --logger trx --results-directory ./TestResults
+    - name: Publish Test Summary
+      uses: dorny/test-reporter@v1
+      if: success() || failure()
+      with:
+        name: .NET Tests Summary
+        path: ./TestResults/*.trx
+        reporter: dotnet-trx
