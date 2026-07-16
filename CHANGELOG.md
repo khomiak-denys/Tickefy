@@ -2,6 +2,18 @@
 
 Format: update - date - name (#number)
 
+## update - 2026-07-16 - CI Automation & Code Quality enforcement (Feat/CI #49, #50)
+**Goal:** Enforce code quality, automate formatting, and verify builds/tests in CI.
+**Description:** Added GitHub Actions PR workflow with test log reporting via `dorny/test-reporter` and inline annotations via `GitHubActionsTestLogger`. Installed solution-wide Roslyn analyzers via `Directory.Build.props` with `EnforceCodeStyleInBuild` and `TreatWarningsAsErrors`. Configured `Husky.Net` local tool in `dotnet-tools.json` and a pre-commit hook to automatically format staged C# files and re-add them. Added a `Directory.Build.targets` to automatically restore and install Husky hooks on `dotnet restore` for local developers. Resolved static code analysis warnings/errors (sealing handlers, forwarding cancellation tokens, caching serializer options, namespaces, and test naming suppressions).
+
+## update - 2026-07-15 - Global warnings and null-safety fixes (Fix/global warnings #48)
+**Goal:** Fix global nullability warnings, compiler warnings, and tighten safety annotations across all projects.
+**Description:** Marked properties and DTO request/response schemas with `required` and `nullable` annotations. Added null-safe initializers and tightened accessors in Domain entities. Refactored ID generation logic to the base `StronglyTypedId` class. Cleaned up compiler warnings and improved AI service null-safety in the Infrastructure layer.
+
+## update - 2026-07-08 - Remove AutoMapper in favor of static mappings (Refactor/mapping #47)
+**Goal:** Eliminate AutoMapper library overhead and complexity by replacing it with static mapping methods.
+**Description:** Removed all AutoMapper NuGet packages and mapping profiles. Introduced static/manual `FromEntity` mapping methods in response and result classes. Fixed team mappings to use actual `ManagerId` rather than fallback. Aligned testing target frameworks with `net8.0`. Added dedicated unit test suites to verify result and response mappings.
+
 ## update - 2026-06-28 - XML documentation completion (fix/docs-and-naming)
 **Goal:** Ensure every documented interface method and API endpoint has a complete set of XML tags.
 **Description:** Added missing `<returns>` tags to all querying methods across `ITicketRepository`, `IUserRepository`, `ITeamRepository`, `IActivityLogRepository`, `IRefreshTokenRepository`, `IUnitOfWork`, `IAiService`, `IAiResponseParser`, `IPasswordHasher`, and `ITokenService`. Added interface-level `<summary>` to `IRefreshTokenRepository`. Added XML documentation (`<summary>` and `<returns>`) to the previously undocumented `Refresh` and `Logout` endpoints in `AuthController`. Extended `<returns>` tags to all endpoint methods across `TicketController`, `AuthController`, `UserController`, `TeamController`, and `ActivityLogController`. Improved summary wording on `ITokenService.GenerateRefreshToken` and `IRefreshTokenRepository.DeleteByToken`/`Delete`.
