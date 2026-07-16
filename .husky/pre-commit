@@ -1,5 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-## Run all pre-commit tasks defined in .husky/task-runner.json
 "$(dirname "$0")/_/husky" run --group pre-commit
