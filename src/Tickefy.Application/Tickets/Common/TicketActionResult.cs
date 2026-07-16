@@ -1,4 +1,4 @@
-﻿namespace Tickefy.Application.Tickets.Common;
+namespace Tickefy.Application.Tickets.Common;
 
 public record TicketActionResult
 (

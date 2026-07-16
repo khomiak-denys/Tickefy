@@ -1,4 +1,4 @@
-﻿using Google.GenAI.Types;
+using Google.GenAI.Types;
 using Microsoft.EntityFrameworkCore;
 using Tickefy.Domain.Common.Category;
 using Tickefy.Domain.Common.Status;

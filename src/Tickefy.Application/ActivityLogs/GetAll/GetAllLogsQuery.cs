@@ -1,4 +1,4 @@
-﻿using Tickefy.Application.Abstractions.Messaging;
+using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.ActivityLogs.Common;
 
 namespace Tickefy.Application.ActivityLogs.GetAll

@@ -1,4 +1,4 @@
-﻿using Tickefy.Application.Tickets.Publish;
+using Tickefy.Application.Tickets.Publish;
 using Tickefy.Domain.Primitives;
 
 namespace Tickefy.API.Ticket.Requests;

@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 
 namespace Tickefy.Application.Tickets.CreateDraft;
 
