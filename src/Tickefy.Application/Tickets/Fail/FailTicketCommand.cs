@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.Primitives;

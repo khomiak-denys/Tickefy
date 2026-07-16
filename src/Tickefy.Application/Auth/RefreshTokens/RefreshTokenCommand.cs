@@ -1,4 +1,4 @@
-﻿using Tickefy.Application.Abstractions.Messaging;
+using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Auth.Common;
 using Tickefy.Domain.Common.Results;
 
@@ -8,7 +8,7 @@ public class RefreshTokenCommand : ICommand<Result<LoginResult>>
 {
     public string RefreshToken { get; init; }
 
-    public  RefreshTokenCommand(string refreshToken)
+    public RefreshTokenCommand(string refreshToken)
     {
         RefreshToken = refreshToken;
     }

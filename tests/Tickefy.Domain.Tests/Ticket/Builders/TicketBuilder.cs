@@ -1,4 +1,4 @@
-﻿namespace Tickefy.Domain.Tests.Ticket.Builders;
+namespace Tickefy.Domain.Tests.Ticket.Builders;
 
 public class TicketBuilder
 {

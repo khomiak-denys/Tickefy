@@ -1,4 +1,4 @@
-﻿using Tickefy.Application.Abstractions.Data;
+using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Domain.ActivityLogs;
 using Tickefy.Domain.Common.Errors;

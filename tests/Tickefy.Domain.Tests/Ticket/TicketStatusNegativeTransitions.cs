@@ -1,4 +1,4 @@
-﻿using Tickefy.Domain.Common.Action;
+using Tickefy.Domain.Common.Action;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.Tests.Ticket.Builders;

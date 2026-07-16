@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Tickefy.Domain.RefreshTokens;
 using Tickefy.Infrastructure.Database;
 

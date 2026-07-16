@@ -1,4 +1,4 @@
-﻿using Tickefy.Domain.Common.Content;
+using Tickefy.Domain.Common.Content;
 using Tickefy.Domain.Common.EntityBase;
 using Tickefy.Domain.Primitives;
 using Tickefy.Domain.Tickets;

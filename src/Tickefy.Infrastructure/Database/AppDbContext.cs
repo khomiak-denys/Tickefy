@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Tickefy.Domain.ActivityLogs;
 using Tickefy.Domain.Attachments;
 using Tickefy.Domain.Comments;
