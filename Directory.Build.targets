@@ -1,0 +1,10 @@
+<Project>
+  <!--
+    Automatically install Husky.Net git hooks after 'dotnet restore' or build.
+    Runs only in a local dev environment (not in CI).
+    CI environments typically set HUSKY=0 or CI=true to skip this.
+  -->
+  <Target Name="HuskyInstall" AfterTargets="Restore" Condition="'$(HUSKY)' != '0' AND '$(CI)' == ''">
+    <Exec Command=".husky\_\husky install" StandardOutputImportance="Low" />
+  </Target>
+</Project>
