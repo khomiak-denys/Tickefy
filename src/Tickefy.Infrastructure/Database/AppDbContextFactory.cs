@@ -1,8 +1,6 @@
-using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
-using Tickefy.Infrastructure.Database;
 
 namespace Tickefy.Infrastructure.Database
 {
@@ -10,26 +8,19 @@ namespace Tickefy.Infrastructure.Database
     {
         public AppDbContext CreateDbContext(string[] args)
         {
-
-            DotNetEnv.Env.Load("../../.env");
-
+            var apiProjectPath = Path.Combine(Directory.GetCurrentDirectory(), "../Tickefy.API");
 
             var config = new ConfigurationBuilder()
-                .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../Tickefy.API"))
+                .SetBasePath(apiProjectPath)
                 .AddJsonFile("appsettings.json", optional: false)
+                .AddJsonFile("appsettings.Development.json", optional: true)
+                .AddUserSecrets("b2bea73f-b8a5-4779-a7c7-89a15651c73f")
                 .AddEnvironmentVariables()
                 .Build();
 
-
             var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-            var connectionString =
-                    $"Host={Environment.GetEnvironmentVariable("DB_HOST")};" +
-                    $"Port={Environment.GetEnvironmentVariable("DB_PORT")};" +
-                    $"Database={Environment.GetEnvironmentVariable("DB_NAME")};" +
-                    $"Username={Environment.GetEnvironmentVariable("DB_USER")};" +
-                    $"Password={Environment.GetEnvironmentVariable("DB_PASSWORD")}";
 
-            optionsBuilder.UseNpgsql(connectionString);
+            optionsBuilder.UseNpgsql(config.GetConnectionString("Postgres"));
 
             return new AppDbContext(optionsBuilder.Options);
         }
