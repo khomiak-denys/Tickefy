@@ -13,15 +13,15 @@ namespace Tickefy.Infrastructure.Services
 {
     public class TokenService : ITokenService
     {
-        private readonly JwtSettings _settings;
+        private readonly JwtOptions _options;
 
-        public TokenService(IOptions<JwtSettings> options)
+        public TokenService(IOptions<JwtOptions> options)
         {
-            _settings = options.Value;
+            _options = options.Value;
         }
         public async Task<string> GetTokenAsync(Guid id, string login, UserRoles role, CancellationToken cancellationToken = default)
         {
-            var expiresIn = DateTime.UtcNow.AddMinutes(_settings.TokenValidityMins);
+            var expiresIn = DateTime.UtcNow.AddMinutes(_options.TokenValidityMins);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -32,9 +32,9 @@ namespace Tickefy.Infrastructure.Services
                     new Claim(ClaimTypes.Role, role.ToString())
                 }),
                 Expires = expiresIn,
-                Issuer = _settings.Issuer,
-                Audience = _settings.Audience,
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_settings.Key)),
+                Issuer = _options.Issuer,
+                Audience = _options.Audience,
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.Key)),
                 SecurityAlgorithms.HmacSha512Signature)
             };
 
