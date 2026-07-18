@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -7,6 +7,7 @@
     <!-- CA1848: LoggerMessage source-generator not applied — too noisy for controllers. -->
     <!-- CA1305: locale-specific parsing — Serilog Console sink and env-var int.Parse are fine. -->
     <NoWarn>$(NoWarn);CA1848;CA1305</NoWarn>
+    <UserSecretsId>b2bea73f-b8a5-4779-a7c7-89a15651c73f</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
