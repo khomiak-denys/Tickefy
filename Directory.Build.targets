@@ -5,7 +5,7 @@
     CI environments set HUSKY=0 to skip this entirely.
   -->
   <Target Name="HuskyInstall" AfterTargets="Restore" Condition="'$(HUSKY)' != '0' AND '$(CI)' == ''">
-    <Exec Command="dotnet tool restore" StandardOutputImportance="Low" />
-    <Exec Command="dotnet husky install" StandardOutputImportance="Low" />
+    <Exec Command="dotnet tool restore" WorkingDirectory="$(MSBuildThisFileDirectory)" StandardOutputImportance="Low" />
+    <Exec Command="dotnet husky install" WorkingDirectory="$(MSBuildThisFileDirectory)" StandardOutputImportance="Low" />
   </Target>
 </Project>
