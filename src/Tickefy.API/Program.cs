@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using Tickefy.API.ErrorHandling;
 using Tickefy.API.ErrorHandling.ExceptionMapper;
+using Tickefy.API.Options;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Services;
 using Tickefy.Application.Auth.Login;
@@ -32,7 +33,6 @@ namespace Tickefy.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-
             builder.Host.UseSerilog((context, services, configuration) => configuration
                 //.ReadFrom.Configuration(context.Configuration)
                 .ReadFrom.Services(services)
@@ -49,12 +49,6 @@ namespace Tickefy.API
 
             builder.Services.AddSingleton<IExceptionProblemDetailsMapper, ExceptionProblemDetailsMapper>();
             builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-
-
-            if (builder.Environment.IsDevelopment())
-            {
-                DotNetEnv.Env.Load("../../.env");
-            }
 
             builder.Services.AddMediatR(cfg =>
             {
@@ -76,42 +70,39 @@ namespace Tickefy.API
             builder.Services.AddScoped<ITeamRepository, EFTeamRepository>();
             builder.Services.AddScoped<IRefreshTokenRepository, EFRefreshTokenRepository>();
 
-
             builder.Services.AddSingleton(sp =>
             {
-                var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY");
+                var apiKey = builder.Configuration.GetSection("ApiKey").Value;
                 return new Google.GenAI.Client(apiKey: apiKey);
             });
 
-            var postgresConnection = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING"); // technical debt
-
-            var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
-            var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER");
-            var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE");
-            var jwtValidityMins = int.Parse((Environment.GetEnvironmentVariable("JWT_VALIDITY_MINS") ?? "30"));
-
-            builder.Services.Configure<JwtSettings>(options =>
-            {
-                options.Key = jwtKey!;
-                options.Issuer = jwtIssuer!;
-                options.Audience = jwtAudience!;
-                options.TokenValidityMins = jwtValidityMins;
-            });
-
             builder.Services.AddDbContextFactory<AppDbContext>(options =>
-    options.UseNpgsql(postgresConnection));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Postgres")));
+
+            var corsOptions = builder.Configuration
+                .GetRequiredSection(CorsOptions.SectionName)
+                .Get<CorsOptions>()!;
 
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowFrontend", policy =>
+                options.AddPolicy(corsOptions.Name, policy =>
                 {
-                    policy.WithOrigins("http://localhost:4200", "http://192.168.31.211:4200", "http://192.168.31.98:4200")
-                          .WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
-                          .WithHeaders("Content-Type", "Authorization")
+                    policy.WithOrigins(corsOptions.AllowedOrigins)
+                          .WithMethods(corsOptions.AllowedMethods)
+                          .WithHeaders(corsOptions.AllowedHeaders)
                           .AllowCredentials();
                 });
             });
 
+            builder.Services
+                .AddOptions<JwtOptions>()
+                .BindConfiguration(JwtOptions.SectionName)
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
+
+            var jwtOptions = builder.Configuration
+                .GetRequiredSection(JwtOptions.SectionName)
+                .Get<JwtOptions>()!;
 
             builder.Services.AddAuthentication(options =>
             {
@@ -124,9 +115,9 @@ namespace Tickefy.API
                 options.SaveToken = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidIssuer = jwtIssuer,
-                    ValidAudience = jwtAudience,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey!)),
+                    ValidIssuer = jwtOptions.Issuer,
+                    ValidAudience = jwtOptions.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key)),
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
@@ -181,7 +172,7 @@ namespace Tickefy.API
                 app.UseSwaggerUI();
             }
 
-            app.UseCors("AllowFrontend");
+            app.UseCors(corsOptions.Name);
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
