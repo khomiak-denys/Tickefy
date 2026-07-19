@@ -12,7 +12,7 @@ public class AttachmentMappingTests
     {
         // Arrange
         var ticketId = new TicketId();
-        var attachment = Attachment.Create("/uploads/test.png", "test.png", ContentType.Photo, 2048, ticketId);
+        var attachment = Attachment.Create("test.png", ContentType.Photo, 2048, ticketId);
 
         // Act
         var result = AttachmentResult.FromEntity(attachment);
@@ -20,7 +20,7 @@ public class AttachmentMappingTests
         // Assert
         result.Should().NotBeNull();
         result.FileName.Should().Be("test.png");
-        result.FilePath.Should().Be("/uploads/test.png");
+        result.FilePath.Should().Be($"tickets/{ticketId.Value}/attachments/{attachment.Id.Value}");
         result.ContentType.Should().Be(ContentType.Photo.ToString());
         result.SizeBytes.Should().Be(2048);
     }

@@ -18,7 +18,7 @@ public class TicketDetailsMappingTests
         var user = User.Create("Commenter", "User", "comm", "pwd");
         user.SetRole(UserRoles.Agent);
         var comment = Comment.Create(user.Id, ticket.Id, "This is a test comment");
-        var attachment = Attachment.Create("/path/file.txt", "file.txt", ContentType.Document, 1024, ticket.Id);
+        var attachment = Attachment.Create("file.txt", ContentType.Document, 1024, ticket.Id);
 
         ticket.AddComment(comment);
         ticket.Attachments.Add(attachment);
