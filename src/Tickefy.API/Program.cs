@@ -22,6 +22,7 @@ using Tickefy.Infrastructure.Services;
 using Tickefy.Domain.ActivityLogs;
 using Tickefy.Domain.Teams;
 using Tickefy.Application.Teams.AddMember;
+using Tickefy.Domain.Attachments;
 using Tickefy.Domain.RefreshTokens;
 using Tickefy.Domain.Users;
 
@@ -63,16 +64,18 @@ namespace Tickefy.API
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IAiService, AiService>();
             builder.Services.AddScoped<IAiResponseParser, AiResponseParser>();
+            builder.Services.AddScoped<IObjectStorageService, FakeObjectStorageService>();
 
             builder.Services.AddScoped<IUserRepository, EFUserRepository>();
             builder.Services.AddScoped<ITicketRepository, EFTicketRepository>();
             builder.Services.AddScoped<IActivityLogRepository, EFLogRepository>();
             builder.Services.AddScoped<ITeamRepository, EFTeamRepository>();
             builder.Services.AddScoped<IRefreshTokenRepository, EFRefreshTokenRepository>();
+            builder.Services.AddScoped<IAttachmentRepository, EFAttachmentRepository>();
 
             builder.Services.AddSingleton(sp =>
             {
-                var apiKey = builder.Configuration.GetSection("ApiKey").Value;
+                var apiKey = builder.Configuration.GetSection("AiOptions:ApiKey").Value;
                 return new Google.GenAI.Client(apiKey: apiKey);
             });
 
