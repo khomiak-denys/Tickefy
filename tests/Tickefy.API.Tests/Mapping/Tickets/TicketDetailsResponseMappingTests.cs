@@ -15,15 +15,16 @@ public class TicketDetailsResponseMappingTests
         var now = DateTime.UtcNow;
         var requester = new UserResult(Guid.NewGuid(), "John", "Requester");
         var comment = new CommentResult(Guid.NewGuid(), requester, "Help needed", now);
-        var attachment = new AttachmentResult("/path/file.txt", "file.txt", "Document", 1024);
+        var attachment = new AttachmentResult("http://url/file.txt", "file.txt", "Document", 1024);
         var action = new TicketActionResult("StartWork", false);
 
         var result = new TicketDetailsResult(
             id, "Detailed Ticket", "Description here", requester, null, null,
             "IT", "High", "Created", now, now.AddDays(1),
-            [comment], [attachment]
+            [comment]
         )
         {
+            Attachments = [attachment],
             AvailableActions = [action]
         };
 

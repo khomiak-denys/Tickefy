@@ -12,14 +12,14 @@ public class AttachmentResponseMappingTests
     public void FromResult_ShouldMapCorrectly()
     {
         // Arrange
-        var result = new AttachmentResult("/uploads/photo.png", "photo.png", "Photo", 4096);
+        var result = new AttachmentResult("https://uploads/photo.png", "photo.png", "Photo", 4096);
 
         // Act
         var response = AttachmentResponse.FromResult(result);
 
         // Assert
         response.Should().NotBeNull();
-        response.FilePath.Should().Be("/uploads/photo.png");
+        response.Url.Should().Be("https://uploads/photo.png");
         response.FileName.Should().Be("photo.png");
         response.ContentType.Should().Be("Photo");
         response.SizeBytes.Should().Be(4096);
