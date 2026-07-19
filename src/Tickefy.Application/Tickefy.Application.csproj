@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Tickets\Create\Validators\" />
     <Folder Include="Ticket\Reopen\" />
   </ItemGroup>
 
