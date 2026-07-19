@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
@@ -7,7 +6,6 @@ using Tickefy.Application.Attachments.Upload;
 using Tickefy.Domain.ActivityLogs;
 using Tickefy.Domain.Attachments;
 using Tickefy.Domain.Common.Category;
-using Tickefy.Domain.Common.Content;
 using Tickefy.Domain.Common.Event;
 using Tickefy.Domain.Common.Priority;
 using Tickefy.Domain.Common.Results;
@@ -77,10 +75,9 @@ namespace Tickefy.Application.Tickets.Create
             foreach (var attachment in command.Files)
             {
                 var parts = attachment.FileName.Split('.');
-                var modifiedFileName = $"{parts[0]}_{Guid.NewGuid()}";
-                var contentType = GetFileContentType(parts[1]);
+                var modifiedFileName = $"{parts[0]}_{Guid.NewGuid()}.{parts[1]}";
 
-                var fileAttachment = Attachment.Create(modifiedFileName, contentType, attachment.SizeBytes, ticket.Id);
+                var fileAttachment = Attachment.Create(modifiedFileName, attachment.SizeBytes, ticket.Id);
 
                 await _attachmentRepository.AddAsync(fileAttachment);
 
@@ -96,22 +93,6 @@ namespace Tickefy.Application.Tickets.Create
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Result<List<AttachmentUploadResult>>.Success(fileUrls);
-        }
-
-        private static ContentType GetFileContentType(string fileExtension)
-        {
-            return fileExtension switch
-            {
-                "txt" => ContentType.Document,
-                "pdf" => ContentType.Document,
-                "docx" => ContentType.Document,
-                "zip" => ContentType.Archive,
-                "rar" => ContentType.Archive,
-                "jpeg" => ContentType.Photo,
-                "png" => ContentType.Photo,
-                "mp4" => ContentType.Video,
-                _ => throw new InvalidEnumArgumentException()
-            };
         }
     }
 }

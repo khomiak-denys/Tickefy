@@ -1,10 +1,11 @@
 using Tickefy.Domain.Attachments;
+using Tickefy.Domain.Common.Content;
 
 namespace Tickefy.Application.Tickets.Common
 {
     public record AttachmentResult
     (
-        string FilePath,
+        string Url,
         string FileName,
         string ContentType,
         long SizeBytes

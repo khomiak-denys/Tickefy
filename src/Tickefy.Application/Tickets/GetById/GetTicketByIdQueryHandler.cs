@@ -1,4 +1,5 @@
 using Tickefy.Application.Abstractions.Messaging;
+using Tickefy.Application.Abstractions.Services;
 using Tickefy.Application.Tickets.Common;
 using Tickefy.Application.Tickets.Common.Helpers;
 using Tickefy.Domain.Common.Errors;
@@ -9,7 +10,8 @@ using Tickefy.Domain.Tickets;
 namespace Tickefy.Application.Tickets.GetById
 {
     public class GetTicketByIdQueryHandler(
-        ITicketRepository ticketRepository) : IQueryHandler<GetTicketByIdQuery, Result<TicketDetailsResult>>
+        ITicketRepository ticketRepository,
+        IObjectStorageService objectStorage) : IQueryHandler<GetTicketByIdQuery, Result<TicketDetailsResult>>
     {
         public async Task<Result<TicketDetailsResult>> Handle(GetTicketByIdQuery query, CancellationToken cancellationToken)
         {
@@ -26,6 +28,18 @@ namespace Tickefy.Application.Tickets.GetById
             if (!isRequester && !isAdmin && !isAssignedAgent) return Result<TicketDetailsResult>.Failure(new ForbiddenError("Access denied"));
 
             var result = TicketDetailsResult.FromEntity(ticket);
+
+            var attachmentResults = new List<AttachmentResult>();
+
+            foreach (var attachment in ticket.Attachments)
+            {
+                var preSignedUrl = await objectStorage.GetFileUrlAsync(attachment.FilePath);
+
+                var attachmentResult = new AttachmentResult(preSignedUrl, attachment.FileName, attachment.ContentType.ToString(), attachment.SizeBytes);
+                attachmentResults.Add(attachmentResult);
+            }
+
+            result.Attachments = attachmentResults;
 
             result.AvailableActions = ticket.GetAvailableActions()
                 .Where(act => act.CanExecute(ticket, query.UserId, query.Roles))
