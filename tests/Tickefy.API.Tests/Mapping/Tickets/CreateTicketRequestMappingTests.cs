@@ -44,4 +44,45 @@ public class CreateTicketRequestMappingTests
         command.Files[1].FileName.Should().Be("notes.txt");
         command.Files[1].SizeBytes.Should().Be(1024);
     }
+
+    [Fact]
+    public void ToCommand_WithEmptyFiles_ShouldMapCorrectly()
+    {
+        // Arrange
+        var userId = new UserId(Guid.NewGuid());
+        var request = new CreateTicketRequest
+        {
+            Title = "Test Ticket",
+            Description = "Test Description",
+            Deadline = DateTime.UtcNow.AddDays(7),
+            UploadFiles = new List<UploadFileRequest>()
+        };
+
+        // Act
+        var command = request.ToCommand(userId);
+
+        // Assert
+        command.Should().NotBeNull();
+        command.Files.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void ToCommand_WithNullFiles_ShouldThrowArgumentNullException()
+    {
+        // Arrange
+        var userId = new UserId(Guid.NewGuid());
+        var request = new CreateTicketRequest
+        {
+            Title = "Test Ticket",
+            Description = "Test Description",
+            Deadline = DateTime.UtcNow.AddDays(7),
+            UploadFiles = null!
+        };
+
+        // Act
+        var act = () => request.ToCommand(userId);
+
+        // Assert
+        act.Should().Throw<ArgumentNullException>();
+    }
 }

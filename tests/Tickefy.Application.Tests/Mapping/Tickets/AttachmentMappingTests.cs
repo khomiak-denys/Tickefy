@@ -24,4 +24,22 @@ public class AttachmentMappingTests
         result.ContentType.Should().Be(ContentType.Photo.ToString());
         result.SizeBytes.Should().Be(2048);
     }
+
+    [Theory]
+    [InlineData(ContentType.Photo, "Photo")]
+    [InlineData(ContentType.Document, "Document")]
+    [InlineData(ContentType.Video, "Video")]
+    [InlineData(ContentType.Archive, "Archive")]
+    public void FromEntity_ShouldMapAllContentTypes(ContentType contentType, string expectedString)
+    {
+        // Arrange
+        var ticketId = new TicketId();
+        var attachment = Attachment.Create("test", contentType, 1024, ticketId);
+
+        // Act
+        var result = AttachmentResult.FromEntity(attachment);
+
+        // Assert
+        result.ContentType.Should().Be(expectedString);
+    }
 }
