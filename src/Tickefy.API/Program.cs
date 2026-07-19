@@ -59,12 +59,18 @@ namespace Tickefy.API
 
             builder.Services.AddValidatorsFromAssemblyContaining<AddMemberCommandValidator>();
 
+            builder.Services
+                .AddOptions<ObjectStorageOptions>()
+                .BindConfiguration(ObjectStorageOptions.SectionName)
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
+
             builder.Services.AddScoped<ITokenService, TokenService>();
             builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IAiService, AiService>();
             builder.Services.AddScoped<IAiResponseParser, AiResponseParser>();
-            builder.Services.AddScoped<IObjectStorageService, FakeObjectStorageService>();
+            builder.Services.AddScoped<IObjectStorageService, AmazonS3ObjectStorageService>();
 
             builder.Services.AddScoped<IUserRepository, EFUserRepository>();
             builder.Services.AddScoped<ITicketRepository, EFTicketRepository>();
