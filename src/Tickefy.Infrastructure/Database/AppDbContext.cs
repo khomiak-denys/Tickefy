@@ -66,15 +66,11 @@ namespace Tickefy.Infrastructure.Database
 
             //ATTACHMENT
             modelBuilder.Entity<Attachment>()
+                .Ignore(a => a.FilePath)
                 .HasOne(a => a.Ticket)
                 .WithMany(t => t.Attachments)
                 .HasForeignKey(a => a.TicketId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<Attachment>()
-                .Property(a => a.FilePath)
-                .HasMaxLength(2048)
-                .IsRequired();
 
             modelBuilder.Entity<Attachment>()
                 .Property(a => a.FileName)
