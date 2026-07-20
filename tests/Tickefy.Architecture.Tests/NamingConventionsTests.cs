@@ -47,10 +47,19 @@ public class NamingConventionsTests : BaseTest
     }
 
     [Fact]
-    public void Validators_ShouldHave_NameEndingWith_Validator()
+    public void AbstractValidators_ShouldHave_NameEndingWith_Validator()
     {
         Classes().That()
-            .HaveNameEndingWith("Validator")
+            .AreAssignableTo(typeof(FluentValidation.AbstractValidator<>))
+            .Should().HaveNameEndingWith("Validator")
+            .Check(Architecture);
+    }
+
+    [Fact]
+    public void AbstractValidators_ShouldResideIn_ApplicationAssembly()
+    {
+        Classes().That()
+            .AreAssignableTo(typeof(FluentValidation.AbstractValidator<>))
             .Should().ResideInAssembly(ApplicationAssembly)
             .Check(Architecture);
     }
