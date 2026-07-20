@@ -65,4 +65,31 @@ public class LayerTests : BaseTest
             .NotDependOnAny(ApiLayer)
             .Check(Architecture);
     }
+
+    [Fact]
+    public void AppDbContext_ShouldNotBeUsedIn_ApplicationLayer()
+    {
+        Types().That().Are(ApplicationLayer).Should()
+            .NotDependOnAny(typeof(Tickefy.Infrastructure.Database.AppDbContext))
+            .Check(Architecture);
+    }
+
+    [Fact]
+    public void AppDbContext_ShouldNotBeUsedIn_Controllers()
+    {
+        Classes().That().AreAssignableTo(typeof(Microsoft.AspNetCore.Mvc.ControllerBase)).Should()
+            .NotDependOnAny(typeof(Tickefy.Infrastructure.Database.AppDbContext))
+            .Check(Architecture);
+    }
+
+    [Fact]
+    public void RepositoryImplementations_ShouldResideIn_InfrastructureLayer_And_HaveNameEndingWith_Repository()
+    {
+        var domainRepositories = Types().That().HaveNameEndingWith("Repository").And().ResideInAssembly(DomainAssembly);
+
+        Classes().That().AreAssignableTo(domainRepositories)
+            .Should().ResideInAssembly(InfrastructureAssembly)
+            .AndShould().HaveNameEndingWith("Repository")
+            .Check(Architecture);
+    }
 }
