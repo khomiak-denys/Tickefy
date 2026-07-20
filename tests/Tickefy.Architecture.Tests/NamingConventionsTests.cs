@@ -7,6 +7,26 @@ namespace Tickefy.Architecture.Tests;
 public class NamingConventionsTests : BaseTest
 {
     [Fact]
+    public void Commands_ShouldHave_NameEndingWith_Command()
+    {
+        Classes().That()
+            .ImplementInterface(typeof(ICommand))
+            .Or()
+            .ImplementInterface(typeof(ICommand<>))
+            .Should().HaveNameEndingWith("Command")
+            .Check(Architecture);
+    }
+
+    [Fact]
+    public void Queries_ShouldHave_NameEndingWith_Query()
+    {
+        Classes().That()
+            .ImplementInterface(typeof(IQuery<>))
+            .Should().HaveNameEndingWith("Query")
+            .Check(Architecture);
+    }
+
+    [Fact]
     public void CommandHandlers_ShouldHave_NameEndingWith_CommandHandler()
     {
         Classes().That()
