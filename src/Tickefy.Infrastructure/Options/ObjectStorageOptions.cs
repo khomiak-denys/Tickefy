@@ -18,4 +18,5 @@ public class ObjectStorageOptions
     public required string Bucket { get; init; }
     [Required]
     public required string Region { get; init; }
+    public bool ForcePathStyle { get; init; } = true;
 }

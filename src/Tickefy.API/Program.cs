@@ -77,7 +77,7 @@ namespace Tickefy.API
                 return new AmazonS3Client(credentials, new AmazonS3Config
                 {
                     ServiceURL = storageOptions.Endpoint,
-                    ForcePathStyle = false
+                    ForcePathStyle = storageOptions.ForcePathStyle
                 });
             });
 
