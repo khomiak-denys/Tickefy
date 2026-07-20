@@ -1,5 +1,8 @@
+using Amazon.Runtime;
+using Amazon.S3;
 using FluentValidation;
 using MediatR;
+using Microsoft.Extensions.Options;
 using Serilog;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -64,6 +67,19 @@ namespace Tickefy.API
                 .BindConfiguration(ObjectStorageOptions.SectionName)
                 .ValidateDataAnnotations()
                 .ValidateOnStart();
+
+
+            builder.Services.AddSingleton<IAmazonS3>(sp =>
+            {
+                var storageOptions = sp.GetRequiredService<IOptions<ObjectStorageOptions>>().Value;
+                var credentials = new BasicAWSCredentials(storageOptions.AccessKey, storageOptions.SecretKey);
+                // Always use the private API endpoint for signing — never the public CDN URL.
+                return new AmazonS3Client(credentials, new AmazonS3Config
+                {
+                    ServiceURL = storageOptions.Endpoint,
+                    ForcePathStyle = false
+                });
+            });
 
             builder.Services.AddScoped<ITokenService, TokenService>();
             builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
