@@ -10,7 +10,9 @@ namespace Tickefy.Application.Abstractions.Messaging
     /// </typeparam>
     public interface ICommandHandler<in TCommand> : IRequestHandler<TCommand>
         where TCommand : ICommand
-    { }
+    {
+        new Task Handle(TCommand command, CancellationToken cancellationToken);
+    }
 
     /// <summary>
     /// Defines a contract for processing command requests that execute state transitions and return a resultant data payload or domain result.
@@ -23,5 +25,7 @@ namespace Tickefy.Application.Abstractions.Messaging
     /// </typeparam>
     public interface ICommandHandler<in TCommand, TResponse> : IRequestHandler<TCommand, TResponse>
         where TCommand : ICommand<TResponse>
-    { }
+    {
+        new Task<TResponse> Handle(TCommand command, CancellationToken cancellationToken);
+    }
 }
