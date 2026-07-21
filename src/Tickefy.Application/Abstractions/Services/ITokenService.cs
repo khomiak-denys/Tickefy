@@ -27,7 +27,7 @@ namespace Tickefy.Application.Abstractions.Services
         /// <remarks>
         /// Callers must ensure that token expiration settings configured in system options are appropriate for the security level of the application, as issued JWTs cannot be revoked without maintaining a token blacklist.
         /// </remarks>
-        public Task<string> GetTokenAsync(Guid id, string login, UserRoles role, CancellationToken cancellationToken = default);
+        public string GetToken(Guid id, string login, UserRoles role);
 
         /// <summary>
         /// Generates a high-entropy, cryptographically secure random string suitable for use as a long-lived OAuth refresh token.
