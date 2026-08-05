@@ -27,7 +27,7 @@ namespace Tickefy.Infrastructure.Repositories
             _dbContext.Tickets.Remove(ticket);
         }
 
-        public async Task<(int TotalCount, List<Ticket> Items)> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+        public async Task<(int TotalCount, List<Ticket> Items)> GetAllAsync(int Page, int pageSize, CancellationToken cancellationToken = default)
         {
             var query = _dbContext.Tickets.AsNoTracking();
             var totalCount = await query.CountAsync(cancellationToken);
@@ -35,7 +35,7 @@ namespace Tickefy.Infrastructure.Repositories
                   .Include(t => t.Requester)
                   .Include(t => t.AssignedAgent)
                   .Include(t => t.AssignedTeam)
-                  .Skip((pageNumber - 1) * pageSize)
+                  .Skip((Page - 1) * pageSize)
                   .Take(pageSize)
                   .ToListAsync(cancellationToken);
             return (totalCount, items);
@@ -52,7 +52,7 @@ namespace Tickefy.Infrastructure.Repositories
                 .FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
         }
 
-        public async Task<(int TotalCount, List<Ticket> Items)> GetByUserIdAsync(UserId id, int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+        public async Task<(int TotalCount, List<Ticket> Items)> GetByUserIdAsync(UserId id, int Page, int pageSize, CancellationToken cancellationToken = default)
         {
             var query = _dbContext.Tickets
                 .Where(t => (t.RequesterId == id || t.AssignedAgentId == id) && t.Status != Status.Canceled)
@@ -63,21 +63,21 @@ namespace Tickefy.Infrastructure.Repositories
                 .Include(t => t.Requester)
                 .Include(t => t.AssignedAgent)
                 .Include(t => t.AssignedTeam)
-                .Skip((pageNumber - 1) * pageSize)
+                .Skip((Page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync(cancellationToken);
 
             return (totalCount, items);
         }
 
-        public async Task<(int TotalCount, List<Ticket> Items)> GetCreatedByCategoryAsync(Category category, int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+        public async Task<(int TotalCount, List<Ticket> Items)> GetCreatedByCategoryAsync(Category category, int Page, int pageSize, CancellationToken cancellationToken = default)
         {
             var query = _dbContext.Tickets
                 .Where(t => t.Category == category && t.Status == Status.Created);
 
             var totalCount = await query.CountAsync(cancellationToken);
             var items = await query
-                .Skip((pageNumber - 1) * pageSize)
+                .Skip((Page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync(cancellationToken);
 

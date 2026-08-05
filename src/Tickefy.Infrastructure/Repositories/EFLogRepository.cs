@@ -18,28 +18,28 @@ namespace Tickefy.Infrastructure.Repositories
             _dbContext.ActivityLogs.Add(log);
         }
 
-        public async Task<(int TotalCount, List<ActivityLog> Items)> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+        public async Task<(int TotalCount, List<ActivityLog> Items)> GetAllAsync(int Page, int pageSize, CancellationToken cancellationToken = default)
         {
             var query = _dbContext.ActivityLogs.AsNoTracking();
             var totalCount = await query.CountAsync(cancellationToken);
             var items = await query
                 .Include(l => l.User)
                 .OrderByDescending(l => l.Created)
-                .Skip((pageNumber - 1) * pageSize)
+                .Skip((Page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync(cancellationToken);
 
             return (totalCount, items);
         }
 
-        public async Task<(int TotalCount, List<ActivityLog> Items)> GetByTicketIdAsync(TicketId ticketId, int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+        public async Task<(int TotalCount, List<ActivityLog> Items)> GetByTicketIdAsync(TicketId ticketId, int Page, int pageSize, CancellationToken cancellationToken = default)
         {
             var query = _dbContext.ActivityLogs.Where(l => l.TicketId == ticketId).AsNoTracking();
             var totalCount = await query.CountAsync(cancellationToken);
             var items = await query
                 .Include(l => l.User)
                 .OrderByDescending(l => l.Created)
-                .Skip((pageNumber - 1) * pageSize)
+                .Skip((Page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync(cancellationToken);
 

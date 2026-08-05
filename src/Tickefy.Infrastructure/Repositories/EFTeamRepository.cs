@@ -23,13 +23,13 @@ namespace Tickefy.Infrastructure.Repositories
             _dbContext.Teams.Remove(team);
         }
 
-        public async Task<(int TotalCount, List<Team> Items)> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+        public async Task<(int TotalCount, List<Team> Items)> GetAllAsync(int Page, int pageSize, CancellationToken cancellationToken = default)
         {
             var query = _dbContext.Teams;
             var totalCount = await query.CountAsync(cancellationToken);
             var items = await query
                 .Include(t => t.Manager)
-                .Skip((pageNumber - 1) * pageSize)
+                .Skip((Page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync(cancellationToken);
             return (totalCount, items);
@@ -43,7 +43,7 @@ namespace Tickefy.Infrastructure.Repositories
                 .FirstOrDefaultAsync(cancellationToken);
         }
 
-        public async Task<(int TotalCount, List<Team> Items)> GetByMemberIdAsync(UserId memberId, int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+        public async Task<(int TotalCount, List<Team> Items)> GetByMemberIdAsync(UserId memberId, int Page, int pageSize, CancellationToken cancellationToken = default)
         {
             var query = _dbContext.Teams.Where(t => t.ManagerId == memberId || t.Members.Any(m => m.Id == memberId));
 
@@ -51,7 +51,7 @@ namespace Tickefy.Infrastructure.Repositories
             var items = await query
                 .Include(t => t.Manager)
                 .Include(t => t.Members)
-                .Skip((pageNumber - 1) * pageSize)
+                .Skip((Page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync(cancellationToken);
             return (totalCount, items);
