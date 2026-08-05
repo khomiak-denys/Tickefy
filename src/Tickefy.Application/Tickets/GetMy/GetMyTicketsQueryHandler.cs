@@ -18,16 +18,13 @@ namespace Tickefy.Application.Tickets.GetMy
 
         public async Task<Result<PaginationResult<TicketResult>>> Handle(GetMyTicketsQuery request, CancellationToken cancellationToken)
         {
-            var tickets = await _ticketRepository.GetByUserIdAsync(request.UserId, cancellationToken);
-            var totalCount = tickets.Count;
+            var pagedData = await _ticketRepository.GetByUserIdAsync(request.UserId, request.PageNumber, request.PageSize, cancellationToken);
 
-            var pagedTickets = tickets
-                .Skip((request.PageNumber - 1) * request.PageSize)
-                .Take(request.PageSize)
+            var pagedTickets = pagedData.Items
                 .Select(TicketResult.FromEntity)
                 .ToList();
 
-            var result = PaginationResult<TicketResult>.Create(pagedTickets, request.PageNumber, request.PageSize, totalCount);
+            var result = PaginationResult<TicketResult>.Create(pagedTickets, request.PageNumber, request.PageSize, pagedData.TotalCount);
 
             return Result<PaginationResult<TicketResult>>.Success(result);
         }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Security.Claims;
+using Tickefy.API.Common.Models;
 using Tickefy.API.ErrorHandling;
 using Tickefy.API.Ticket.Requests;
 using Tickefy.API.Ticket.Responses;
@@ -167,7 +168,7 @@ namespace Tickefy.API.Ticket
         [Authorize]
         [Route("my")]
         [SwaggerOperation(Summary = "Returns tickets for current user")]
-        [ProducesResponseType(typeof(Tickefy.API.Common.Models.PaginationResponse<TicketResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PaginationResponse<TicketResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
@@ -185,7 +186,7 @@ namespace Tickefy.API.Ticket
 
             var result = await _mediator.Send(query, cancellationToken);
 
-            return result.Match(onSuccess: value => Ok(new Tickefy.API.Common.Models.PaginationResponse<TicketResponse>(value.Items.Select(TicketResponse.FromResult).ToList(), value.PageNumber, value.PageSize, value.TotalCount)),
+            return result.Match(onSuccess: value => Ok(new PaginationResponse<TicketResponse>(value.Items.Select(TicketResponse.FromResult).ToList(), value.PageNumber, value.PageSize, value.TotalCount)),
                 onFailure: this.ToActionResult);
         }
 
@@ -244,7 +245,7 @@ namespace Tickefy.API.Ticket
         [HttpGet]
         [Authorize(Roles = "Admin")]
         [SwaggerOperation(Summary = "Handles request to retrieve all tickets for admin")]
-        [ProducesResponseType(typeof(Tickefy.API.Common.Models.PaginationResponse<TicketResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PaginationResponse<TicketResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
@@ -255,7 +256,7 @@ namespace Tickefy.API.Ticket
             var query = new GetAllTicketsQuery { PageNumber = pageNumber, PageSize = pageSize };
             var result = await _mediator.Send(query, cancellationToken);
 
-            return result.Match(onSuccess: value => Ok(new Tickefy.API.Common.Models.PaginationResponse<TicketResponse>(value.Items.Select(TicketResponse.FromResult).ToList(), value.PageNumber, value.PageSize, value.TotalCount)),
+            return result.Match(onSuccess: value => Ok(new PaginationResponse<TicketResponse>(value.Items.Select(TicketResponse.FromResult).ToList(), value.PageNumber, value.PageSize, value.TotalCount)),
                 onFailure: this.ToActionResult);
         }
 
@@ -273,7 +274,7 @@ namespace Tickefy.API.Ticket
         [Authorize(Roles = "Agent")]
         [Route("queue")]
         [SwaggerOperation(Summary = "Handles request to retrieve all tickets for agent")]
-        [ProducesResponseType(typeof(Tickefy.API.Common.Models.PaginationResponse<TicketResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PaginationResponse<TicketResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
@@ -292,7 +293,7 @@ namespace Tickefy.API.Ticket
             var query = new GetQueueTicketsQuery(new UserId(userId)) { PageNumber = pageNumber, PageSize = pageSize };
             var result = await _mediator.Send(query, cancellationToken);
 
-            return result.Match(onSuccess: value => Ok(new Tickefy.API.Common.Models.PaginationResponse<TicketResponse>(value.Items.Select(TicketResponse.FromResult).ToList(), value.PageNumber, value.PageSize, value.TotalCount)),
+            return result.Match(onSuccess: value => Ok(new PaginationResponse<TicketResponse>(value.Items.Select(TicketResponse.FromResult).ToList(), value.PageNumber, value.PageSize, value.TotalCount)),
                 onFailure: this.ToActionResult);
         }
 
