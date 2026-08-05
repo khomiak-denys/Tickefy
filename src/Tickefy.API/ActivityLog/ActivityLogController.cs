@@ -51,7 +51,7 @@ namespace Tickefy.API.ActivityLog
         {
             var query = request.ToQuery();
             var result = await _mediator.Send(query, cancellationToken);
-            var response = new PaginationResponse<LogResponse>(result.Items.Select(LogResponse.FromResult).ToList(), result.PageNumber, result.PageSize, result.TotalCount);
+            var response = new PaginationResponse<LogResponse>(result.Items.Select(LogResponse.FromResult).ToList(), result.Page, result.PageSize, result.TotalCount);
 
             return Ok(response);
         }
@@ -75,11 +75,11 @@ namespace Tickefy.API.ActivityLog
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetByIdAsync(Guid ticketId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> GetByIdAsync(Guid ticketId, [FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
         {
-            var query = new GetLogsByTicketIdQuery(new TicketId(ticketId)) { PageNumber = pageNumber, PageSize = pageSize };
+            var query = new GetLogsByTicketIdQuery(new TicketId(ticketId)) { Page = page, PageSize = pageSize };
             var result = await _mediator.Send(query, cancellationToken);
-            var response = new PaginationResponse<LogResponse>(result.Items.Select(LogResponse.FromResult).ToList(), result.PageNumber, result.PageSize, result.TotalCount);
+            var response = new PaginationResponse<LogResponse>(result.Items.Select(LogResponse.FromResult).ToList(), result.Page, result.PageSize, result.TotalCount);
 
             return Ok(response);
         }

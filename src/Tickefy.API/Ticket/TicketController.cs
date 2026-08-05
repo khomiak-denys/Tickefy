@@ -174,7 +174,7 @@ namespace Tickefy.API.Ticket
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetMyTicketsAsync([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> GetMyTicketsAsync([FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
@@ -182,11 +182,11 @@ namespace Tickefy.API.Ticket
             {
                 return Unauthorized("User ID is missing or invalid");
             }
-            var query = new GetMyTicketsQuery(new UserId(userId)) { PageNumber = pageNumber, PageSize = pageSize };
+            var query = new GetMyTicketsQuery(new UserId(userId)) { Page = page, PageSize = pageSize };
 
             var result = await _mediator.Send(query, cancellationToken);
 
-            return result.Match(onSuccess: value => Ok(new PaginationResponse<TicketResponse>(value.Items.Select(TicketResponse.FromResult).ToList(), value.PageNumber, value.PageSize, value.TotalCount)),
+            return result.Match(onSuccess: value => Ok(new PaginationResponse<TicketResponse>(value.Items.Select(TicketResponse.FromResult).ToList(), value.Page, value.PageSize, value.TotalCount)),
                 onFailure: this.ToActionResult);
         }
 
@@ -251,12 +251,12 @@ namespace Tickefy.API.Ticket
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAllTicketsAsync([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> GetAllTicketsAsync([FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
         {
-            var query = new GetAllTicketsQuery { PageNumber = pageNumber, PageSize = pageSize };
+            var query = new GetAllTicketsQuery { Page = page, PageSize = pageSize };
             var result = await _mediator.Send(query, cancellationToken);
 
-            return result.Match(onSuccess: value => Ok(new PaginationResponse<TicketResponse>(value.Items.Select(TicketResponse.FromResult).ToList(), value.PageNumber, value.PageSize, value.TotalCount)),
+            return result.Match(onSuccess: value => Ok(new PaginationResponse<TicketResponse>(value.Items.Select(TicketResponse.FromResult).ToList(), value.Page, value.PageSize, value.TotalCount)),
                 onFailure: this.ToActionResult);
         }
 
@@ -280,7 +280,7 @@ namespace Tickefy.API.Ticket
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetQueueTicketsAsync([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> GetQueueTicketsAsync([FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
         {
 
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
@@ -290,10 +290,10 @@ namespace Tickefy.API.Ticket
                 return Unauthorized("User ID is missing or invalid");
             }
 
-            var query = new GetQueueTicketsQuery(new UserId(userId)) { PageNumber = pageNumber, PageSize = pageSize };
+            var query = new GetQueueTicketsQuery(new UserId(userId)) { Page = page, PageSize = pageSize };
             var result = await _mediator.Send(query, cancellationToken);
 
-            return result.Match(onSuccess: value => Ok(new PaginationResponse<TicketResponse>(value.Items.Select(TicketResponse.FromResult).ToList(), value.PageNumber, value.PageSize, value.TotalCount)),
+            return result.Match(onSuccess: value => Ok(new PaginationResponse<TicketResponse>(value.Items.Select(TicketResponse.FromResult).ToList(), value.Page, value.PageSize, value.TotalCount)),
                 onFailure: this.ToActionResult);
         }
 
