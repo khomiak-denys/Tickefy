@@ -23,11 +23,16 @@ namespace Tickefy.Infrastructure.Repositories
             _dbContext.Teams.Remove(team);
         }
 
-        public async Task<List<Team>> GetAllAsync(CancellationToken cancellationToken = default)
+        public async Task<(int TotalCount, List<Team> Items)> GetAllAsync(int Page, int pageSize, CancellationToken cancellationToken = default)
         {
-            return await _dbContext.Teams
+            var query = _dbContext.Teams;
+            var totalCount = await query.CountAsync(cancellationToken);
+            var items = await query
                 .Include(t => t.Manager)
+                .Skip((Page - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync(cancellationToken);
+            return (totalCount, items);
         }
 
         public async Task<Team?> GetByIdAsync(TeamId teamId, CancellationToken cancellationToken = default)
@@ -38,12 +43,18 @@ namespace Tickefy.Infrastructure.Repositories
                 .FirstOrDefaultAsync(cancellationToken);
         }
 
-        public async Task<List<Team>> GetByMemberIdAsync(UserId memberId, CancellationToken cancellationToken = default)
+        public async Task<(int TotalCount, List<Team> Items)> GetByMemberIdAsync(UserId memberId, int Page, int pageSize, CancellationToken cancellationToken = default)
         {
-            return await _dbContext.Teams.Where(t => t.ManagerId == memberId || t.Members.Any(m => m.Id == memberId))
+            var query = _dbContext.Teams.Where(t => t.ManagerId == memberId || t.Members.Any(m => m.Id == memberId));
+
+            var totalCount = await query.CountAsync(cancellationToken);
+            var items = await query
                 .Include(t => t.Manager)
                 .Include(t => t.Members)
+                .Skip((Page - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync(cancellationToken);
+            return (totalCount, items);
         }
 
         public async Task<Team?> GetByNameAsync(string name, CancellationToken cancellationToken = default)

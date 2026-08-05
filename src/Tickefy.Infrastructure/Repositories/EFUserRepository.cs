@@ -23,13 +23,18 @@ namespace Tickefy.Infrastructure.Repositories
             _dbContext.Users.Remove(user);
         }
 
-        public async Task<List<User>> GetAllAsync(CancellationToken cancellationToken = default)
+        public async Task<(int TotalCount, List<User> Items)> GetAllAsync(int Page, int pageSize, CancellationToken cancellationToken = default)
         {
-            return await _dbContext.Users
+            var query = _dbContext.Users.AsNoTracking();
+            var totalCount = await query.CountAsync(cancellationToken);
+            var items = await query
                 .Include(u => u.Team!)
                 .ThenInclude(t => t.Manager)
-                .AsNoTracking()
+                .Skip((Page - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync(cancellationToken);
+
+            return (totalCount, items);
         }
 
         public async Task<User?> GetByIdAsync(UserId id, CancellationToken cancellationToken = default)

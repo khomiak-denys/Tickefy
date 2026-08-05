@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using Tickefy.API.Common.Models;
 using Tickefy.API.ErrorHandling;
 using Tickefy.API.Team.Requests;
 using Tickefy.API.Team.Responses;
@@ -200,15 +201,15 @@ namespace Tickefy.API.Team
         [HttpGet]
         [Authorize(Roles = "Admin")]
         [SwaggerOperation(Summary = "Retrieve all teams")]
-        [ProducesResponseType(typeof(List<TeamResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PaginationResponse<TeamResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAllTeamsAsync(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAllTeamsAsync([FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
         {
-            var query = new GetAllTeamsQuery();
+            var query = new GetAllTeamsQuery { Page = page, PageSize = pageSize };
             var result = await _mediator.Send(query, cancellationToken);
 
-            return result.Match(onSuccess: value => Ok(value.Select(TeamResponse.FromResult).ToList()),
+            return result.Match(onSuccess: value => Ok(new PaginationResponse<TeamResponse>(value.Items.Select(TeamResponse.FromResult).ToList(), value.Page, value.PageSize, value.TotalCount)),
                 onFailure: this.ToActionResult);
         }
 
@@ -225,20 +226,20 @@ namespace Tickefy.API.Team
         [HttpGet("my")]
         [Authorize]
         [SwaggerOperation(Summary = "Retrieve teams of the current user")]
-        [ProducesResponseType(typeof(List<TeamResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PaginationResponse<TeamResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetMyTeamAsync(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetMyTeamAsync([FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
         {
             var leaderIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(leaderIdClaim) || !Guid.TryParse(leaderIdClaim, out var memberGuid))
                 return Unauthorized("User ID is missing or invalid");
 
-            var query = new GetTeamByUserIdQuery(new UserId(memberGuid));
+            var query = new GetTeamByUserIdQuery(new UserId(memberGuid)) { Page = page, PageSize = pageSize };
             var result = await _mediator.Send(query, cancellationToken);
 
-            return result.Match(onSuccess: value => Ok(value.Select(TeamResponse.FromResult).ToList()),
+            return result.Match(onSuccess: value => Ok(new PaginationResponse<TeamResponse>(value.Items.Select(TeamResponse.FromResult).ToList(), value.Page, value.PageSize, value.TotalCount)),
                 onFailure: this.ToActionResult);
         }
     }
