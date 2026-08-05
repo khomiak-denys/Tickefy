@@ -7,7 +7,7 @@ namespace Tickefy.Application.Teams.GetAll
 {
     public class GetAllTeamsQuery : IQuery<Result<PaginationResult<TeamResult>>>
     {
-        public int PageNumber { get; init; } = 1;
+        public int Page { get; init; } = 1;
         public int PageSize { get; init; } = 10;
 
         public GetAllTeamsQuery() { }

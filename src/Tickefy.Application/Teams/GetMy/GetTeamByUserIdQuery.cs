@@ -9,7 +9,7 @@ namespace Tickefy.Application.Teams.GetMy
     public class GetTeamByUserIdQuery : IQuery<Result<PaginationResult<TeamResult>>>
     {
         public UserId UserId { get; init; }
-        public int PageNumber { get; init; } = 1;
+        public int Page { get; init; } = 1;
         public int PageSize { get; init; } = 10;
 
         public GetTeamByUserIdQuery(UserId userId)

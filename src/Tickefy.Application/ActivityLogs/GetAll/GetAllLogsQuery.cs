@@ -6,7 +6,7 @@ namespace Tickefy.Application.ActivityLogs.GetAll
 {
     public class GetAllLogsQuery : IQuery<PaginationResult<LogResult>>
     {
-        public int PageNumber { get; init; } = 1;
+        public int Page { get; init; } = 1;
         public int PageSize { get; init; } = 10;
 
         public GetAllLogsQuery() { }

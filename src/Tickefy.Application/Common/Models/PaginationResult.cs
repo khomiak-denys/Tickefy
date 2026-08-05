@@ -2,42 +2,42 @@ namespace Tickefy.Application.Common.Models;
 
 using System.Collections.Generic;
 
+/// <summary>
+/// Represents a paginated collection of items returned from the application layer.
+/// </summary>
+/// <typeparam name="T">The type of items in the pagination result.</typeparam>
+public class PaginationResult<T>
+{
     /// <summary>
-    /// Represents a paginated collection of items returned from the application layer.
+    /// Gets the items for the current page.
     /// </summary>
-    /// <typeparam name="T">The type of items in the pagination result.</typeparam>
-    public class PaginationResult<T>
-    {
-        /// <summary>
-        /// Gets the items for the current page.
-        /// </summary>
-        public IReadOnlyList<T> Items { get; }
+    public IReadOnlyList<T> Items { get; }
 
-        /// <summary>
-        /// Gets the current page number (1-indexed).
-        /// </summary>
-        public int PageNumber { get; }
+    /// <summary>
+    /// Gets the current page number (1-indexed).
+    /// </summary>
+    public int Page { get; }
 
-        /// <summary>
-        /// Gets the maximum number of items per page.
-        /// </summary>
-        public int PageSize { get; }
+    /// <summary>
+    /// Gets the maximum number of items per page.
+    /// </summary>
+    public int PageSize { get; }
 
-        /// <summary>
-        /// Gets the total number of items available across all pages.
-        /// </summary>
-        public int TotalCount { get; }
+    /// <summary>
+    /// Gets the total number of items available across all pages.
+    /// </summary>
+    public int TotalCount { get; }
 
-    public PaginationResult(IReadOnlyList<T> items, int pageNumber, int pageSize, int totalCount)
+    public PaginationResult(IReadOnlyList<T> items, int page, int pageSize, int totalCount)
     {
         Items = items;
-        PageNumber = pageNumber;
+        Page = page;
         PageSize = pageSize;
         TotalCount = totalCount;
     }
 
-    public static PaginationResult<T> Create(IReadOnlyList<T> items, int pageNumber, int pageSize, int totalCount)
+    public static PaginationResult<T> Create(IReadOnlyList<T> items, int page, int pageSize, int totalCount)
     {
-        return new PaginationResult<T>(items, pageNumber, pageSize, totalCount);
+        return new PaginationResult<T>(items, page, pageSize, totalCount);
     }
 }

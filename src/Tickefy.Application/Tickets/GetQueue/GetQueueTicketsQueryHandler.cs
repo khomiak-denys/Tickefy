@@ -37,13 +37,13 @@ namespace Tickefy.Application.Tickets.GetQueue
 
             if (team == null) return Result<PaginationResult<TicketResult>>.Failure(new NotFoundError(nameof(team)));
 
-            var pagedData = await _ticketRepository.GetCreatedByCategoryAsync(team.Category, query.PageNumber, query.PageSize, cancellationToken);
+            var pagedData = await _ticketRepository.GetCreatedByCategoryAsync(team.Category, query.Page, query.PageSize, cancellationToken);
 
             var pagedTickets = pagedData.Items
                 .Select(TicketResult.FromEntity)
                 .ToList();
 
-            var result = PaginationResult<TicketResult>.Create(pagedTickets, query.PageNumber, query.PageSize, pagedData.TotalCount);
+            var result = PaginationResult<TicketResult>.Create(pagedTickets, query.Page, query.PageSize, pagedData.TotalCount);
 
             return Result<PaginationResult<TicketResult>>.Success(result);
         }

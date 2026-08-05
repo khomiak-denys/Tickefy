@@ -7,7 +7,7 @@ namespace Tickefy.Application.Tickets.GetAll
 {
     public class GetAllTicketsQuery : IQuery<Result<PaginationResult<TicketResult>>>
     {
-        public int PageNumber { get; init; } = 1;
+        public int Page { get; init; } = 1;
         public int PageSize { get; init; } = 10;
 
         public GetAllTicketsQuery() { }

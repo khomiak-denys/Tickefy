@@ -17,13 +17,13 @@ namespace Tickefy.Application.ActivityLogs.GetByTicketId
 
         public async Task<PaginationResult<LogResult>> Handle(GetLogsByTicketIdQuery query, CancellationToken cancellationToken)
         {
-            var pagedData = await _logRepository.GetByTicketIdAsync(query.TicketId, query.PageNumber, query.PageSize, cancellationToken);
-            
+            var pagedData = await _logRepository.GetByTicketIdAsync(query.TicketId, query.Page, query.PageSize, cancellationToken);
+
             var pagedLogs = pagedData.Items
                 .Select(LogResult.FromEntity)
                 .ToList();
 
-            return PaginationResult<LogResult>.Create(pagedLogs, query.PageNumber, query.PageSize, pagedData.TotalCount);
+            return PaginationResult<LogResult>.Create(pagedLogs, query.Page, query.PageSize, pagedData.TotalCount);
         }
     }
 }

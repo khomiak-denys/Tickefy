@@ -9,7 +9,7 @@ namespace Tickefy.Application.Tickets.GetQueue
     public class GetQueueTicketsQuery : IQuery<Result<PaginationResult<TicketResult>>>
     {
         public UserId UserId { get; init; }
-        public int PageNumber { get; init; } = 1;
+        public int Page { get; init; } = 1;
         public int PageSize { get; init; } = 10;
 
         public GetQueueTicketsQuery(UserId userId)

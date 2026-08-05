@@ -17,13 +17,13 @@ namespace Tickefy.Application.Users.GetAll
         }
         public async Task<Result<PaginationResult<UserDetailsResult>>> Handle(GetAllUsersQuery query, CancellationToken cancellationToken)
         {
-            var pagedData = await _userRepository.GetAllAsync(query.PageNumber, query.PageSize, cancellationToken);
+            var pagedData = await _userRepository.GetAllAsync(query.Page, query.PageSize, cancellationToken);
 
             var pagedUsers = pagedData.Items
                 .Select(UserDetailsResult.FromEntity)
                 .ToList();
 
-            var result = PaginationResult<UserDetailsResult>.Create(pagedUsers, query.PageNumber, query.PageSize, pagedData.TotalCount);
+            var result = PaginationResult<UserDetailsResult>.Create(pagedUsers, query.Page, query.PageSize, pagedData.TotalCount);
 
             return Result<PaginationResult<UserDetailsResult>>.Success(result);
         }
