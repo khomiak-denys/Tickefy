@@ -18,7 +18,7 @@ namespace Tickefy.Domain.Tickets
         /// <remarks>
         /// Caution: Calling this method on large production tables without pagination filters can cause excessive database IO and memory consumption. Prefer targeted queries when dealing with large volumes of tickets.
         /// </remarks>
-        Task<(int TotalCount, List<Ticket> Items)> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default);
+        Task<(int TotalCount, List<Ticket> Items)> GetAllAsync(int Page, int pageSize, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Asynchronously locates a specific ticket entity by its unique domain identifier.
@@ -42,7 +42,7 @@ namespace Tickefy.Domain.Tickets
         /// <returns>
         /// A task representing the asynchronous query operation. The task result contains a list of <see cref="Ticket"/> entities authored by the specified user.
         /// </returns>
-        Task<(int TotalCount, List<Ticket> Items)> GetByUserIdAsync(UserId id, int pageNumber, int pageSize, CancellationToken cancellationToken = default);
+        Task<(int TotalCount, List<Ticket> Items)> GetByUserIdAsync(UserId id, int Page, int pageSize, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Stages a new ticket entity for insertion into the persistent storage context upon transaction commit.
@@ -87,6 +87,6 @@ namespace Tickefy.Domain.Tickets
         /// <returns>
         /// A task representing the asynchronous query operation. The task result contains a list of matching <see cref="Ticket"/> entities filtered by category and initial creation status.
         /// </returns>
-        Task<(int TotalCount, List<Ticket> Items)> GetCreatedByCategoryAsync(Category category, int pageNumber, int pageSize, CancellationToken cancellationToken = default);
+        Task<(int TotalCount, List<Ticket> Items)> GetCreatedByCategoryAsync(Category category, int Page, int pageSize, CancellationToken cancellationToken = default);
     }
 }

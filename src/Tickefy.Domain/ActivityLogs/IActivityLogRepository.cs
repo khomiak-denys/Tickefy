@@ -31,7 +31,7 @@ namespace Tickefy.Domain.ActivityLogs
         /// <returns>
         /// A task representing the asynchronous paginated query. The task result contains the requested page of <see cref="ActivityLog"/> entries ordered from most recent to oldest.
         /// </returns>
-        Task<(int TotalCount, List<ActivityLog> Items)> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default);
+        Task<(int TotalCount, List<ActivityLog> Items)> GetAllAsync(int Page, int pageSize, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Asynchronously queries and retrieves the chronological audit trail of activity log records associated with a specific ticket.
@@ -43,6 +43,6 @@ namespace Tickefy.Domain.ActivityLogs
         /// <returns>
         /// A task representing the asynchronous query operation. The task result contains all matching <see cref="ActivityLog"/> records linked to the specified ticket identifier.
         /// </returns>
-        Task<(int TotalCount, List<ActivityLog> Items)> GetByTicketIdAsync(TicketId ticketId, int pageNumber, int pageSize, CancellationToken cancellationToken = default);
+        Task<(int TotalCount, List<ActivityLog> Items)> GetByTicketIdAsync(TicketId ticketId, int Page, int pageSize, CancellationToken cancellationToken = default);
     }
 }
