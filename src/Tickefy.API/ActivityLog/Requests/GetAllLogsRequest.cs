@@ -5,7 +5,7 @@ namespace Tickefy.API.ActivityLog.Requests
     public class GetAllLogsRequest
     {
         public int PageNumber { get; init; } = 1;
-        public int PageSize { get; init; } = 20;
+        public int PageSize { get; init; } = 10;
 
         public GetAllLogsQuery ToQuery()
         {

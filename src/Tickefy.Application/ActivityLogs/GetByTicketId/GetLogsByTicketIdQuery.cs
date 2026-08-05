@@ -9,7 +9,7 @@ namespace Tickefy.Application.ActivityLogs.GetByTicketId
     {
         public TicketId TicketId { get; init; }
         public int PageNumber { get; init; } = 1;
-        public int PageSize { get; init; } = 20;
+        public int PageSize { get; init; } = 10;
 
         public GetLogsByTicketIdQuery(TicketId ticketId)
         {
