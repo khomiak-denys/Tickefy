@@ -41,7 +41,7 @@ namespace Tickefy.API.ActivityLog
         /// </remarks>
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        [ProducesResponseType(typeof(List<LogResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Tickefy.API.Common.Models.PaginationResponse<LogResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
@@ -50,7 +50,7 @@ namespace Tickefy.API.ActivityLog
         {
             var query = request.ToQuery();
             var result = await _mediator.Send(query, cancellationToken);
-            var response = result.Select(LogResponse.FromResult).ToList();
+            var response = new Tickefy.API.Common.Models.PaginationResponse<LogResponse>(result.Items.Select(LogResponse.FromResult).ToList(), result.PageNumber, result.PageSize, result.TotalCount);
 
             return Ok(response);
         }
@@ -68,17 +68,17 @@ namespace Tickefy.API.ActivityLog
         /// </remarks>
         [HttpGet("ticket/{ticketId}")]
         [Authorize(Roles = "Admin")]
-        [ProducesResponseType(typeof(List<LogResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Tickefy.API.Common.Models.PaginationResponse<LogResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetByIdAsync(Guid ticketId, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetByIdAsync(Guid ticketId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 20, CancellationToken cancellationToken = default)
         {
-            var query = new GetLogsByTicketIdQuery(new TicketId(ticketId));
+            var query = new GetLogsByTicketIdQuery(new TicketId(ticketId)) { PageNumber = pageNumber, PageSize = pageSize };
             var result = await _mediator.Send(query, cancellationToken);
-            var response = result.Select(LogResponse.FromResult).ToList();
+            var response = new Tickefy.API.Common.Models.PaginationResponse<LogResponse>(result.Items.Select(LogResponse.FromResult).ToList(), result.PageNumber, result.PageSize, result.TotalCount);
 
             return Ok(response);
         }

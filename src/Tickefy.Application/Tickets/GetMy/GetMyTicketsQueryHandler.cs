@@ -2,10 +2,11 @@ using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Tickets.Common;
 using Tickefy.Domain.Common.Results;
 using Tickefy.Domain.Tickets;
+using Tickefy.Application.Common.Models;
 
 namespace Tickefy.Application.Tickets.GetMy
 {
-    public class GetMyTicketsQueryHandler : IQueryHandler<GetMyTicketsQuery, Result<List<TicketResult>>>
+    public class GetMyTicketsQueryHandler : IQueryHandler<GetMyTicketsQuery, Result<PaginationResult<TicketResult>>>
     {
         private readonly ITicketRepository _ticketRepository;
 
@@ -15,12 +16,20 @@ namespace Tickefy.Application.Tickets.GetMy
             _ticketRepository = ticketRepository;
         }
 
-        public async Task<Result<List<TicketResult>>> Handle(GetMyTicketsQuery request, CancellationToken cancellationToken)
+        public async Task<Result<PaginationResult<TicketResult>>> Handle(GetMyTicketsQuery request, CancellationToken cancellationToken)
         {
             var tickets = await _ticketRepository.GetByUserIdAsync(request.UserId, cancellationToken);
-            var result = tickets.Select(TicketResult.FromEntity).ToList();
+            var totalCount = tickets.Count;
 
-            return Result<List<TicketResult>>.Success(result);
+            var pagedTickets = tickets
+                .Skip((request.PageNumber - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .Select(TicketResult.FromEntity)
+                .ToList();
+
+            var result = PaginationResult<TicketResult>.Create(pagedTickets, request.PageNumber, request.PageSize, totalCount);
+
+            return Result<PaginationResult<TicketResult>>.Success(result);
         }
     }
 }

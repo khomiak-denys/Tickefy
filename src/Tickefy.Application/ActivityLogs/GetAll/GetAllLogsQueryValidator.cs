@@ -6,7 +6,7 @@ namespace Tickefy.Application.ActivityLogs.GetAll
     {
         public GetAllLogsQueryValidator()
         {
-            RuleFor(q => q.Page)
+            RuleFor(q => q.PageNumber)
                 .NotEmpty()
                     .WithMessage("Page is required.")
                 .InclusiveBetween(1, 10000)
