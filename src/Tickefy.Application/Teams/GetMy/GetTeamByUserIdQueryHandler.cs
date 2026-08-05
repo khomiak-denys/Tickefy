@@ -17,16 +17,13 @@ namespace Tickefy.Application.Teams.GetMy
             var user = await userRepository.GetByIdAsync(query.UserId, cancellationToken);
             if (user == null) return Result<PaginationResult<TeamResult>>.Failure(new NotFoundError(nameof(user) + " " + query.UserId));
 
-            var teams = await teamRepository.GetByMemberIdAsync(query.UserId, cancellationToken);
-            var totalCount = teams.Count;
+            var pagedData = await teamRepository.GetByMemberIdAsync(query.UserId, query.PageNumber, query.PageSize, cancellationToken);
 
-            var pagedTeams = teams
-                .Skip((query.PageNumber - 1) * query.PageSize)
-                .Take(query.PageSize)
+            var pagedTeams = pagedData.Items
                 .Select(TeamResult.FromEntity)
                 .ToList();
 
-            var result = PaginationResult<TeamResult>.Create(pagedTeams, query.PageNumber, query.PageSize, totalCount);
+            var result = PaginationResult<TeamResult>.Create(pagedTeams, query.PageNumber, query.PageSize, pagedData.TotalCount);
 
             return Result<PaginationResult<TeamResult>>.Success(result);
         }

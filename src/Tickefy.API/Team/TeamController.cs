@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using Tickefy.API.Common.Models;
 using Tickefy.API.ErrorHandling;
 using Tickefy.API.Team.Requests;
 using Tickefy.API.Team.Responses;
@@ -200,7 +201,7 @@ namespace Tickefy.API.Team
         [HttpGet]
         [Authorize(Roles = "Admin")]
         [SwaggerOperation(Summary = "Retrieve all teams")]
-        [ProducesResponseType(typeof(Tickefy.API.Common.Models.PaginationResponse<TeamResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PaginationResponse<TeamResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllTeamsAsync([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 20, CancellationToken cancellationToken = default)
@@ -208,7 +209,7 @@ namespace Tickefy.API.Team
             var query = new GetAllTeamsQuery { PageNumber = pageNumber, PageSize = pageSize };
             var result = await _mediator.Send(query, cancellationToken);
 
-            return result.Match(onSuccess: value => Ok(new Tickefy.API.Common.Models.PaginationResponse<TeamResponse>(value.Items.Select(TeamResponse.FromResult).ToList(), value.PageNumber, value.PageSize, value.TotalCount)),
+            return result.Match(onSuccess: value => Ok(new PaginationResponse<TeamResponse>(value.Items.Select(TeamResponse.FromResult).ToList(), value.PageNumber, value.PageSize, value.TotalCount)),
                 onFailure: this.ToActionResult);
         }
 
@@ -225,7 +226,7 @@ namespace Tickefy.API.Team
         [HttpGet("my")]
         [Authorize]
         [SwaggerOperation(Summary = "Retrieve teams of the current user")]
-        [ProducesResponseType(typeof(Tickefy.API.Common.Models.PaginationResponse<TeamResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PaginationResponse<TeamResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
@@ -238,7 +239,7 @@ namespace Tickefy.API.Team
             var query = new GetTeamByUserIdQuery(new UserId(memberGuid)) { PageNumber = pageNumber, PageSize = pageSize };
             var result = await _mediator.Send(query, cancellationToken);
 
-            return result.Match(onSuccess: value => Ok(new Tickefy.API.Common.Models.PaginationResponse<TeamResponse>(value.Items.Select(TeamResponse.FromResult).ToList(), value.PageNumber, value.PageSize, value.TotalCount)),
+            return result.Match(onSuccess: value => Ok(new PaginationResponse<TeamResponse>(value.Items.Select(TeamResponse.FromResult).ToList(), value.PageNumber, value.PageSize, value.TotalCount)),
                 onFailure: this.ToActionResult);
         }
     }

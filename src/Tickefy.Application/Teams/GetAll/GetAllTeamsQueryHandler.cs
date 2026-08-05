@@ -17,16 +17,13 @@ namespace Tickefy.Application.Teams.GetAll
 
         public async Task<Result<PaginationResult<TeamResult>>> Handle(GetAllTeamsQuery request, CancellationToken cancellationToken)
         {
-            var teams = await _teamRepository.GetAllAsync(cancellationToken);
-            var totalCount = teams.Count;
+            var pagedData = await _teamRepository.GetAllAsync(request.PageNumber, request.PageSize, cancellationToken);
 
-            var pagedTeams = teams
-                .Skip((request.PageNumber - 1) * request.PageSize)
-                .Take(request.PageSize)
+            var pagedTeams = pagedData.Items
                 .Select(TeamResult.FromEntity)
                 .ToList();
 
-            var result = PaginationResult<TeamResult>.Create(pagedTeams, request.PageNumber, request.PageSize, totalCount);
+            var result = PaginationResult<TeamResult>.Create(pagedTeams, request.PageNumber, request.PageSize, pagedData.TotalCount);
 
             return Result<PaginationResult<TeamResult>>.Success(result);
         }
