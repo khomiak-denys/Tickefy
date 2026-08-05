@@ -28,7 +28,7 @@ namespace Tickefy.Domain.Users
         /// <remarks>
         /// Be cautious when invoking this method on large datasets without pagination, as loading all users and their related team data simultaneously may consume significant memory and database bandwidth.
         /// </remarks>
-        public Task<List<User>> GetAllAsync(CancellationToken cancellationToken = default);
+        public Task<(int TotalCount, List<User> Items)> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Asynchronously locates and retrieves a specific user entity based on its unique domain identifier.
