@@ -18,20 +18,32 @@ namespace Tickefy.Infrastructure.Repositories
             _dbContext.ActivityLogs.Add(log);
         }
 
-        public async Task<List<ActivityLog>> GetAllAsync(int page, int pageSize, CancellationToken cancellationToken = default)
+        public async Task<(int TotalCount, List<ActivityLog> Items)> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
         {
-            return await _dbContext.ActivityLogs
+            var query = _dbContext.ActivityLogs.AsNoTracking();
+            var totalCount = await query.CountAsync(cancellationToken);
+            var items = await query
                 .Include(l => l.User)
-                .AsNoTracking()
                 .OrderByDescending(l => l.Created)
-                .Skip((page - 1) * pageSize)
+                .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync(cancellationToken);
+
+            return (totalCount, items);
         }
 
-        public async Task<List<ActivityLog>> GetByTicketIdAsync(TicketId ticketId, CancellationToken cancellationToken = default)
+        public async Task<(int TotalCount, List<ActivityLog> Items)> GetByTicketIdAsync(TicketId ticketId, int pageNumber, int pageSize, CancellationToken cancellationToken = default)
         {
-            return await _dbContext.ActivityLogs.Where(l => l.TicketId == ticketId).ToListAsync(cancellationToken);
+            var query = _dbContext.ActivityLogs.Where(l => l.TicketId == ticketId).AsNoTracking();
+            var totalCount = await query.CountAsync(cancellationToken);
+            var items = await query
+                .Include(l => l.User)
+                .OrderByDescending(l => l.Created)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(cancellationToken);
+
+            return (totalCount, items);
         }
     }
 }

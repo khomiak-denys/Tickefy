@@ -6,6 +6,7 @@ using Tickefy.API.ActivityLog.Responses;
 using Tickefy.Application.ActivityLogs.GetAll;
 using Tickefy.Application.ActivityLogs.GetByTicketId;
 using Tickefy.Domain.Primitives;
+using Tickefy.API.Common.Models;
 
 namespace Tickefy.API.ActivityLog
 {
@@ -41,7 +42,7 @@ namespace Tickefy.API.ActivityLog
         /// </remarks>
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        [ProducesResponseType(typeof(Tickefy.API.Common.Models.PaginationResponse<LogResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PaginationResponse<LogResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
@@ -50,7 +51,7 @@ namespace Tickefy.API.ActivityLog
         {
             var query = request.ToQuery();
             var result = await _mediator.Send(query, cancellationToken);
-            var response = new Tickefy.API.Common.Models.PaginationResponse<LogResponse>(result.Items.Select(LogResponse.FromResult).ToList(), result.PageNumber, result.PageSize, result.TotalCount);
+            var response = new PaginationResponse<LogResponse>(result.Items.Select(LogResponse.FromResult).ToList(), result.PageNumber, result.PageSize, result.TotalCount);
 
             return Ok(response);
         }
@@ -68,7 +69,7 @@ namespace Tickefy.API.ActivityLog
         /// </remarks>
         [HttpGet("ticket/{ticketId}")]
         [Authorize(Roles = "Admin")]
-        [ProducesResponseType(typeof(Tickefy.API.Common.Models.PaginationResponse<LogResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PaginationResponse<LogResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
@@ -78,7 +79,7 @@ namespace Tickefy.API.ActivityLog
         {
             var query = new GetLogsByTicketIdQuery(new TicketId(ticketId)) { PageNumber = pageNumber, PageSize = pageSize };
             var result = await _mediator.Send(query, cancellationToken);
-            var response = new Tickefy.API.Common.Models.PaginationResponse<LogResponse>(result.Items.Select(LogResponse.FromResult).ToList(), result.PageNumber, result.PageSize, result.TotalCount);
+            var response = new PaginationResponse<LogResponse>(result.Items.Select(LogResponse.FromResult).ToList(), result.PageNumber, result.PageSize, result.TotalCount);
 
             return Ok(response);
         }
