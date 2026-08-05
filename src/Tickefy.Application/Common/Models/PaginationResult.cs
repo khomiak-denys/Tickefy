@@ -2,12 +2,31 @@ namespace Tickefy.Application.Common.Models;
 
 using System.Collections.Generic;
 
-public class PaginationResult<T>
-{
-    public IReadOnlyList<T> Items { get; }
-    public int PageNumber { get; }
-    public int PageSize { get; }
-    public int TotalCount { get; }
+    /// <summary>
+    /// Represents a paginated collection of items returned from the application layer.
+    /// </summary>
+    /// <typeparam name="T">The type of items in the pagination result.</typeparam>
+    public class PaginationResult<T>
+    {
+        /// <summary>
+        /// Gets the items for the current page.
+        /// </summary>
+        public IReadOnlyList<T> Items { get; }
+
+        /// <summary>
+        /// Gets the current page number (1-indexed).
+        /// </summary>
+        public int PageNumber { get; }
+
+        /// <summary>
+        /// Gets the maximum number of items per page.
+        /// </summary>
+        public int PageSize { get; }
+
+        /// <summary>
+        /// Gets the total number of items available across all pages.
+        /// </summary>
+        public int TotalCount { get; }
 
     public PaginationResult(IReadOnlyList<T> items, int pageNumber, int pageSize, int totalCount)
     {
