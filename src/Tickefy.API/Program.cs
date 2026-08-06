@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.RateLimiting;
 using Tickefy.API.ErrorHandling;
 using Tickefy.API.ErrorHandling.ExceptionMapper;
 using Tickefy.API.Options;
@@ -94,6 +96,21 @@ namespace Tickefy.API
                 });
             });
 
+            builder.Services.AddRateLimiter(options =>
+            {
+                options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+                options.AddTokenBucketLimiter("public-api", opt =>
+                {
+                    opt.TokenLimit = 10;
+                    opt.TokensPerPeriod = 10;
+                    opt.ReplenishmentPeriod = TimeSpan.FromSeconds(60);
+                    opt.AutoReplenishment = true;
+                    opt.QueueLimit = 0;
+                    opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                });
+            });
+
             builder.Services
                 .AddOptions<JwtOptions>()
                 .BindConfiguration(JwtOptions.SectionName)
@@ -174,11 +191,12 @@ namespace Tickefy.API
 
             app.UseCors(corsOptions.Name);
             app.UseHttpsRedirection();
+            app.UseRateLimiter();
 
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.MapControllers();
+            app.MapControllers().RequireRateLimiting("public-api");
 
             app.Run();
         }
