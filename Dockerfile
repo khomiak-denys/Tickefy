@@ -1,5 +1,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
+ENV HUSKY=0
+ENV CI=true
 
 
 COPY *.sln .
