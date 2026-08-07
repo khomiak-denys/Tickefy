@@ -4,16 +4,17 @@ env:
     AZURE_WEBAPP_NAME: tickefy-api
 
 on:
-    push:
-        branches: [ "dev" ]
+    workflow_run:
+        workflows: ["Test"]
+        types:
+            - completed
+        branches:
+            - dev
     workflow_dispatch:
 
 jobs:
-    test:
-        uses: ./.github/workflows/pr-test.yml
-
     build:
-        needs: test
+        if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
         uses: ./.github/workflows/docker-build.yml
         with:
             image_tag: ${{ github.sha }}

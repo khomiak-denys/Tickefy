@@ -3,6 +3,8 @@ WORKDIR /app
 
 
 COPY *.sln .
+COPY Directory.Build.props .
+COPY Directory.Build.targets .
 COPY src/Tickefy.API/*.csproj src/Tickefy.API/
 COPY src/Tickefy.Application/*.csproj src/Tickefy.Application/
 COPY src/Tickefy.Infrastructure/*.csproj src/Tickefy.Infrastructure/
@@ -17,7 +19,7 @@ RUN dotnet restore
 
 COPY . .
 
-RUN dotnet publish src/Tickefy.API/*csproj -c Release -o /app/publish
+RUN dotnet publish src/Tickefy.API/Tickefy.API.csproj -c Release -o /app/publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
