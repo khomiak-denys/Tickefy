@@ -28,9 +28,6 @@ jobs:
         runs-on: ubuntu-latest
         permissions:
             contents: none
-        environment:
-            name: 'Development'
-            url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
         steps:
             - name: Lowercase the repo name and username
