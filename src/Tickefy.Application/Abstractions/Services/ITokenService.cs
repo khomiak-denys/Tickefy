@@ -9,7 +9,7 @@ namespace Tickefy.Application.Abstractions.Services
     public interface ITokenService
     {
         /// <summary>
-        /// Asynchronously generates a cryptographically signed JSON Web Token (JWT) encapsulating the identity claims of an authenticated user.
+        /// Generates a cryptographically signed JSON Web Token (JWT) encapsulating the identity claims of an authenticated user.
         /// </summary>
         /// <param name="id">
         /// The unique primary key GUID of the authenticated user. Must represent a valid user record; passing an empty GUID will embed invalid subject claims in the token payload.
@@ -20,14 +20,13 @@ namespace Tickefy.Application.Abstractions.Services
         /// <param name="role">
         /// The assigned role authorization level of the user, embedded into the token claims to facilitate downstream role-based access control (RBAC).
         /// </param>
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>
-        /// A task representing the asynchronous token signing operation. The task result contains the Base64-encoded, digitally signed JWT access token string.
+        /// The Base64-encoded, digitally signed JWT access token string.
         /// </returns>
         /// <remarks>
         /// Callers must ensure that token expiration settings configured in system options are appropriate for the security level of the application, as issued JWTs cannot be revoked without maintaining a token blacklist.
         /// </remarks>
-        public Task<string> GetTokenAsync(Guid id, string login, UserRoles role, CancellationToken cancellationToken = default);
+        public string GetToken(Guid id, string login, UserRoles role);
 
         /// <summary>
         /// Generates a high-entropy, cryptographically secure random string suitable for use as a long-lived OAuth refresh token.

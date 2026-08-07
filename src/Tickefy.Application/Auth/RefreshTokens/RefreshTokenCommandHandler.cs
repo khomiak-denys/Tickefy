@@ -44,7 +44,7 @@ public class RefreshTokenCommandHandler : ICommandHandler<RefreshTokenCommand, R
         var newRefreshToken = _tokenService.GenerateRefreshToken();
 
         var newRefreshTokenEntity = Domain.RefreshTokens.RefreshToken.Create(token.UserId, DateTime.UtcNow.AddDays(7), newRefreshToken);
-        var accessToken = await _tokenService.GetTokenAsync(token.User.Id.Value, token.User.Login, token.User.Role, cancellationToken);
+        var accessToken = _tokenService.GetToken(token.User.Id.Value, token.User.Login, token.User.Role);
 
         _refreshTokenRepository.Add(newRefreshTokenEntity);
 

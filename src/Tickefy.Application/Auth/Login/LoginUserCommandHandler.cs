@@ -44,7 +44,7 @@ namespace Tickefy.Application.Auth.Login
                 return Result<LoginResult>.Failure(new InvalidArgumentError("Invalid credentials"));
             }
 
-            var token = await _tokenService.GetTokenAsync(existingUser.Id.Value, existingUser.Login, existingUser.Role, cancellationToken);
+            var token = _tokenService.GetToken(existingUser.Id.Value, existingUser.Login, existingUser.Role);
             var refreshToken = _tokenService.GenerateRefreshToken();
 
             var refreshTokenEntity = RefreshToken.Create(existingUser.Id, DateTime.UtcNow.AddDays(7), refreshToken);
