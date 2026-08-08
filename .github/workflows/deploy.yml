@@ -1,7 +1,8 @@
 name: Build and deploy a container to an Azure Web App
 
 env:
-    AZURE_WEBAPP_NAME: tickefy-api
+    AZURE_CONTAINER_APP_NAME: tickefy-api
+    AZURE_RESOURCE_GROUP: Tickefy
 
 on:
     workflow_run:
@@ -30,13 +31,20 @@ jobs:
             contents: none
 
         steps:
-            - name: Lowercase the repo name and username
+            - name: Lowercase the repo name
               run: echo "REPO=${GITHUB_REPOSITORY,,}" >> ${GITHUB_ENV}
 
-            - name: Deploy to Azure Web App
-              id: deploy-to-webapp
-              uses: azure/webapps-deploy@v3
+            - name: Azure Login
+              uses: azure/login@v2
               with:
-                  app-name: ${{ env.AZURE_WEBAPP_NAME }}
-                  publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-                  images: 'ghcr.io/${{ env.REPO }}:${{ github.event.workflow_run.head_sha || github.sha }}'
+                  creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+            - name: Deploy to Azure Container App
+              uses: azure/container-apps-deploy-action@v2
+              with:
+                  containerAppName: ${{ env.AZURE_CONTAINER_APP_NAME }}
+                  resourceGroup: ${{ env.AZURE_RESOURCE_GROUP }}
+                  imageToDeploy: 'ghcr.io/${{ env.REPO }}:${{ github.event.workflow_run.head_sha || github.sha }}'
+                  registryUrl: ghcr.io
+                  registryUsername: ${{ github.actor }}
+                  registryPassword: ${{ secrets.GITHUB_TOKEN }}
