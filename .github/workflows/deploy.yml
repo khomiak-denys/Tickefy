@@ -37,6 +37,7 @@ jobs:
         runs-on: ubuntu-latest
         permissions:
             contents: none
+            packages: read
 
         steps:
             - name: Lowercase the repo name
