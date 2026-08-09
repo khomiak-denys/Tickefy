@@ -5,26 +5,30 @@ env:
     AZURE_RESOURCE_GROUP: Tickefy
 
 on:
-    workflow_run:
-        workflows: ["Test"]
-        types:
-            - completed
+    push:
         branches:
             - dev
     workflow_dispatch:
 
 jobs:
+    test:
+        name: Test
+        uses: ./.github/workflows/pr-test.yml
+
     build:
-        if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+        name: Build Docker image
+        needs: test
+        if: github.event_name == 'workflow_dispatch' || github.event_name == 'push'
         permissions:
              contents: read
              packages: write
 
         uses: ./.github/workflows/docker-build.yml
         with:
-            image_tag: ${{ github.event.workflow_run.head_sha || github.sha }}
+            image_tag: ${{ github.sha }}
 
     deploy:
+        name: Deploy to Azure Container App
         needs: build
         runs-on: ubuntu-latest
         permissions:
@@ -44,7 +48,7 @@ jobs:
               with:
                   containerAppName: ${{ env.AZURE_CONTAINER_APP_NAME }}
                   resourceGroup: ${{ env.AZURE_RESOURCE_GROUP }}
-                  imageToDeploy: 'ghcr.io/${{ env.REPO }}:${{ github.event.workflow_run.head_sha || github.sha }}'
+                  imageToDeploy: 'ghcr.io/${{ env.REPO }}:${{ github.sha }}'
                   registryUrl: ghcr.io
                   registryUsername: ${{ github.actor }}
                   registryPassword: ${{ secrets.GITHUB_TOKEN }}
