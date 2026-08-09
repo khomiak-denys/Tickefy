@@ -1,4 +1,4 @@
-name: Build and deploy a container to an Azure Web App
+name: Deploy
 
 env:
     AZURE_CONTAINER_APP_NAME: tickefy-api
