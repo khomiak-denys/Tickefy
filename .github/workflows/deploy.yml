@@ -56,4 +56,4 @@ jobs:
                   imageToDeploy: 'ghcr.io/${{ env.REPO }}:${{ github.sha }}'
                   registryUrl: ghcr.io
                   registryUsername: ${{ github.actor }}
-                  registryPassword: ${{ secrets.GITHUB_TOKEN }}
+                  registryPassword: ${{ secrets.GHCR_PAT }}
