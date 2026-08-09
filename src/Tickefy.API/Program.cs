@@ -74,7 +74,7 @@ namespace Tickefy.API
 
             builder.Services.AddSingleton(sp =>
             {
-                var apiKey = builder.Configuration.GetSection("ApiKey").Value;
+                var apiKey = builder.Configuration.GetSection("AiOptions:ApiKey").Value;
                 return new Google.GenAI.Client(apiKey: apiKey);
             });
 
