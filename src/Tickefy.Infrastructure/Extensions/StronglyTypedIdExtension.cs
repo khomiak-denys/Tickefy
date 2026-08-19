@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Tickefy.Domain.Primitives.StronglyTypedId;
 using System.Linq.Expressions;
 using Tickefy.Domain.Common.EntityBase;
 
-namespace Tickefy.Domain.Primitives.StronglyTypedId
+namespace Tickefy.Infrastructure.Extensions
 {
-
     public static class StronglyTypedIdExtensions
     {
         public static PropertyBuilder<TId> HasStronglyTypedIdConversion<TEntity, TId>(
@@ -13,7 +13,6 @@ namespace Tickefy.Domain.Primitives.StronglyTypedId
             where TEntity : EntityBase<TId>
             where TId : StronglyTypedId<TId>, new()
         {
-
             return builder
                 .Property(propertySelector)
                 .HasConversion(

@@ -4,6 +4,7 @@ using Tickefy.Domain.Attachments;
 using Tickefy.Domain.Comments;
 using Tickefy.Domain.Primitives;
 using Tickefy.Domain.Primitives.StronglyTypedId;
+using Tickefy.Infrastructure.Extensions;
 using Tickefy.Domain.RefreshTokens;
 using Tickefy.Domain.Teams;
 using Tickefy.Domain.Tickets;

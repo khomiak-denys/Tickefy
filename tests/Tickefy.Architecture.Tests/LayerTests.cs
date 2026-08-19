@@ -92,4 +92,18 @@ public class LayerTests : BaseTest
             .AndShould().HaveNameEndingWith("Repository")
             .Check(Architecture);
     }
+
+    [Fact]
+    public void DomainLayer_ShouldOnlyDependOn_AllowedNamespaces()
+    {
+        var allowedDependencies = Types().That()
+            .ResideInNamespaceMatching(@"^Tickefy\.Domain(\..*)?$")
+            .Or()
+            .ResideInNamespaceMatching(@"^System(\..*)?$")
+            .As("Allowed Domain Dependencies");
+
+        Types().That().Are(DomainLayer).Should()
+            .OnlyDependOn(allowedDependencies)
+            .Check(Architecture);
+    }
 }
