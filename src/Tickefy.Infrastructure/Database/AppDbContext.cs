@@ -24,129 +24,22 @@ namespace Tickefy.Infrastructure.Database
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
 
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Ignore(typeof(Tickefy.Domain.Primitives.ActivityLogId));
-            modelBuilder.Ignore(typeof(Tickefy.Domain.Primitives.AttachmentId));
-            modelBuilder.Ignore(typeof(Tickefy.Domain.Primitives.CommentId));
-            modelBuilder.Ignore(typeof(Tickefy.Domain.Primitives.TeamId));
-            modelBuilder.Ignore(typeof(Tickefy.Domain.Primitives.TicketId));
-            modelBuilder.Ignore(typeof(Tickefy.Domain.Primitives.UserId));
-            modelBuilder.Ignore(typeof(Tickefy.Domain.Primitives.TokenId));
+            IgnoreAllTypedIds(modelBuilder);
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+        }
 
-            modelBuilder.Entity<ActivityLog>().HasKey(a => a.Id);
-            modelBuilder.Entity<Attachment>().HasKey(a => a.Id);
-            modelBuilder.Entity<Comment>().HasKey(a => a.Id);
-            modelBuilder.Entity<Team>().HasKey(a => a.Id);
-            modelBuilder.Entity<Ticket>().HasKey(a => a.Id);
-            modelBuilder.Entity<RefreshToken>().HasKey(a => a.Id);
-
-            modelBuilder.Entity<ActivityLog>().HasStronglyTypedIdConversion(a => a.Id);
-            modelBuilder.Entity<Attachment>().HasStronglyTypedIdConversion(a => a.Id);
-            modelBuilder.Entity<Comment>().HasStronglyTypedIdConversion(a => a.Id);
-            modelBuilder.Entity<Team>().HasStronglyTypedIdConversion(a => a.Id);
-            modelBuilder.Entity<Ticket>().HasStronglyTypedIdConversion(a => a.Id);
-            modelBuilder.Entity<User>().HasStronglyTypedIdConversion(a => a.Id);
-            modelBuilder.Entity<RefreshToken>().HasStronglyTypedIdConversion(a => a.Id);
-
-            //ACTIVITY LOG
-            modelBuilder.Entity<ActivityLog>()
-                .HasOne(a => a.Ticket)
-                .WithMany()
-                .HasForeignKey(a => a.TicketId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<ActivityLog>()
-                .HasOne(a => a.User)
-                .WithMany()
-                .HasForeignKey(a => a.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<ActivityLog>().HasIndex(a => a.TicketId);
-
-            //ATTACHMENT
-            modelBuilder.Entity<Attachment>()
-                .HasOne(a => a.Ticket)
-                .WithMany(t => t.Attachments)
-                .HasForeignKey(a => a.TicketId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<Attachment>()
-                .Property(a => a.FilePath)
-                .HasMaxLength(2048)
-                .IsRequired();
-
-            modelBuilder.Entity<Attachment>()
-                .Property(a => a.FileName)
-                .HasMaxLength(255)
-                .IsRequired();
-
-            modelBuilder.Entity<Attachment>().Property(a => a.SizeBytes).IsRequired();
-            modelBuilder.Entity<Attachment>().Property(a => a.ContentType).HasConversion<string>();
-
-            //COMMENT
-            modelBuilder.Entity<Comment>()
-                .HasOne(c => c.Ticket)
-                .WithMany(t => t.Comments)
-                .HasForeignKey(c => c.TicketId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<Comment>()
-                .HasOne(c => c.User)
-                .WithMany()
-                .HasForeignKey(c => c.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Comment>().Property(c => c.Content).HasMaxLength(4000);
-
-            //TEAM
-            modelBuilder.Entity<Team>().HasIndex(t => t.Name).IsUnique();
-
-            modelBuilder.Entity<Team>()
-                .HasOne(t => t.Manager)
-                .WithMany()
-                .HasForeignKey(t => t.ManagerId)
-                .OnDelete(DeleteBehavior.SetNull);
-
-            //TICKET
-            modelBuilder.Entity<Ticket>()
-                .HasOne(t => t.Requester)
-                .WithMany()
-                .HasForeignKey(t => t.RequesterId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Ticket>()
-                .HasOne(t => t.AssignedTeam)
-                .WithMany()
-                .HasForeignKey(t => t.AssignedTeamId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Ticket>()
-                .HasOne(t => t.AssignedAgent)
-                .WithMany()
-                .HasForeignKey(t => t.AssignedAgentId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            //USER
-            modelBuilder.Entity<User>().HasIndex(u => u.Login).IsUnique();
-            modelBuilder.Entity<User>()
-                .HasOne(u => u.Team)
-                .WithMany(t => t.Members)
-                .HasForeignKey(u => u.TeamId)
-                .OnDelete(DeleteBehavior.SetNull);
-
-            modelBuilder.Entity<RefreshToken>(builder =>
-            {
-                builder.HasKey(t => t.Id);
-
-                builder.HasOne(t => t.User)
-                    .WithMany()
-                    .HasForeignKey(t => t.UserId)
-                    .IsRequired();
-
-                builder.HasIndex(t => t.Token).IsUnique();
-            });
+        private static void IgnoreAllTypedIds(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Ignore(typeof(ActivityLogId));
+            modelBuilder.Ignore(typeof(AttachmentId));
+            modelBuilder.Ignore(typeof(CommentId));
+            modelBuilder.Ignore(typeof(TeamId));
+            modelBuilder.Ignore(typeof(TicketId));
+            modelBuilder.Ignore(typeof(UserId));
+            modelBuilder.Ignore(typeof(TokenId));
         }
     }
 }
