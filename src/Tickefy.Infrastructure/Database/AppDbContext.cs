@@ -31,7 +31,7 @@ namespace Tickefy.Infrastructure.Database
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
         }
 
-        private void IgnoreAllTypedIds(ModelBuilder modelBuilder)
+        private static void IgnoreAllTypedIds(ModelBuilder modelBuilder)
         {
             modelBuilder.Ignore(typeof(ActivityLogId));
             modelBuilder.Ignore(typeof(AttachmentId));
