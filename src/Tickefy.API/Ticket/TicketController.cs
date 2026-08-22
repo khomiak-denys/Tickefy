@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Security.Claims;
 using Tickefy.API.Attachments.Response;
+using Tickefy.API.Common.Models;
 using Tickefy.API.ErrorHandling;
 using Tickefy.API.Ticket.Requests;
 using Tickefy.API.Ticket.Responses;
@@ -169,13 +170,13 @@ namespace Tickefy.API.Ticket
         [Authorize]
         [Route("my")]
         [SwaggerOperation(Summary = "Returns tickets for current user")]
-        [ProducesResponseType(typeof(List<TicketResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PaginationResponse<TicketResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetMyTicketsAsync(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetMyTicketsAsync([FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
@@ -183,11 +184,11 @@ namespace Tickefy.API.Ticket
             {
                 return Unauthorized("User ID is missing or invalid");
             }
-            var query = new GetMyTicketsQuery(new UserId(userId));
+            var query = new GetMyTicketsQuery(new UserId(userId)) { Page = page, PageSize = pageSize };
 
             var result = await _mediator.Send(query, cancellationToken);
 
-            return result.Match(onSuccess: value => Ok(value.Select(TicketResponse.FromResult).ToList()),
+            return result.Match(onSuccess: value => Ok(new PaginationResponse<TicketResponse>(value.Items.Select(TicketResponse.FromResult).ToList(), value.Page, value.PageSize, value.TotalCount)),
                 onFailure: this.ToActionResult);
         }
 
@@ -246,18 +247,18 @@ namespace Tickefy.API.Ticket
         [HttpGet]
         [Authorize(Roles = "Admin")]
         [SwaggerOperation(Summary = "Handles request to retrieve all tickets for admin")]
-        [ProducesResponseType(typeof(List<TicketResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PaginationResponse<TicketResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAllTicketsAsync(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAllTicketsAsync([FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
         {
-            var query = new GetAllTicketsQuery();
+            var query = new GetAllTicketsQuery { Page = page, PageSize = pageSize };
             var result = await _mediator.Send(query, cancellationToken);
 
-            return result.Match(onSuccess: value => Ok(value.Select(TicketResponse.FromResult).ToList()),
+            return result.Match(onSuccess: value => Ok(new PaginationResponse<TicketResponse>(value.Items.Select(TicketResponse.FromResult).ToList(), value.Page, value.PageSize, value.TotalCount)),
                 onFailure: this.ToActionResult);
         }
 
@@ -275,13 +276,13 @@ namespace Tickefy.API.Ticket
         [Authorize(Roles = "Agent")]
         [Route("queue")]
         [SwaggerOperation(Summary = "Handles request to retrieve all tickets for agent")]
-        [ProducesResponseType(typeof(List<TicketResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PaginationResponse<TicketResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetQueueTicketsAsync(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetQueueTicketsAsync([FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
         {
 
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
@@ -291,10 +292,10 @@ namespace Tickefy.API.Ticket
                 return Unauthorized("User ID is missing or invalid");
             }
 
-            var query = new GetQueueTicketsQuery(new UserId(userId));
+            var query = new GetQueueTicketsQuery(new UserId(userId)) { Page = page, PageSize = pageSize };
             var result = await _mediator.Send(query, cancellationToken);
 
-            return result.Match(onSuccess: value => Ok(value.Select(TicketResponse.FromResult).ToList()),
+            return result.Match(onSuccess: value => Ok(new PaginationResponse<TicketResponse>(value.Items.Select(TicketResponse.FromResult).ToList(), value.Page, value.PageSize, value.TotalCount)),
                 onFailure: this.ToActionResult);
         }
 

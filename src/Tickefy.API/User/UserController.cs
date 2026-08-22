@@ -9,6 +9,7 @@ using Tickefy.Application.Users.Delete;
 using Tickefy.Application.Users.GetAll;
 using Tickefy.Application.Users.GetById;
 using Tickefy.Domain.Primitives;
+using Tickefy.API.Common.Models;
 
 namespace Tickefy.API.User
 {
@@ -44,16 +45,16 @@ namespace Tickefy.API.User
         [HttpGet]
         [Authorize(Roles = "Admin")]
         [SwaggerOperation(Summary = "Retrieve all users (Admin only)")]
-        [ProducesResponseType(typeof(List<UserResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PaginationResponse<UserResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAllAsync(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAllAsync([FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
         {
-            var query = new GetAllUsersQuery();
+            var query = new GetAllUsersQuery { Page = page, PageSize = pageSize };
             var result = await _mediator.Send(query, cancellationToken);
 
-            return result.Match(onSuccess: value => Ok(value.Select(UserResponse.FromResult).ToList()),
+            return result.Match(onSuccess: value => Ok(new PaginationResponse<UserResponse>(value.Items.Select(UserResponse.FromResult).ToList(), value.Page, value.PageSize, value.TotalCount)),
                 onFailure: this.ToActionResult);
         }
 

@@ -1,0 +1,59 @@
+name: Deploy
+
+env:
+    AZURE_CONTAINER_APP_NAME: tickefy-api
+    AZURE_RESOURCE_GROUP: Tickefy
+
+on:
+    push:
+        branches:
+            - dev
+    workflow_dispatch:
+
+jobs:
+    test:
+        name: Test
+        uses: ./.github/workflows/pr-test.yml
+        permissions:
+            contents: read
+            checks: write
+            pull-requests: write
+
+    build:
+        name: Build Docker image
+        needs: test
+        if: github.event_name == 'workflow_dispatch' || github.event_name == 'push'
+        permissions:
+             contents: read
+             packages: write
+
+        uses: ./.github/workflows/docker-build.yml
+        with:
+            image_tag: ${{ github.sha }}
+
+    deploy:
+        name: Deploy to Azure Container App
+        needs: build
+        runs-on: ubuntu-latest
+        permissions:
+            contents: none
+            packages: read
+
+        steps:
+            - name: Lowercase the repo name
+              run: echo "REPO=${GITHUB_REPOSITORY,,}" >> ${GITHUB_ENV}
+
+            - name: Azure Login
+              uses: azure/login@v2
+              with:
+                  creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+            - name: Deploy to Azure Container App
+              uses: azure/container-apps-deploy-action@v2
+              with:
+                  containerAppName: ${{ env.AZURE_CONTAINER_APP_NAME }}
+                  resourceGroup: ${{ env.AZURE_RESOURCE_GROUP }}
+                  imageToDeploy: 'ghcr.io/${{ env.REPO }}:${{ github.sha }}'
+                  registryUrl: ghcr.io
+                  registryUsername: ${{ github.actor }}
+                  registryPassword: ${{ secrets.GHCR_PAT }}

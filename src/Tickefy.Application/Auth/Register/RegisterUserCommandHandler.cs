@@ -48,7 +48,7 @@ namespace Tickefy.Application.Auth.Register
 
             _userRepository.Add(user);
 
-            var token = await _tokenService.GetTokenAsync(user.Id.Value, user.Login, user.Role, cancellationToken);
+            var token = _tokenService.GetToken(user.Id.Value, user.Login, user.Role);
             var refreshToken = _tokenService.GenerateRefreshToken();
 
             var refreshTokenEntity = Domain.RefreshTokens.RefreshToken.Create(user.Id, DateTime.UtcNow.AddDays(7), refreshToken);

@@ -1,16 +1,14 @@
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.ActivityLogs.Common;
+using Tickefy.Application.Common.Models;
 
 namespace Tickefy.Application.ActivityLogs.GetAll
 {
-    public class GetAllLogsQuery : IQuery<List<LogResult>>
+    public class GetAllLogsQuery : IQuery<PaginationResult<LogResult>>
     {
-        public int Page { get; init; }
-        public int PageSize { get; init; }
-        public GetAllLogsQuery(int page, int pageSize)
-        {
-            Page = page;
-            PageSize = pageSize;
-        }
+        public int Page { get; init; } = 1;
+        public int PageSize { get; init; } = 10;
+
+        public GetAllLogsQuery() { }
     }
 }

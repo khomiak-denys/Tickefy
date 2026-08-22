@@ -6,6 +6,7 @@ using Tickefy.API.ActivityLog.Responses;
 using Tickefy.Application.ActivityLogs.GetAll;
 using Tickefy.Application.ActivityLogs.GetByTicketId;
 using Tickefy.Domain.Primitives;
+using Tickefy.API.Common.Models;
 
 namespace Tickefy.API.ActivityLog
 {
@@ -41,7 +42,7 @@ namespace Tickefy.API.ActivityLog
         /// </remarks>
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        [ProducesResponseType(typeof(List<LogResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PaginationResponse<LogResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
@@ -50,7 +51,7 @@ namespace Tickefy.API.ActivityLog
         {
             var query = request.ToQuery();
             var result = await _mediator.Send(query, cancellationToken);
-            var response = result.Select(LogResponse.FromResult).ToList();
+            var response = new PaginationResponse<LogResponse>(result.Items.Select(LogResponse.FromResult).ToList(), result.Page, result.PageSize, result.TotalCount);
 
             return Ok(response);
         }
@@ -68,17 +69,17 @@ namespace Tickefy.API.ActivityLog
         /// </remarks>
         [HttpGet("ticket/{ticketId}")]
         [Authorize(Roles = "Admin")]
-        [ProducesResponseType(typeof(List<LogResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PaginationResponse<LogResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetByIdAsync(Guid ticketId, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetByIdAsync(Guid ticketId, [FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
         {
-            var query = new GetLogsByTicketIdQuery(new TicketId(ticketId));
+            var query = new GetLogsByTicketIdQuery(new TicketId(ticketId)) { Page = page, PageSize = pageSize };
             var result = await _mediator.Send(query, cancellationToken);
-            var response = result.Select(LogResponse.FromResult).ToList();
+            var response = new PaginationResponse<LogResponse>(result.Items.Select(LogResponse.FromResult).ToList(), result.Page, result.PageSize, result.TotalCount);
 
             return Ok(response);
         }

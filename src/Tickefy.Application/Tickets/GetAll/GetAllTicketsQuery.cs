@@ -1,11 +1,15 @@
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Tickets.Common;
 using Tickefy.Domain.Common.Results;
+using Tickefy.Application.Common.Models;
 
 namespace Tickefy.Application.Tickets.GetAll
 {
-    public class GetAllTicketsQuery : IQuery<Result<List<TicketResult>>>
+    public class GetAllTicketsQuery : IQuery<Result<PaginationResult<TicketResult>>>
     {
+        public int Page { get; init; } = 1;
+        public int PageSize { get; init; } = 10;
+
         public GetAllTicketsQuery() { }
     }
 }

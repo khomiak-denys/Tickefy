@@ -39,7 +39,7 @@ namespace Tickefy.Domain.Teams
         /// <remarks>
         /// Avoid calling this method without pagination filters in systems with large numbers of teams, as loading all teams and manager relationships simultaneously can induce memory contention and database latency.
         /// </remarks>
-        Task<List<Team>> GetAllAsync(CancellationToken cancellationToken = default);
+        Task<(int TotalCount, List<Team> Items)> GetAllAsync(int Page, int pageSize, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Asynchronously locates and retrieves a specific team entity by its unique domain identifier, eagerly loading its members and manager navigation properties.
@@ -63,7 +63,7 @@ namespace Tickefy.Domain.Teams
         /// <returns>
         /// A task representing the asynchronous query operation. The task result contains a list of <see cref="Team"/> entities associated with the specified user ID.
         /// </returns>
-        Task<List<Team>> GetByMemberIdAsync(UserId memberId, CancellationToken cancellationToken = default);
+        Task<(int TotalCount, List<Team> Items)> GetByMemberIdAsync(UserId memberId, int Page, int pageSize, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Asynchronously searches for a team entity by its unique textual name, eagerly including its member and manager navigation relationships.
