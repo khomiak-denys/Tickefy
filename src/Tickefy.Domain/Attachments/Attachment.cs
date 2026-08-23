@@ -6,6 +6,18 @@ using Tickefy.Domain.Tickets;
 
 namespace Tickefy.Domain.Attachments
 {
+    private Dictionary<string, ContentType> _fileExtensions = new Dictionary<string, ContentType>
+    {
+        { ".txt", ContentType.Document },
+        { ".pdf", ContentType.Document },
+        { ".docx", ContentType.Document },
+        { ".zip", ContentType.Archive },
+        { ".rar", ContentType.Archive },
+        { ".jpeg", ContentType.Photo },
+        { ".png", ContentType.Photo },
+        { ".mp4", ContentType.Video }
+    };
+
     public class Attachment : EntityBase<AttachmentId>
     {
         public string FileName { get; private set; } = null!;
@@ -45,7 +57,7 @@ namespace Tickefy.Domain.Attachments
             Status = AttachmentStatus.Failed;
         }
 
-        public static ContentType GetFileContentType(string fileExtension)
+        private static ContentType GetFileContentType(string fileExtension)
         {
             return fileExtension switch
             {
@@ -61,4 +73,5 @@ namespace Tickefy.Domain.Attachments
             };
         }
     }
+
 }
