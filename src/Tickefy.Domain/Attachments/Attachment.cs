@@ -6,18 +6,6 @@ using Tickefy.Domain.Tickets;
 
 namespace Tickefy.Domain.Attachments
 {
-    private Dictionary<string, ContentType> _fileExtensions = new Dictionary<string, ContentType>
-    {
-        { ".txt", ContentType.Document },
-        { ".pdf", ContentType.Document },
-        { ".docx", ContentType.Document },
-        { ".zip", ContentType.Archive },
-        { ".rar", ContentType.Archive },
-        { ".jpeg", ContentType.Photo },
-        { ".png", ContentType.Photo },
-        { ".mp4", ContentType.Video }
-    };
-
     public class Attachment : EntityBase<AttachmentId>
     {
         public string FileName { get; private set; } = null!;
@@ -57,20 +45,29 @@ namespace Tickefy.Domain.Attachments
             Status = AttachmentStatus.Failed;
         }
 
+        public static bool IsExtensionAllowed(string fileExtension) => AllowedFileTypes.ContainsKey(fileExtension.ToLowerInvariant());
+
+        private static readonly Dictionary<string, ContentType> AllowedFileTypes = new Dictionary<string, ContentType>
+        {
+            { ".txt", ContentType.Document },
+            { ".pdf", ContentType.Document },
+            { ".docx", ContentType.Document },
+            { ".zip", ContentType.Archive },
+            { ".rar", ContentType.Archive },
+            { ".jpeg", ContentType.Photo },
+            { ".jpg", ContentType.Photo },
+            { ".png", ContentType.Photo },
+            { ".mp4", ContentType.Video }
+        };
+
         private static ContentType GetFileContentType(string fileExtension)
         {
-            return fileExtension switch
+            if (IsExtensionAllowed(fileExtension))
             {
-                ".txt" => ContentType.Document,
-                ".pdf" => ContentType.Document,
-                ".docx" => ContentType.Document,
-                ".zip" => ContentType.Archive,
-                ".rar" => ContentType.Archive,
-                ".jpeg" => ContentType.Photo,
-                ".png" => ContentType.Photo,
-                ".mp4" => ContentType.Video,
-                _ => throw new InvalidOperationException("Unsupported file extension")
-            };
+                return AllowedFileTypes[fileExtension.ToLowerInvariant()];
+            }
+
+            throw new InvalidOperationException(nameof(GetFileContentType));
         }
     }
 
