@@ -1,4 +1,5 @@
 using FluentValidation;
+using Tickefy.Application.Attachments.Validators;
 
 namespace Tickefy.Application.Tickets.Create
 {
@@ -19,6 +20,9 @@ namespace Tickefy.Application.Tickets.Create
 
             RuleFor(x => x.Deadline)
                 .GreaterThan(DateTime.UtcNow).WithMessage("Deadline must be in the future.");
+
+            RuleForEach(x => x.Files)
+                .SetValidator(new AttachmentFileItemValidator());
         }
     }
 }

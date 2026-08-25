@@ -1,4 +1,5 @@
 using FluentValidation;
+using Tickefy.Application.Attachments.Validators;
 
 namespace Tickefy.Application.Tickets.CreateDraft;
 
@@ -19,5 +20,8 @@ public class CreateDraftTicketCommandValidator : AbstractValidator<CreateDraftTi
 
         RuleFor(x => x.Deadline)
             .GreaterThanOrEqualTo(DateTime.UtcNow).WithMessage("Deadline must be in the future.");
+
+        RuleForEach(x => x.Files)
+            .SetValidator(new AttachmentFileItemValidator());
     }
 }
