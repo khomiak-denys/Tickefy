@@ -101,7 +101,7 @@ public class PublishTicketCommandHandler : ICommandHandler<PublishTicketCommand,
                 attachment.ClientFileId,
                 fileAttachment.Id.Value,
                 parts[0],
-                await _objectStorageService.GetUploadUrlAsync(fileAttachment.FilePath)
+                await _objectStorageService.GetUploadUrlAsync(fileAttachment.FilePath, attachment.SizeBytes)
                 )
             );
         }

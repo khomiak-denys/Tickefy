@@ -17,7 +17,7 @@ public class AmazonS3ObjectStorageService(
     /// <summary>
     /// Returns a pre-signed PUT URL for uploading an object via the private S3 API endpoint.
     /// </summary>
-    public async Task<string> GetUploadUrlAsync(string objectKey, string? contentType = null, TimeSpan? expires = null)
+    public async Task<string> GetUploadUrlAsync(string objectKey, long contentLength, string? contentType = null, TimeSpan? expires = null)
     {
         if (string.IsNullOrWhiteSpace(objectKey))
         {
@@ -32,6 +32,8 @@ public class AmazonS3ObjectStorageService(
             Expires = DateTime.UtcNow.Add(expires ?? TimeSpan.FromMinutes(10)),
             ContentType = contentType
         };
+
+        request.Headers.ContentLength = contentLength;
 
         return await client.GetPreSignedURLAsync(request);
     }
