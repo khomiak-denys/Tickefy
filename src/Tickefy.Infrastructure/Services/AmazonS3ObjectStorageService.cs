@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Tickefy.Application.Abstractions.Services;
 using Tickefy.Infrastructure.Options;
+using System.Net;
 
 namespace Tickefy.Infrastructure.Services;
 
@@ -14,9 +15,6 @@ public class AmazonS3ObjectStorageService(
 {
     private ObjectStorageOptions Options => options.Value;
 
-    /// <summary>
-    /// Returns a pre-signed PUT URL for uploading an object via the private S3 API endpoint.
-    /// </summary>
     public async Task<string> GetUploadUrlAsync(string objectKey, long contentLength, string? contentType = null, TimeSpan? expires = null)
     {
         if (string.IsNullOrWhiteSpace(objectKey))
@@ -38,10 +36,6 @@ public class AmazonS3ObjectStorageService(
         return await client.GetPreSignedURLAsync(request);
     }
 
-    /// <summary>
-    /// Returns a pre-signed GET URL for downloading an object.
-    /// If a PublicEndpoint is configured, rewrites the host so the client receives a CDN-facing URL.
-    /// </summary>
     public async Task<string> GetFileUrlAsync(string objectKey, TimeSpan? expires = null)
     {
         if (string.IsNullOrWhiteSpace(objectKey))
@@ -61,11 +55,11 @@ public class AmazonS3ObjectStorageService(
         return NormalizeToPublicEndpoint(url);
     }
 
-    public async Task DeleteFileAsync(string objectKey)
+    public async Task DeleteFileAsync(string objectKey, CancellationToken cancellationToken)
     {
         try
         {
-            await client.DeleteObjectAsync(Options.Bucket, objectKey);
+            await client.DeleteObjectAsync(Options.Bucket, objectKey, cancellationToken);
         }
         catch (AmazonS3Exception e)
         {
@@ -74,6 +68,20 @@ public class AmazonS3ObjectStorageService(
         catch (Exception e)
         {
             logger.LogWarning("Error deleting {Key}: {Message}", objectKey, e.Message);
+        }
+    }
+
+    public async Task<long?> GetContentLengthAsync(string objectKey, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var response = await client.GetObjectMetadataAsync(Options.Bucket, objectKey, cancellationToken);
+
+            return response.ContentLength;
+        }
+        catch (AmazonS3Exception e) when (e.StatusCode == HttpStatusCode.NotFound)
+        {
+            return null;
         }
     }
 
