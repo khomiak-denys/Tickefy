@@ -37,11 +37,21 @@ namespace Tickefy.Domain.Attachments
 
         public void FinishUpload()
         {
+            if (Status == AttachmentStatus.Completed)
+            {
+                throw new InvalidOperationException(nameof(FinishUpload));
+            }
+
             Status = AttachmentStatus.Completed;
         }
 
         public void FailUpload()
         {
+            if (Status == AttachmentStatus.Failed)
+            {
+                throw new InvalidOperationException(nameof(FailUpload));
+            }
+
             Status = AttachmentStatus.Failed;
         }
 
