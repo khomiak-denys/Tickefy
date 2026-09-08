@@ -5,10 +5,8 @@ using Microsoft.Extensions.Logging;
 using Tickefy.Application.Abstractions.Services;
 using Tickefy.Application.AI.Dtos;
 
-
 namespace Tickefy.Infrastructure.Services.AI
 {
-
     public class AiService : IAiService
     {
         private static readonly JsonSerializerOptions CaseInsensitiveOptions =
@@ -60,6 +58,7 @@ namespace Tickefy.Infrastructure.Services.AI
 
             if (string.IsNullOrWhiteSpace(json))
             {
+                _logger.LogWarning("AI returned empty response");
                 throw new InvalidOperationException("AI returned empty response.");
             }
 
@@ -68,9 +67,11 @@ namespace Tickefy.Infrastructure.Services.AI
             var parsed = JsonSerializer.Deserialize<AiResponse>(json, CaseInsensitiveOptions);
 
             if (parsed == null)
+            {
+                _logger.LogWarning("Invalid AI JSON Format.");
                 throw new InvalidOperationException("Invalid AI JSON format.");
-
-            _logger.LogWarning("AI Response. Priority: {Priority}, category: {Category}", parsed.Priority, parsed.Category);
+            }
+            _logger.LogInformation("AI Response. Priority: {Priority}, category: {Category}", parsed.Priority, parsed.Category);
 
             return parsed;
         }

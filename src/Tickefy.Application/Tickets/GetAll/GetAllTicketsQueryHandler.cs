@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Tickets.Common;
 using Tickefy.Domain.Common.Results;
@@ -9,11 +10,14 @@ namespace Tickefy.Application.Tickets.GetAll
     public class GetAllTicketsQueryHandler : IQueryHandler<GetAllTicketsQuery, Result<PaginationResult<TicketResult>>>
     {
         private readonly ITicketRepository _ticketRepository;
+        private readonly ILogger<GetAllTicketsQueryHandler> _logger;
 
         public GetAllTicketsQueryHandler(
-            ITicketRepository ticketRepository)
+            ITicketRepository ticketRepository,
+            ILogger<GetAllTicketsQueryHandler> logger)
         {
             _ticketRepository = ticketRepository;
+            _logger = logger;
         }
         public async Task<Result<PaginationResult<TicketResult>>> Handle(GetAllTicketsQuery request, CancellationToken cancellationToken)
         {
@@ -24,6 +28,8 @@ namespace Tickefy.Application.Tickets.GetAll
                 .ToList();
 
             var result = PaginationResult<TicketResult>.Create(pagedTickets, request.Page, request.PageSize, pagedData.TotalCount);
+
+            _logger.LogInformation("Retrieved {Count} tickets (Total: {TotalCount}, Page: {Page}, PageSize: {PageSize})", pagedTickets.Count, pagedData.TotalCount, request.Page, request.PageSize);
 
             return Result<PaginationResult<TicketResult>>.Success(result);
         }

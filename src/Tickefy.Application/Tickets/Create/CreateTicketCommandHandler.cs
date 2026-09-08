@@ -52,7 +52,7 @@ namespace Tickefy.Application.Tickets.Create
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to analyze ticket with AI. Setting default values.");
+                _logger.LogWarning(ex, "Failed to analyze ticket with AI for ticket {Title}. Setting default values.", ticket.Title);
                 ticket.SetCategory(Category.Other);
                 ticket.SetPriority(Priority.Medium);
             }
@@ -63,6 +63,8 @@ namespace Tickefy.Application.Tickets.Create
             _logRepository.Add(log);
 
             await _uow.SaveChangesAsync(cancellationToken);
+
+            _logger.LogInformation("Ticket {TicketId} created successfully with title {Title} by user {UserId}", ticket.Id.Value, ticket.Title, command.UserId.Value);
 
             return Result.Success();
         }

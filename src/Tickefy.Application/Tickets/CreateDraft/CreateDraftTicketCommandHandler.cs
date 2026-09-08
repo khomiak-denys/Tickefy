@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Domain.Common.Results;
@@ -9,13 +10,16 @@ public class CreateDraftTicketCommandHandler : ICommandHandler<CreateDraftTicket
 {
     private readonly ITicketRepository _ticketRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<CreateDraftTicketCommandHandler> _logger;
 
     public CreateDraftTicketCommandHandler(
         ITicketRepository ticketRepository,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        ILogger<CreateDraftTicketCommandHandler> logger)
     {
         _ticketRepository = ticketRepository;
         _unitOfWork = unitOfWork;
+        _logger = logger;
     }
 
     public async Task<Result> Handle(CreateDraftTicketCommand command, CancellationToken cancellationToken)
@@ -25,6 +29,8 @@ public class CreateDraftTicketCommandHandler : ICommandHandler<CreateDraftTicket
         _ticketRepository.Add(ticket);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        _logger.LogInformation("Draft ticket {TicketId} created successfully for user {UserId}", ticket.Id.Value, command.UserId.Value);
 
         return Result.Success();
     }
