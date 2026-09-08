@@ -24,6 +24,8 @@ namespace Tickefy.API.ErrorHandling
             Exception exception,
             CancellationToken cancellationToken)
         {
+            _logger.LogError(exception, "Unhandled exception occurred: {Message}", exception.Message);
+
             var problemDetailsException = _mapper.Map(exception);
 
             httpContext.Response.StatusCode = problemDetailsException.Status ?? StatusCodes.Status500InternalServerError;
