@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Tickets.Common.Helpers;
@@ -15,15 +16,18 @@ namespace Tickefy.Application.Tickets.Revise
         private readonly ITicketRepository _ticketRepository;
         private readonly IActivityLogRepository _logRepository;
         private readonly IUnitOfWork _uow;
+        private readonly ILogger<ReopenTicketCommandHandler> _logger;
 
         public ReopenTicketCommandHandler(
             ITicketRepository ticketRepository,
             IActivityLogRepository logRepository,
-            IUnitOfWork uow)
+            IUnitOfWork uow,
+            ILogger<ReopenTicketCommandHandler> logger)
         {
             _ticketRepository = ticketRepository;
             _logRepository = logRepository;
             _uow = uow;
+            _logger = logger;
         }
 
         public async Task<Result> Handle(ReopenTicketCommand command, CancellationToken cancellationToken)
@@ -32,11 +36,13 @@ namespace Tickefy.Application.Tickets.Revise
 
             if (ticket == null)
             {
+                _logger.LogWarning("Ticket {TicketId} not found when attempting to reopen", command.TicketId.Value);
                 return Result.Failure(new NotFoundError(nameof(ticket) + " " + command.TicketId));
             }
 
             if (!TicketAction.Reopen.CanExecute(ticket, command.UserId, command.Roles))
             {
+                _logger.LogWarning("User {UserId} with roles {Roles} forbidden from reopening ticket {TicketId}", command.UserId.Value, command.Roles, command.TicketId.Value);
                 return Result.Failure(new ForbiddenError("Only admin or requester agent can revise tickets"));
             }
 
@@ -48,6 +54,7 @@ namespace Tickefy.Application.Tickets.Revise
                 $"Ticket reopened.Reason: {command.Reason}");
             _logRepository.Add(log);
             await _uow.SaveChangesAsync(cancellationToken);
+            _logger.LogInformation("Ticket {TicketId} reopened by user {UserId}. Reason: {Reason}", ticket.Id.Value, command.UserId.Value, command.Reason);
 
             return Result.Success();
         }

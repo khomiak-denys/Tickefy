@@ -19,14 +19,17 @@ namespace Tickefy.API.ActivityLog
     public class ActivityLogController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly ILogger<ActivityLogController> _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ActivityLogController"/> class with required command mediation dependencies.
         /// </summary>
         /// <param name="mediator">The MediatR mediator instance used to dispatch activity log retrieval queries to application handlers.</param>
-        public ActivityLogController(IMediator mediator)
+        /// <param name="logger">The logger instance for structured logging.</param>
+        public ActivityLogController(IMediator mediator, ILogger<ActivityLogController> logger)
         {
             _mediator = mediator;
+            _logger = logger;
         }
 
         /// <summary>
@@ -49,6 +52,7 @@ namespace Tickefy.API.ActivityLog
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllAsync([FromQuery] GetAllLogsRequest request, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Retrieving all activity logs with page {Page}, pageSize {PageSize}", request.Page, request.PageSize);
             var query = request.ToQuery();
             var result = await _mediator.Send(query, cancellationToken);
             var response = new PaginationResponse<LogResponse>(result.Items.Select(LogResponse.FromResult).ToList(), result.Page, result.PageSize, result.TotalCount);
@@ -77,6 +81,7 @@ namespace Tickefy.API.ActivityLog
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetByIdAsync(Guid ticketId, [FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
         {
+            _logger.LogInformation("Retrieving activity logs for ticket {TicketId} with page {Page}, pageSize {PageSize}", ticketId, page, pageSize);
             var query = new GetLogsByTicketIdQuery(new TicketId(ticketId)) { Page = page, PageSize = pageSize };
             var result = await _mediator.Send(query, cancellationToken);
             var response = new PaginationResponse<LogResponse>(result.Items.Select(LogResponse.FromResult).ToList(), result.Page, result.PageSize, result.TotalCount);

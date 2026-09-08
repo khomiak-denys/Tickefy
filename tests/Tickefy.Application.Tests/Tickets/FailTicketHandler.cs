@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Moq;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Tickets.Fail;
@@ -21,8 +22,9 @@ public class FailTicketHandlerTests
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
+        var logger = new Mock<ILogger<FailTicketCommandHandler>>();
 
-        var handler = new FailTicketCommandHandler(repo.Object, logRepository.Object, uow.Object);
+        var handler = new FailTicketCommandHandler(repo.Object, logRepository.Object, uow.Object, logger.Object);
 
         var command = new FailTicketCommand
         {
@@ -46,8 +48,9 @@ public class FailTicketHandlerTests
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
+        var logger = new Mock<ILogger<FailTicketCommandHandler>>();
 
-        var handler = new FailTicketCommandHandler(repo.Object, logRepository.Object, uow.Object);
+        var handler = new FailTicketCommandHandler(repo.Object, logRepository.Object, uow.Object, logger.Object);
 
         var command = new FailTicketCommand
         {
@@ -80,8 +83,9 @@ public class FailTicketHandlerTests
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
+        var logger = new Mock<ILogger<FailTicketCommandHandler>>();
 
-        var handler = new FailTicketCommandHandler(repo.Object, logRepository.Object, uow.Object);
+        var handler = new FailTicketCommandHandler(repo.Object, logRepository.Object, uow.Object, logger.Object);
 
         var command = new FailTicketCommand
         {

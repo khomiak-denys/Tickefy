@@ -1,3 +1,4 @@
+using Serilog;
 using Tickefy.API.Extensions;
 using Tickefy.API.Options;
 
@@ -37,6 +38,7 @@ namespace Tickefy.API
             app.ApplyMigrations();
 
             app.UseExceptionHandler();
+            app.UseSerilogRequestLogging();
 
             if (app.Environment.IsDevelopment())
             {

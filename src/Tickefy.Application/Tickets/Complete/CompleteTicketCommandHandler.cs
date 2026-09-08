@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Tickets.Common.Helpers;
@@ -15,21 +16,28 @@ namespace Tickefy.Application.Tickets.Complete
         private readonly ITicketRepository _ticketRepository;
         private readonly IActivityLogRepository _logRepository;
         private readonly IUnitOfWork _uow;
+        private readonly ILogger<CompleteTicketCommandHandler> _logger;
 
         public CompleteTicketCommandHandler(
             ITicketRepository ticketRepository,
             IActivityLogRepository logRepository,
-            IUnitOfWork uow)
+            IUnitOfWork uow,
+            ILogger<CompleteTicketCommandHandler> logger)
         {
             _ticketRepository = ticketRepository;
             _logRepository = logRepository;
             _uow = uow;
+            _logger = logger;
         }
         public async Task<Result> Handle(CompleteTicketCommand command, CancellationToken cancellationToken)
         {
             var ticket = await _ticketRepository.GetByIdAsync(command.TicketId, cancellationToken);
 
-            if (ticket == null) return Result.Failure(new NotFoundError(nameof(ticket) + " " + command.TicketId));
+            if (ticket == null)
+            {
+                _logger.LogWarning("Ticket {TicketId} not found when attempting to complete ticket", command.TicketId.Value);
+                return Result.Failure(new NotFoundError(nameof(ticket) + " " + command.TicketId));
+            }
 
             if (TicketAction.Complete.CanExecute(ticket, command.UserId, command.Roles))
             {
@@ -38,10 +46,11 @@ namespace Tickefy.Application.Tickets.Complete
                     "Ticket completed");
                 _logRepository.Add(log);
                 await _uow.SaveChangesAsync(cancellationToken);
-
+                _logger.LogInformation("Ticket {TicketId} completed successfully by user {UserId}", ticket.Id.Value, command.UserId.Value);
             }
             else
             {
+                _logger.LogWarning("User {UserId} with roles {Roles} forbidden from completing ticket {TicketId}", command.UserId.Value, command.Roles, command.TicketId.Value);
                 return Result.Failure(new ForbiddenError("Only admin or assigned agent can complete tickets"));
             }
 

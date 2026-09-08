@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Moq;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Tickets.Accept;
@@ -21,8 +22,9 @@ public class AcceptTicketHandlerTests
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
+        var logger = new Mock<ILogger<AcceptTicketCommandHandler>>();
 
-        var handler = new AcceptTicketCommandHandler(repo.Object, logRepository.Object, uow.Object);
+        var handler = new AcceptTicketCommandHandler(repo.Object, logRepository.Object, uow.Object, logger.Object);
 
         var command = new AcceptTicketCommand
         {
@@ -46,8 +48,9 @@ public class AcceptTicketHandlerTests
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
+        var logger = new Mock<ILogger<AcceptTicketCommandHandler>>();
 
-        var handler = new AcceptTicketCommandHandler(repo.Object, logRepository.Object, uow.Object);
+        var handler = new AcceptTicketCommandHandler(repo.Object, logRepository.Object, uow.Object, logger.Object);
 
         var command = new AcceptTicketCommand
         {
@@ -79,8 +82,9 @@ public class AcceptTicketHandlerTests
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
+        var logger = new Mock<ILogger<AcceptTicketCommandHandler>>();
 
-        var handler = new AcceptTicketCommandHandler(repo.Object, logRepository.Object, uow.Object);
+        var handler = new AcceptTicketCommandHandler(repo.Object, logRepository.Object, uow.Object, logger.Object);
 
         var command = new AcceptTicketCommand
         {

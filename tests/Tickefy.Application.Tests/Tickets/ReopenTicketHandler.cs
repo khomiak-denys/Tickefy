@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Moq;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Tickets.Revise;
@@ -21,8 +22,9 @@ public class ReopenTicketHandler
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
+        var logger = new Mock<ILogger<ReopenTicketCommandHandler>>();
 
-        var handler = new ReopenTicketCommandHandler(repo.Object, logRepository.Object, uow.Object);
+        var handler = new ReopenTicketCommandHandler(repo.Object, logRepository.Object, uow.Object, logger.Object);
 
         var command = new ReopenTicketCommand
         {
@@ -46,8 +48,9 @@ public class ReopenTicketHandler
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
+        var logger = new Mock<ILogger<ReopenTicketCommandHandler>>();
 
-        var handler = new ReopenTicketCommandHandler(repo.Object, logRepository.Object, uow.Object);
+        var handler = new ReopenTicketCommandHandler(repo.Object, logRepository.Object, uow.Object, logger.Object);
 
         var command = new ReopenTicketCommand
         {
@@ -81,8 +84,9 @@ public class ReopenTicketHandler
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
+        var logger = new Mock<ILogger<ReopenTicketCommandHandler>>();
 
-        var handler = new ReopenTicketCommandHandler(repo.Object, logRepository.Object, uow.Object);
+        var handler = new ReopenTicketCommandHandler(repo.Object, logRepository.Object, uow.Object, logger.Object);
 
         var command = new ReopenTicketCommand
         {
