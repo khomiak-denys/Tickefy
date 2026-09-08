@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Moq;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Tickets.Take;
@@ -26,13 +27,15 @@ public class TakeTicketHandler
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
+        var logger = new Mock<ILogger<TakeTicketCommandHandler>>();
 
         var handler = new TakeTicketCommandHandler(
             ticketRepository.Object,
             logRepository.Object,
             userRepository.Object,
             teamRepository.Object,
-            uow.Object);
+            uow.Object,
+            logger.Object);
 
         var command = new TakeTicketCommand
         {
@@ -62,13 +65,15 @@ public class TakeTicketHandler
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
+        var logger = new Mock<ILogger<TakeTicketCommandHandler>>();
 
         var handler = new TakeTicketCommandHandler(
             ticketRepository.Object,
             logRepository.Object,
             userRepository.Object,
             teamRepository.Object,
-            uow.Object);
+            uow.Object,
+            logger.Object);
 
         var command = new TakeTicketCommand
         {
@@ -98,13 +103,15 @@ public class TakeTicketHandler
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
+        var logger = new Mock<ILogger<TakeTicketCommandHandler>>();
 
         var handler = new TakeTicketCommandHandler(
             ticketRepository.Object,
             logRepository.Object,
             userRepository.Object,
             teamRepository.Object,
-            uow.Object);
+            uow.Object,
+            logger.Object);
 
         var command = new TakeTicketCommand
         {
@@ -136,13 +143,15 @@ public class TakeTicketHandler
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
+        var logger = new Mock<ILogger<TakeTicketCommandHandler>>();
 
         var handler = new TakeTicketCommandHandler(
             ticketRepository.Object,
             logRepository.Object,
             userRepository.Object,
             teamRepository.Object,
-            uow.Object);
+            uow.Object,
+            logger.Object);
 
         var command = new TakeTicketCommand
         {
@@ -180,13 +189,15 @@ public class TakeTicketHandler
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
+        var logger = new Mock<ILogger<TakeTicketCommandHandler>>();
 
         var handler = new TakeTicketCommandHandler(
             ticketRepository.Object,
             logRepository.Object,
             userRepository.Object,
             teamRepository.Object,
-            uow.Object);
+            uow.Object,
+            logger.Object);
 
         var command = new TakeTicketCommand
         {
@@ -222,13 +233,15 @@ public class TakeTicketHandler
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
+        var logger = new Mock<ILogger<TakeTicketCommandHandler>>();
 
         var handler = new TakeTicketCommandHandler(
             ticketRepository.Object,
             logRepository.Object,
             userRepository.Object,
             teamRepository.Object,
-            uow.Object);
+            uow.Object,
+            logger.Object);
 
         var command = new TakeTicketCommand
         {
