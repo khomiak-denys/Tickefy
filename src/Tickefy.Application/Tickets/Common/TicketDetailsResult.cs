@@ -16,10 +16,10 @@ namespace Tickefy.Application.Tickets.Common
         string Status,
         DateTime Created,
         DateTime Deadline,
-        List<CommentResult> Comments,
-        List<AttachmentResult> Attachments
+        List<CommentResult> Comments
     )
     {
+        public required IEnumerable<AttachmentResult> Attachments { get; set; }
         public required IEnumerable<TicketActionResult> AvailableActions { get; set; }
 
         public static TicketDetailsResult FromEntity(Ticket ticket) => new(
@@ -34,11 +34,11 @@ namespace Tickefy.Application.Tickets.Common
             ticket.Status.ToString(),
             ticket.Created,
             ticket.Deadline,
-            ticket.Comments.Select(CommentResult.FromEntity).ToList(),
-            ticket.Attachments.Select(AttachmentResult.FromEntity).ToList()
+            ticket.Comments.Select(CommentResult.FromEntity).ToList()
         )
         {
-            AvailableActions = Enumerable.Empty<TicketActionResult>()
+            Attachments = Enumerable.Empty<AttachmentResult>(),
+            AvailableActions = Enumerable.Empty<TicketActionResult>(),
         };
     }
 }

@@ -1,13 +1,16 @@
-using System.Text;
-using System.Threading.RateLimiting;
+using Amazon.Runtime;
+using Amazon.S3;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using System.Text;
+using System.Threading.RateLimiting;
 using Tickefy.API.ErrorHandling;
 using Tickefy.API.ErrorHandling.ExceptionMapper;
 using Tickefy.API.Options;
@@ -16,6 +19,7 @@ using Tickefy.Application.Abstractions.Services;
 using Tickefy.Application.Auth.Login;
 using Tickefy.Application.PipelineBehaviors;
 using Tickefy.Domain.ActivityLogs;
+using Tickefy.Domain.Attachments;
 using Tickefy.Domain.RefreshTokens;
 using Tickefy.Domain.Teams;
 using Tickefy.Domain.Tickets;
@@ -149,17 +153,36 @@ namespace Tickefy.API.Extensions
 
         public static void RegisterInfrastructure(this WebApplicationBuilder builder)
         {
+            builder.Services.AddOptions<ObjectStorageOptions>()
+                .BindConfiguration(ObjectStorageOptions.SectionName)
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
+
             builder.Services.AddScoped<ITokenService, TokenService>();
             builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IAiService, AiService>();
             builder.Services.AddScoped<IAiResponseParser, AiResponseParser>();
+            builder.Services.AddScoped<IObjectStorageService, AmazonS3ObjectStorageService>();
 
             builder.Services.AddScoped<IUserRepository, EFUserRepository>();
             builder.Services.AddScoped<ITicketRepository, EFTicketRepository>();
             builder.Services.AddScoped<IActivityLogRepository, EFLogRepository>();
             builder.Services.AddScoped<ITeamRepository, EFTeamRepository>();
             builder.Services.AddScoped<IRefreshTokenRepository, EFRefreshTokenRepository>();
+            builder.Services.AddScoped<IAttachmentRepository, EFAttachmentRepository>();
+
+            builder.Services.AddSingleton<IAmazonS3>(sp =>
+            {
+                var storageOptions = sp.GetRequiredService<IOptions<ObjectStorageOptions>>().Value;
+                var credentials = new BasicAWSCredentials(storageOptions.AccessKey, storageOptions.SecretKey);
+
+                return new AmazonS3Client(credentials, new AmazonS3Config
+                {
+                    ServiceURL = storageOptions.Endpoint,
+                    ForcePathStyle = storageOptions.ForcePathStyle
+                });
+            });
 
             builder.Services.AddSingleton(sp =>
             {

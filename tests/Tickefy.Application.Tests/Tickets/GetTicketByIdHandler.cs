@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Moq;
+using Tickefy.Application.Abstractions.Services;
 using Tickefy.Application.Tickets.Common;
 using Tickefy.Application.Tickets.GetById;
 using Tickefy.Application.Users.Common;
@@ -14,6 +15,8 @@ namespace Tickefy.Application.Tests.Tickets;
 
 public class GetTicketByIdHandler
 {
+    private readonly Mock<IObjectStorageService> _storageMock = new();
+
     [Fact]
     public async Task GetTicketByIdQueryHandler_Should_Return_NotFoundError_On_Null_Ticket()
     {
@@ -22,7 +25,7 @@ public class GetTicketByIdHandler
             .ReturnsAsync((Domain.Tickets.Ticket?)null);
 
         var logger = new Mock<ILogger<GetTicketByIdQueryHandler>>();
-        var handler = new GetTicketByIdQueryHandler(repo.Object, logger.Object);
+        var handler = new GetTicketByIdQueryHandler(repo.Object, _storageMock.Object, logger.Object);
 
         var query = new GetTicketByIdQuery(new UserId(), new List<string>(), new TicketId());
         var result = await handler.Handle(query, CancellationToken.None);
@@ -39,7 +42,7 @@ public class GetTicketByIdHandler
             .ReturnsAsync(Domain.Tickets.Ticket.Create(string.Empty, string.Empty, new UserId(), DateTime.Now));
 
         var logger = new Mock<ILogger<GetTicketByIdQueryHandler>>();
-        var handler = new GetTicketByIdQueryHandler(repo.Object, logger.Object);
+        var handler = new GetTicketByIdQueryHandler(repo.Object, _storageMock.Object, logger.Object);
 
         var query = new GetTicketByIdQuery(new UserId(), new List<string>(), new TicketId());
         var result = await handler.Handle(query, CancellationToken.None);
@@ -56,7 +59,7 @@ public class GetTicketByIdHandler
             .ReturnsAsync(TicketBuilder.New().InInProgressState());
 
         var logger = new Mock<ILogger<GetTicketByIdQueryHandler>>();
-        var handler = new GetTicketByIdQueryHandler(repo.Object, logger.Object);
+        var handler = new GetTicketByIdQueryHandler(repo.Object, _storageMock.Object, logger.Object);
         var query = new GetTicketByIdQuery(new UserId(), [nameof(UserRoles.Admin)], new TicketId());
 
         var result = await handler.Handle(query, CancellationToken.None);
@@ -74,7 +77,7 @@ public class GetTicketByIdHandler
             .ReturnsAsync(Domain.Tickets.Ticket.CreateDraft(string.Empty, string.Empty, userId, DateTime.Now));
 
         var logger = new Mock<ILogger<GetTicketByIdQueryHandler>>();
-        var handler = new GetTicketByIdQueryHandler(repo.Object, logger.Object);
+        var handler = new GetTicketByIdQueryHandler(repo.Object, _storageMock.Object, logger.Object);
         var query = new GetTicketByIdQuery(userId, [nameof(UserRoles.Requester)], new TicketId());
 
         var result = await handler.Handle(query, CancellationToken.None);
@@ -95,7 +98,7 @@ public class GetTicketByIdHandler
             .ReturnsAsync(ticket);
 
         var logger = new Mock<ILogger<GetTicketByIdQueryHandler>>();
-        var handler = new GetTicketByIdQueryHandler(repo.Object, logger.Object);
+        var handler = new GetTicketByIdQueryHandler(repo.Object, _storageMock.Object, logger.Object);
         var query = new GetTicketByIdQuery(agentId, [nameof(UserRoles.Agent)], new TicketId());
 
         var result = await handler.Handle(query, CancellationToken.None);

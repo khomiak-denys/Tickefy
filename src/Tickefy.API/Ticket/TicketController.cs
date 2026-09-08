@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Security.Claims;
+using Tickefy.API.Attachments.Response;
 using Tickefy.API.Common.Models;
 using Tickefy.API.ErrorHandling;
 using Tickefy.API.Ticket.Requests;
@@ -80,7 +81,8 @@ namespace Tickefy.API.Ticket
             var command = request.ToCommand(new UserId(userId));
             var result = await _mediator.Send(command, cancellationToken);
 
-            return result.Match(Created(), this.ToActionResult);
+            return result.Match(onSuccess: value => Ok(result.Value.Select(AttachmentUploadResponse.FromResult)),
+                onFailure: this.ToActionResult);
         }
 
         /// <summary>
@@ -117,7 +119,8 @@ namespace Tickefy.API.Ticket
             var command = request.ToCommand(new UserId(userId));
             var result = await _mediator.Send(command, cancellationToken);
 
-            return result.Match(Created(), this.ToActionResult);
+            return result.Match(onSuccess: value => Ok(result.Value.Select(AttachmentUploadResponse.FromResult)),
+                onFailure: this.ToActionResult);
         }
 
         /// <summary>
@@ -161,7 +164,8 @@ namespace Tickefy.API.Ticket
             var command = request.ToCommand(new UserId(userId), roles, new TicketId(ticketId));
             var result = await _mediator.Send(command, cancellationToken);
 
-            return result.Match(Ok(), this.ToActionResult);
+            return result.Match(onSuccess: value => Ok(result.Value.Select(AttachmentUploadResponse.FromResult)),
+                onFailure: this.ToActionResult);
         }
 
         /// <summary>

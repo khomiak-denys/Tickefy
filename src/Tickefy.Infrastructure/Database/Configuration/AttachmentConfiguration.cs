@@ -12,14 +12,12 @@ namespace Tickefy.Infrastructure.Database.Configuration
             builder.HasKey(a => a.Id);
             builder.HasStronglyTypedIdConversion(a => a.Id);
 
+            builder.Ignore(a => a.FilePath);
+
             builder.HasOne(a => a.Ticket)
                 .WithMany(t => t.Attachments)
                 .HasForeignKey(a => a.TicketId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            builder.Property(a => a.FilePath)
-                .HasMaxLength(2048)
-                .IsRequired();
 
             builder.Property(a => a.FileName)
                 .HasMaxLength(255)

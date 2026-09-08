@@ -5,6 +5,7 @@ using Tickefy.Application.Abstractions.Services;
 using Tickefy.Application.AI.Dtos;
 using Tickefy.Application.Tickets.Publish;
 using Tickefy.Domain.ActivityLogs;
+using Tickefy.Domain.Attachments;
 using Tickefy.Domain.Common.Category;
 using Tickefy.Domain.Common.Errors;
 using Tickefy.Domain.Common.Event;
@@ -31,7 +32,8 @@ public class PublishTicketHandlerTests
             TicketId = new TicketId(),
             Title = string.Empty,
             Description = string.Empty,
-            Deadline = new DateTime()
+            Deadline = new DateTime(),
+            Files = []
         };
 
         var activityLogRepository = new Mock<IActivityLogRepository>();
@@ -39,6 +41,8 @@ public class PublishTicketHandlerTests
         var aiService = new Mock<IAiService>();
         var aiResponseParser = new Mock<IAiResponseParser>();
         var logger = new Mock<ILogger<PublishTicketCommandHandler>>();
+        var attachmentRepository = new Mock<IAttachmentRepository>();
+        var objectStorage = new Mock<IObjectStorageService>();
 
         var handler = new PublishTicketCommandHandler(
             ticketRepository.Object,
@@ -46,7 +50,9 @@ public class PublishTicketHandlerTests
             unitOfWork.Object,
             aiService.Object,
             aiResponseParser.Object,
-            logger.Object);
+            logger.Object,
+            attachmentRepository.Object,
+            objectStorage.Object);
 
         var result = await handler.Handle(command, CancellationToken.None);
 
@@ -72,7 +78,8 @@ public class PublishTicketHandlerTests
             TicketId = new TicketId(),
             Title = string.Empty,
             Description = string.Empty,
-            Deadline = new DateTime()
+            Deadline = new DateTime(),
+            Files = []
         };
 
         var activityLogRepository = new Mock<IActivityLogRepository>();
@@ -80,6 +87,8 @@ public class PublishTicketHandlerTests
         var aiService = new Mock<IAiService>();
         var aiResponseParser = new Mock<IAiResponseParser>();
         var logger = new Mock<ILogger<PublishTicketCommandHandler>>();
+        var attachmentRepository = new Mock<IAttachmentRepository>();
+        var objectStorage = new Mock<IObjectStorageService>();
 
         var handler = new PublishTicketCommandHandler(
             ticketRepository.Object,
@@ -87,7 +96,9 @@ public class PublishTicketHandlerTests
             unitOfWork.Object,
             aiService.Object,
             aiResponseParser.Object,
-            logger.Object);
+            logger.Object,
+            attachmentRepository.Object,
+            objectStorage.Object);
 
         var result = await handler.Handle(command, CancellationToken.None);
 
@@ -122,8 +133,12 @@ public class PublishTicketHandlerTests
             TicketId = ticket.Id,
             Title = string.Empty,
             Description = string.Empty,
-            Deadline = new DateTime()
+            Deadline = new DateTime(),
+            Files = []
         };
+
+        var attachmentRepository = new Mock<IAttachmentRepository>();
+        var objectStorage = new Mock<IObjectStorageService>();
 
         var handler = new PublishTicketCommandHandler(
             ticketRepository.Object,
@@ -131,7 +146,9 @@ public class PublishTicketHandlerTests
             unitOfWork.Object,
             aiService.Object,
             aiResponseParser.Object,
-            logger.Object);
+            logger.Object,
+            attachmentRepository.Object,
+            objectStorage.Object);
 
         var result = await handler.Handle(command, CancellationToken.None);
 
@@ -165,7 +182,8 @@ public class PublishTicketHandlerTests
             TicketId = ticket.Id,
             Title = string.Empty,
             Description = string.Empty,
-            Deadline = new DateTime()
+            Deadline = new DateTime(),
+            Files = []
         };
 
         var activityLogRepository = new Mock<IActivityLogRepository>();
@@ -179,13 +197,18 @@ public class PublishTicketHandlerTests
         aiResponseParser.Setup(parser => parser.ParsePriority(It.IsAny<AiResponse>()))
             .Returns(Priority.High);
 
+        var attachmentRepository = new Mock<IAttachmentRepository>();
+        var objectStorage = new Mock<IObjectStorageService>();
+
         var handler = new PublishTicketCommandHandler(
             ticketRepository.Object,
             activityLogRepository.Object,
             unitOfWork.Object,
             aiService.Object,
             aiResponseParser.Object,
-            logger.Object);
+            logger.Object,
+            attachmentRepository.Object,
+            objectStorage.Object);
 
         var result = await handler.Handle(command, CancellationToken.None);
 
