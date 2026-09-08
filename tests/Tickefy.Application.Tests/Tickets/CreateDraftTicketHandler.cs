@@ -1,7 +1,9 @@
 using Microsoft.Extensions.Logging;
 using Moq;
 using Tickefy.Application.Abstractions.Data;
+using Tickefy.Application.Abstractions.Services;
 using Tickefy.Application.Tickets.CreateDraft;
+using Tickefy.Domain.Attachments;
 using Tickefy.Domain.Primitives;
 using Tickefy.Domain.Tickets;
 
@@ -19,10 +21,14 @@ public class CreateDraftTicketHandlerTests
         var ticketRepository = new Mock<ITicketRepository>();
         var unitOfWork = new Mock<IUnitOfWork>();
         var logger = new Mock<ILogger<CreateDraftTicketCommandHandler>>();
+        var attachmentRepository = new Mock<IAttachmentRepository>();
+        var objectStorage = new Mock<IObjectStorageService>();
 
         var handler = new CreateDraftTicketCommandHandler(
             ticketRepository.Object,
             unitOfWork.Object,
+            objectStorage.Object,
+            attachmentRepository.Object,
             logger.Object);
 
         var command = new CreateDraftTicketCommand
@@ -30,7 +36,8 @@ public class CreateDraftTicketHandlerTests
             UserId = userId,
             Title = title,
             Description = description,
-            Deadline = deadline
+            Deadline = deadline,
+            Files = []
         };
 
         var result = await handler.Handle(command, CancellationToken.None);
