@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Moq;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Tickets.CreateDraft;
@@ -17,10 +18,12 @@ public class CreateDraftTicketHandlerTests
         var deadline = new DateTime(2026, 12, 31);
         var ticketRepository = new Mock<ITicketRepository>();
         var unitOfWork = new Mock<IUnitOfWork>();
+        var logger = new Mock<ILogger<CreateDraftTicketCommandHandler>>();
 
         var handler = new CreateDraftTicketCommandHandler(
             ticketRepository.Object,
-            unitOfWork.Object);
+            unitOfWork.Object,
+            logger.Object);
 
         var command = new CreateDraftTicketCommand
         {

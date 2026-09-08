@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Abstractions.Services;
@@ -14,17 +15,20 @@ public class CreateDraftTicketCommandHandler : ICommandHandler<CreateDraftTicket
     private readonly IUnitOfWork _unitOfWork;
     private readonly IObjectStorageService _objectStorageService;
     private readonly IAttachmentRepository _attachmentRepository;
+    private readonly ILogger<CreateDraftTicketCommandHandler> _logger;
 
     public CreateDraftTicketCommandHandler(
         ITicketRepository ticketRepository,
         IUnitOfWork unitOfWork,
         IObjectStorageService objectStorageService,
-        IAttachmentRepository attachmentRepository)
+        IAttachmentRepository attachmentRepository,
+        ILogger<CreateDraftTicketCommandHandler> logger)
     {
         _ticketRepository = ticketRepository;
         _unitOfWork = unitOfWork;
         _objectStorageService = objectStorageService;
         _attachmentRepository = attachmentRepository;
+        _logger = logger;
     }
 
     public async Task<Result<List<AttachmentUploadResult>>> Handle(CreateDraftTicketCommand command, CancellationToken cancellationToken)
@@ -53,6 +57,8 @@ public class CreateDraftTicketCommandHandler : ICommandHandler<CreateDraftTicket
         }
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        _logger.LogInformation("Draft ticket {TicketId} created successfully for user {UserId}", ticket.Id.Value, command.UserId.Value);
 
         return Result<List<AttachmentUploadResult>>.Success(fileUrls);
     }

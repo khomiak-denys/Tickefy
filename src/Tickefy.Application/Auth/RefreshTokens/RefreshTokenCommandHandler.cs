@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Abstractions.Services;
@@ -13,15 +14,18 @@ public class RefreshTokenCommandHandler : ICommandHandler<RefreshTokenCommand, R
     private readonly IRefreshTokenRepository _refreshTokenRepository;
     private readonly ITokenService _tokenService;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<RefreshTokenCommandHandler> _logger;
 
     public RefreshTokenCommandHandler(
         ITokenService tokenService,
         IRefreshTokenRepository refreshTokenRepository,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        ILogger<RefreshTokenCommandHandler> logger)
     {
         _refreshTokenRepository = refreshTokenRepository;
         _unitOfWork = unitOfWork;
         _tokenService = tokenService;
+        _logger = logger;
     }
 
     public async Task<Result<LoginResult>> Handle(RefreshTokenCommand command, CancellationToken cancellationToken)
@@ -30,11 +34,13 @@ public class RefreshTokenCommandHandler : ICommandHandler<RefreshTokenCommand, R
 
         if (token is null)
         {
+            _logger.LogWarning("Refresh token renewal failed: refresh token not found or invalid");
             return Result<LoginResult>.Failure(new NotFoundError("Refresh token not found"));
         }
 
         if (token.Expires < DateTime.UtcNow)
         {
+            _logger.LogWarning("Refresh token renewal failed: token expired for user {UserId}", token.UserId.Value);
             await _refreshTokenRepository.DeleteAsync(token, cancellationToken);
             return Result<LoginResult>.Failure(new ForbiddenError("Refresh token is expired"));
         }
@@ -49,6 +55,8 @@ public class RefreshTokenCommandHandler : ICommandHandler<RefreshTokenCommand, R
         _refreshTokenRepository.Add(newRefreshTokenEntity);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        _logger.LogInformation("Refresh token renewed successfully for user {UserId}", token.User.Id.Value);
 
         return Result<LoginResult>.Success(new LoginResult
         (

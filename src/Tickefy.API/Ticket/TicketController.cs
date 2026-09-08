@@ -32,15 +32,19 @@ namespace Tickefy.API.Ticket
     public class TicketController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly ILogger<TicketController> _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TicketController"/> class with required command dispatching dependencies.
         /// </summary>
         /// <param name="mediator">The MediatR mediator instance used to dispatch domain commands and queries to their corresponding application handlers.</param>
+        /// <param name="logger">The logger instance for structured logging.</param>
         public TicketController(
-            IMediator mediator)
+            IMediator mediator,
+            ILogger<TicketController> logger)
         {
             _mediator = mediator;
+            _logger = logger;
         }
 
         /// <summary>
@@ -69,9 +73,11 @@ namespace Tickefy.API.Ticket
 
             if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
             {
+                _logger.LogWarning("User ID claim is missing or invalid in authenticated context");
                 return Unauthorized("User ID is missing or invalid");
             }
 
+            _logger.LogInformation("Creating ticket for user {UserId} with title {Title}", userId, request.Title);
             var command = request.ToCommand(new UserId(userId));
             var result = await _mediator.Send(command, cancellationToken);
 
@@ -105,9 +111,11 @@ namespace Tickefy.API.Ticket
 
             if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
             {
+                _logger.LogWarning("User ID claim is missing or invalid in authenticated context");
                 return Unauthorized("User ID is missing or invalid");
             }
 
+            _logger.LogInformation("Creating draft ticket for user {UserId} with title {Title}", userId, request.Title);
             var command = request.ToCommand(new UserId(userId));
             var result = await _mediator.Send(command, cancellationToken);
 
@@ -143,6 +151,7 @@ namespace Tickefy.API.Ticket
 
             if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
             {
+                _logger.LogWarning("User ID claim is missing or invalid in authenticated context");
                 return Unauthorized("User ID is missing or invalid");
             }
 
@@ -151,6 +160,7 @@ namespace Tickefy.API.Ticket
                 .Select(c => c.Value)
                 .ToList();
 
+            _logger.LogInformation("Publishing ticket {TicketId} by user {UserId}", ticketId, userId);
             var command = request.ToCommand(new UserId(userId), roles, new TicketId(ticketId));
             var result = await _mediator.Send(command, cancellationToken);
 
@@ -184,8 +194,11 @@ namespace Tickefy.API.Ticket
 
             if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
             {
+                _logger.LogWarning("User ID claim is missing or invalid in authenticated context");
                 return Unauthorized("User ID is missing or invalid");
             }
+
+            _logger.LogInformation("Retrieving tickets for current user {UserId} with page {Page}, pageSize {PageSize}", userId, page, pageSize);
             var query = new GetMyTicketsQuery(new UserId(userId)) { Page = page, PageSize = pageSize };
 
             var result = await _mediator.Send(query, cancellationToken);
@@ -221,6 +234,7 @@ namespace Tickefy.API.Ticket
 
             if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
             {
+                _logger.LogWarning("User ID claim is missing or invalid in authenticated context");
                 return Unauthorized("User ID is missing or invalid");
             }
 
@@ -229,6 +243,7 @@ namespace Tickefy.API.Ticket
                 .Select(c => c.Value)
                 .ToList();
 
+            _logger.LogInformation("Retrieving ticket {TicketId} for user {UserId}", TicketId, userId);
             var query = new GetTicketByIdQuery(new UserId(userId), roles, new TicketId(TicketId));
             var result = await _mediator.Send(query, cancellationToken);
 
@@ -257,6 +272,7 @@ namespace Tickefy.API.Ticket
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllTicketsAsync([FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
         {
+            _logger.LogInformation("Retrieving all tickets with page {Page}, pageSize {PageSize}", page, pageSize);
             var query = new GetAllTicketsQuery { Page = page, PageSize = pageSize };
             var result = await _mediator.Send(query, cancellationToken);
 
@@ -286,14 +302,15 @@ namespace Tickefy.API.Ticket
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetQueueTicketsAsync([FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
         {
-
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
             if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
             {
+                _logger.LogWarning("User ID claim is missing or invalid in authenticated context");
                 return Unauthorized("User ID is missing or invalid");
             }
 
+            _logger.LogInformation("Retrieving queue tickets for agent {UserId} with page {Page}, pageSize {PageSize}", userId, page, pageSize);
             var query = new GetQueueTicketsQuery(new UserId(userId)) { Page = page, PageSize = pageSize };
             var result = await _mediator.Send(query, cancellationToken);
 
@@ -329,9 +346,11 @@ namespace Tickefy.API.Ticket
 
             if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
             {
+                _logger.LogWarning("User ID claim is missing or invalid in authenticated context");
                 return Unauthorized("User ID is missing or invalid");
             }
 
+            _logger.LogInformation("Posting comment to ticket {TicketId} by user {UserId}", ticketId, userId);
             var command = request.ToCommand(new UserId(userId), new TicketId(ticketId));
 
             var result = await _mediator.Send(command, cancellationToken);
@@ -365,6 +384,7 @@ namespace Tickefy.API.Ticket
 
             if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
             {
+                _logger.LogWarning("User ID claim is missing or invalid in authenticated context");
                 return Unauthorized("User ID is missing or invalid");
             }
 
@@ -373,6 +393,7 @@ namespace Tickefy.API.Ticket
                 .Select(c => c.Value)
                 .ToList();
 
+            _logger.LogInformation("Taking ticket {TicketId} by agent {UserId}", ticketId, userId);
             var command = new TakeTicketCommand
             {
                 UserId = new UserId(userId),
@@ -412,6 +433,7 @@ namespace Tickefy.API.Ticket
 
             if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
             {
+                _logger.LogWarning("User ID claim is missing or invalid in authenticated context");
                 return Unauthorized("User ID is missing or invalid");
             }
 
@@ -420,6 +442,7 @@ namespace Tickefy.API.Ticket
                 .Select(c => c.Value)
                 .ToList();
 
+            _logger.LogInformation("Completing ticket {TicketId} by user {UserId}", ticketId, userId);
             var command = new CompleteTicketCommand
             {
                 UserId = new UserId(userId),
@@ -460,6 +483,7 @@ namespace Tickefy.API.Ticket
 
             if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
             {
+                _logger.LogWarning("User ID claim is missing or invalid in authenticated context");
                 return Unauthorized("User ID is missing or invalid");
             }
 
@@ -468,6 +492,7 @@ namespace Tickefy.API.Ticket
                 .Select(c => c.Value)
                 .ToList();
 
+            _logger.LogInformation("Reopening ticket {TicketId} by user {UserId}", ticketId, userId);
             var command = new ReopenTicketCommand
             {
                 UserId = new UserId(userId),
@@ -509,6 +534,7 @@ namespace Tickefy.API.Ticket
 
             if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
             {
+                _logger.LogWarning("Unauthorized access attempt: Missing or invalid User ID claim in CancelTicket");
                 return Unauthorized("User ID is missing or invalid");
             }
 
@@ -517,6 +543,7 @@ namespace Tickefy.API.Ticket
                 .Select(c => c.Value)
                 .ToList();
 
+            _logger.LogInformation("Cancelling ticket {TicketId} by user {UserId}", ticketId, userId);
             var command = new CancelTicketCommand
             (
                 new UserId(userId),
@@ -558,6 +585,7 @@ namespace Tickefy.API.Ticket
 
             if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
             {
+                _logger.LogWarning("Unauthorized access attempt: Missing or invalid User ID claim in FailTicket");
                 return Unauthorized("User ID is missing or invalid");
             }
 
@@ -566,6 +594,7 @@ namespace Tickefy.API.Ticket
                 .Select(c => c.Value)
                 .ToList();
 
+            _logger.LogInformation("Failing ticket {TicketId} by user {UserId}", ticketId, userId);
             var command = new FailTicketCommand
             {
                 UserId = new UserId(userId),
@@ -606,6 +635,7 @@ namespace Tickefy.API.Ticket
 
             if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
             {
+                _logger.LogWarning("Unauthorized access attempt: Missing or invalid User ID claim in AcceptTicket");
                 return Unauthorized("User ID is missing or invalid");
             }
 
@@ -614,6 +644,7 @@ namespace Tickefy.API.Ticket
                 .Select(c => c.Value)
                 .ToList();
 
+            _logger.LogInformation("Accepting ticket {TicketId} by user {UserId}", ticketId, userId);
             var command = new AcceptTicketCommand
             {
                 UserId = new UserId(userId),
@@ -653,6 +684,7 @@ namespace Tickefy.API.Ticket
 
             if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
             {
+                _logger.LogWarning("Unauthorized access attempt: Missing or invalid User ID claim in StartWork");
                 return Unauthorized("User ID is missing or invalid");
             }
 
@@ -661,6 +693,7 @@ namespace Tickefy.API.Ticket
                 .Select(c => c.Value)
                 .ToList();
 
+            _logger.LogInformation("Starting work on ticket {TicketId} by agent {UserId}", ticketId, userId);
             var command = new StartWorkTicketCommand
             {
                 UserId = new UserId(userId),

@@ -52,11 +52,13 @@ public class PublishTicketCommandHandler : ICommandHandler<PublishTicketCommand,
         var ticket = await _ticketRepository.GetByIdAsync(command.TicketId, cancellationToken);
         if (ticket == null)
         {
+            _logger.LogWarning("Ticket {TicketId} not found when attempting to publish", command.TicketId.Value);
             return Result<List<AttachmentUploadResult>>.Failure(new NotFoundError("Ticket not found."));
         }
 
         if (!TicketAction.Publish.CanExecute(ticket, command.UserId, command.Roles))
         {
+            _logger.LogWarning("User {UserId} with roles {Roles} forbidden from publishing ticket {TicketId}", command.UserId.Value, command.Roles, command.TicketId.Value);
             return Result<List<AttachmentUploadResult>>.Failure(new ForbiddenError("You are not allowed to publish this ticket. Only users with the required permissions (e.g., the ticket owner or users with appropriate roles) can publish a ticket that is in a publishable state."));
         }
 
@@ -74,7 +76,7 @@ public class PublishTicketCommandHandler : ICommandHandler<PublishTicketCommand,
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to analyze ticket with AI. Setting default values.");
+            _logger.LogError(ex, "Failed to analyze ticket with AI for ticket {TicketId}. Setting default values.", command.TicketId.Value);
             ticket.SetCategory(Category.Other);
             ticket.SetPriority(Priority.Medium);
         }
@@ -107,6 +109,8 @@ public class PublishTicketCommandHandler : ICommandHandler<PublishTicketCommand,
         }
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        _logger.LogInformation("Ticket {TicketId} published successfully with title {Title} by user {UserId}", command.TicketId.Value, command.Title, command.UserId.Value);
 
         return Result<List<AttachmentUploadResult>>.Success(fileUrls);
     }

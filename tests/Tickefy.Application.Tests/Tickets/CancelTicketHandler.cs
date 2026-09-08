@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Moq;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Tickets.Cancel;
@@ -21,8 +22,9 @@ public class CancelTicketHandler
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
+        var logger = new Mock<ILogger<CancelTicketCommandHandler>>();
 
-        var handler = new CancelTicketCommandHandler(repo.Object, logRepository.Object, uow.Object);
+        var handler = new CancelTicketCommandHandler(repo.Object, logRepository.Object, uow.Object, logger.Object);
 
         var command = new CancelTicketCommand(new UserId(), new List<string>(), new TicketId(), string.Empty);
         var result = await handler.Handle(command, CancellationToken.None);
@@ -40,8 +42,9 @@ public class CancelTicketHandler
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
+        var logger = new Mock<ILogger<CancelTicketCommandHandler>>();
 
-        var handler = new CancelTicketCommandHandler(repo.Object, logRepository.Object, uow.Object);
+        var handler = new CancelTicketCommandHandler(repo.Object, logRepository.Object, uow.Object, logger.Object);
 
         var command = new CancelTicketCommand(new UserId(), [nameof(UserRoles.Agent)], new TicketId(), string.Empty);
         var result = await handler.Handle(command, CancellationToken.None);
@@ -65,8 +68,9 @@ public class CancelTicketHandler
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
+        var logger = new Mock<ILogger<CancelTicketCommandHandler>>();
 
-        var handler = new CancelTicketCommandHandler(repo.Object, logRepository.Object, uow.Object);
+        var handler = new CancelTicketCommandHandler(repo.Object, logRepository.Object, uow.Object, logger.Object);
 
         var command = new CancelTicketCommand(userId, [nameof(UserRoles.Admin)], ticketId, reason);
         var result = await handler.Handle(command, CancellationToken.None);

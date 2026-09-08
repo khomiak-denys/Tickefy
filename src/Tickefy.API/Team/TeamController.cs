@@ -24,14 +24,17 @@ namespace Tickefy.API.Team
     public class TeamController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly ILogger<TeamController> _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TeamController"/> class with required MediatR command orchestration dependencies.
         /// </summary>
         /// <param name="mediator">The MediatR mediator instance used to dispatch team administration commands and queries.</param>
-        public TeamController(IMediator mediator)
+        /// <param name="logger">The logger instance for structured logging.</param>
+        public TeamController(IMediator mediator, ILogger<TeamController> logger)
         {
             _mediator = mediator;
+            _logger = logger;
         }
 
         /// <summary>
@@ -56,8 +59,12 @@ namespace Tickefy.API.Team
         {
             var leaderIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(leaderIdClaim) || !Guid.TryParse(leaderIdClaim, out var leaderGuid))
+            {
+                _logger.LogWarning("User ID claim is missing or invalid in authenticated context");
                 return Unauthorized("User ID is missing or invalid");
+            }
 
+            _logger.LogInformation("Creating team {TeamName} by leader {LeaderId}", request.Name, leaderGuid);
             var command = request.ToCommand(new UserId(leaderGuid));
             var result = await _mediator.Send(command, cancellationToken);
             return result.Match(Created(), this.ToActionResult);
@@ -87,8 +94,12 @@ namespace Tickefy.API.Team
         {
             var leaderIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(leaderIdClaim) || !Guid.TryParse(leaderIdClaim, out var memberGuid))
+            {
+                _logger.LogWarning("User ID claim is missing or invalid in authenticated context");
                 return Unauthorized("User ID is missing or invalid");
+            }
 
+            _logger.LogInformation("Adding member to team {TeamId} by leader {LeaderId}", teamId, memberGuid);
             var command = request.ToCommand(new TeamId(teamId), new UserId(memberGuid));
 
             var result = await _mediator.Send(command, cancellationToken);
@@ -119,8 +130,12 @@ namespace Tickefy.API.Team
         {
             var leaderIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(leaderIdClaim) || !Guid.TryParse(leaderIdClaim, out var leaderGuid))
+            {
+                _logger.LogWarning("User ID claim is missing or invalid in authenticated context");
                 return Unauthorized("User ID is missing or invalid");
+            }
 
+            _logger.LogInformation("Removing member {MemberId} from team {TeamId} by leader {LeaderId}", memberId, teamId, leaderGuid);
             var command = new RemoveMemberCommand(
                 new UserId(memberId),
                 new UserId(leaderGuid),
@@ -154,8 +169,12 @@ namespace Tickefy.API.Team
         {
             var leaderIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(leaderIdClaim) || !Guid.TryParse(leaderIdClaim, out var leaderGuid))
+            {
+                _logger.LogWarning("User ID claim is missing or invalid in authenticated context");
                 return Unauthorized("User ID is missing or invalid");
+            }
 
+            _logger.LogInformation("Deleting team {TeamId} by leader {LeaderId}", teamId, leaderGuid);
             var command = new DeleteTeamCommand(new TeamId(teamId), new UserId(leaderGuid));
             var result = await _mediator.Send(command, cancellationToken);
             return result.Match(NoContent(), this.ToActionResult);
@@ -181,6 +200,7 @@ namespace Tickefy.API.Team
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetTeamByIdAsync(Guid teamId, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Retrieving team {TeamId}", teamId);
             var query = new GetMyTeamQuery(new TeamId(teamId));
             var result = await _mediator.Send(query, cancellationToken);
 
@@ -206,6 +226,7 @@ namespace Tickefy.API.Team
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllTeamsAsync([FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
         {
+            _logger.LogInformation("Retrieving all teams with page {Page}, pageSize {PageSize}", page, pageSize);
             var query = new GetAllTeamsQuery { Page = page, PageSize = pageSize };
             var result = await _mediator.Send(query, cancellationToken);
 
@@ -234,8 +255,12 @@ namespace Tickefy.API.Team
         {
             var leaderIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(leaderIdClaim) || !Guid.TryParse(leaderIdClaim, out var memberGuid))
+            {
+                _logger.LogWarning("User ID claim is missing or invalid in authenticated context");
                 return Unauthorized("User ID is missing or invalid");
+            }
 
+            _logger.LogInformation("Retrieving teams for user {UserId} with page {Page}, pageSize {PageSize}", memberGuid, page, pageSize);
             var query = new GetTeamByUserIdQuery(new UserId(memberGuid)) { Page = page, PageSize = pageSize };
             var result = await _mediator.Send(query, cancellationToken);
 

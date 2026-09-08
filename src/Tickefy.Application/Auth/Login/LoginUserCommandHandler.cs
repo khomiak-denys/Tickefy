@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Abstractions.Services;
@@ -16,19 +17,22 @@ namespace Tickefy.Application.Auth.Login
         private readonly IUnitOfWork _unitOfWork;
         private readonly IPasswordHasher _passwordHasher;
         private readonly ITokenService _tokenService;
+        private readonly ILogger<LoginUserCommandHandler> _logger;
 
         public LoginUserCommandHandler(
             IUserRepository userRepository,
             IRefreshTokenRepository refreshTokenRepository,
             IUnitOfWork unitOfWork,
             IPasswordHasher passwordHasher,
-            ITokenService tokenService)
+            ITokenService tokenService,
+            ILogger<LoginUserCommandHandler> logger)
         {
             _userRepository = userRepository;
             _refreshTokenRepository = refreshTokenRepository;
             _unitOfWork = unitOfWork;
             _passwordHasher = passwordHasher;
             _tokenService = tokenService;
+            _logger = logger;
         }
 
         public async Task<Result<LoginResult>> Handle(LoginUserCommand command, CancellationToken cancellationToken)
@@ -36,11 +40,13 @@ namespace Tickefy.Application.Auth.Login
             var existingUser = await _userRepository.GetByLoginAsync(command.Login, cancellationToken);
             if (existingUser == null)
             {
+                _logger.LogWarning("Login failed: user with login {Login} not found", command.Login);
                 return Result<LoginResult>.Failure(new NotFoundError("User not found"));
             }
 
             if (!_passwordHasher.VerifyPassword(command.Password, existingUser.PasswordHash))
             {
+                _logger.LogWarning("Login failed: invalid password for user {Login}", command.Login);
                 return Result<LoginResult>.Failure(new InvalidArgumentError("Invalid credentials"));
             }
 
@@ -51,6 +57,8 @@ namespace Tickefy.Application.Auth.Login
 
             _refreshTokenRepository.Add(refreshTokenEntity);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            _logger.LogInformation("User {Login} with ID {UserId} logged in successfully", existingUser.Login, existingUser.Id.Value);
 
             return Result<LoginResult>.Success(new LoginResult
             (

@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Moq;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Tickets.Complete;
@@ -21,8 +22,9 @@ public class CompleteTicketHandler
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
+        var logger = new Mock<ILogger<CompleteTicketCommandHandler>>();
 
-        var handler = new CompleteTicketCommandHandler(repo.Object, logRepository.Object, uow.Object);
+        var handler = new CompleteTicketCommandHandler(repo.Object, logRepository.Object, uow.Object, logger.Object);
 
         var command = new CompleteTicketCommand
         {
@@ -46,8 +48,9 @@ public class CompleteTicketHandler
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
+        var logger = new Mock<ILogger<CompleteTicketCommandHandler>>();
 
-        var handler = new CompleteTicketCommandHandler(repo.Object, logRepository.Object, uow.Object);
+        var handler = new CompleteTicketCommandHandler(repo.Object, logRepository.Object, uow.Object, logger.Object);
 
         var command = new CompleteTicketCommand
         {
@@ -78,8 +81,9 @@ public class CompleteTicketHandler
 
         var logRepository = new Mock<IActivityLogRepository>();
         var uow = new Mock<IUnitOfWork>();
+        var logger = new Mock<ILogger<CompleteTicketCommandHandler>>();
 
-        var handler = new CompleteTicketCommandHandler(repo.Object, logRepository.Object, uow.Object);
+        var handler = new CompleteTicketCommandHandler(repo.Object, logRepository.Object, uow.Object, logger.Object);
 
         var command = new CompleteTicketCommand
         {

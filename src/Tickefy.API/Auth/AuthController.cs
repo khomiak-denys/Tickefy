@@ -61,6 +61,7 @@ namespace Tickefy.API.Auth
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Register([FromBody] RegisterUserRequest request, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("User registration attempt for {Login}", request.Login);
             var command = request.ToCommand();
             var result = await _mediator.Send(command, cancellationToken);
             return result.Match(
@@ -91,6 +92,7 @@ namespace Tickefy.API.Auth
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Login([FromBody] LoginUserRequest request, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("User login attempt for {Login}", request.Login);
             var command = request.ToCommand();
             var result = await _mediator.Send(command, cancellationToken);
 
@@ -128,6 +130,7 @@ namespace Tickefy.API.Auth
 
             if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
             {
+                _logger.LogWarning("User ID claim is missing or invalid in authenticated context");
                 return Unauthorized("User ID is missing or invalid");
             }
 
@@ -157,7 +160,7 @@ namespace Tickefy.API.Auth
         {
             if (!Request.Cookies.TryGetValue("refresh_token", out var refreshToken))
             {
-                _logger.LogInformation("Cookie not found");
+                _logger.LogWarning("{RefreshToken} cookie not found", "refresh_token");
                 return Unauthorized();
             }
 
@@ -191,6 +194,7 @@ namespace Tickefy.API.Auth
         {
             if (!Request.Cookies.TryGetValue("refresh_token", out var refreshToken))
             {
+                _logger.LogWarning("{RefreshToken} cookie not found", "refresh_token");
                 return Unauthorized();
             }
 

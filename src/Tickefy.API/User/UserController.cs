@@ -22,14 +22,17 @@ namespace Tickefy.API.User
     public class UserController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly ILogger<UserController> _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserController"/> class with required command dispatching dependencies.
         /// </summary>
         /// <param name="mediator">The MediatR instance used to dispatch user domain commands and queries to their corresponding handlers.</param>
-        public UserController(IMediator mediator)
+        /// <param name="logger">The logger instance for structured logging.</param>
+        public UserController(IMediator mediator, ILogger<UserController> logger)
         {
             _mediator = mediator;
+            _logger = logger;
         }
 
         /// <summary>
@@ -51,6 +54,7 @@ namespace Tickefy.API.User
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllAsync([FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
         {
+            _logger.LogInformation("Retrieving all users with page {Page}, pageSize {PageSize}", page, pageSize);
             var query = new GetAllUsersQuery { Page = page, PageSize = pageSize };
             var result = await _mediator.Send(query, cancellationToken);
 
@@ -79,6 +83,7 @@ namespace Tickefy.API.User
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetByIdAsync(Guid userId, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Retrieving user {UserId}", userId);
             var query = new GetUserByIdQuery(new UserId(userId));
             var result = await _mediator.Send(query, cancellationToken);
             return result.Match(onSuccess: value => Ok(UserResponse.FromResult(value)),
@@ -105,8 +110,12 @@ namespace Tickefy.API.User
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+            {
+                _logger.LogWarning("User ID claim is missing or invalid in authenticated context");
                 return Unauthorized("User ID is missing or invalid");
+            }
 
+            _logger.LogInformation("Retrieving current user profile for user {UserId}", userId);
             var query = new GetUserByIdQuery(new UserId(userId));
             var result = await _mediator.Send(query, cancellationToken);
             return result.Match(onSuccess: value => Ok(UserResponse.FromResult(value)),
@@ -134,6 +143,7 @@ namespace Tickefy.API.User
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteUserAsync(Guid userId, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Deleting user {UserId}", userId);
             var command = new DeleteUserCommand(new UserId(userId));
             var result = await _mediator.Send(command, cancellationToken);
             return result.Match(NoContent(), this.ToActionResult);
@@ -161,6 +171,7 @@ namespace Tickefy.API.User
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> SetUserRoleAsync(Guid userId, [FromBody] SetUserRoleRequest request, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Setting role for user {UserId} to {Role}", userId, request.Role);
             var command = request.ToCommand(new UserId(userId));
             var result = await _mediator.Send(command, cancellationToken);
             return result.Match(Ok(), this.ToActionResult);
@@ -188,8 +199,12 @@ namespace Tickefy.API.User
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+            {
+                _logger.LogWarning("User ID claim is missing or invalid in authenticated context");
                 return Unauthorized("User ID is missing or invalid");
+            }
 
+            _logger.LogInformation("Updating profile for user {UserId}", userId);
             var command = request.ToCommand(new UserId(userId));
             var result = await _mediator.Send(command, cancellationToken);
             return result.Match(Ok(), this.ToActionResult);

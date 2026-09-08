@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Tickefy.Application.Abstractions.Data;
 using Tickefy.Application.Abstractions.Messaging;
 using Tickefy.Application.Abstractions.Services;
@@ -19,19 +20,22 @@ namespace Tickefy.Application.Auth.Register
         private readonly IUnitOfWork _uow;
         private readonly IPasswordHasher _passwordHasher;
         private readonly ITokenService _tokenService;
+        private readonly ILogger<RegisterUserCommandHandler> _logger;
 
         public RegisterUserCommandHandler(
             IUserRepository userRepository,
             IRefreshTokenRepository refreshTokenRepository,
             IUnitOfWork uow,
             IPasswordHasher passwordHasher,
-            ITokenService tokenService)
+            ITokenService tokenService,
+            ILogger<RegisterUserCommandHandler> logger)
         {
             _userRepository = userRepository;
             _refreshTokenRepository = refreshTokenRepository;
             _uow = uow;
             _passwordHasher = passwordHasher;
             _tokenService = tokenService;
+            _logger = logger;
         }
 
         /// <inheritdoc />
@@ -40,6 +44,7 @@ namespace Tickefy.Application.Auth.Register
             var existingUser = await _userRepository.GetByLoginAsync(command.Login, cancellationToken);
             if (existingUser != null)
             {
+                _logger.LogWarning("Registration failed: user with login {Login} already exists", command.Login);
                 return Result<LoginResult>.Failure(new AlreadyExistsError("User already exists"));
             }
 
@@ -55,6 +60,8 @@ namespace Tickefy.Application.Auth.Register
             _refreshTokenRepository.Add(refreshTokenEntity);
 
             await _uow.SaveChangesAsync(cancellationToken);
+
+            _logger.LogInformation("User {Login} registered successfully with ID {UserId}", user.Login, user.Id.Value);
 
             return Result<LoginResult>.Success(new LoginResult(
                 user.Id.Value,
