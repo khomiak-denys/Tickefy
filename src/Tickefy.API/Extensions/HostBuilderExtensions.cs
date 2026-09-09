@@ -33,7 +33,7 @@ namespace Tickefy.API.Extensions
         public static void AddSerilogLogging(this IHostBuilder builder)
         {
             builder.UseSerilog((context, services, configuration) => configuration
-                //.ReadFrom.Configuration(context.Configuration)
+                .ReadFrom.Configuration(context.Configuration)
                 .ReadFrom.Services(services)
                 .Enrich.FromLogContext()
                 .WriteTo.Console());
