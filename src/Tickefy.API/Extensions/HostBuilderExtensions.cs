@@ -33,22 +33,13 @@ namespace Tickefy.API.Extensions
         public static void AddSerilogLogging(this IHostBuilder builder)
         {
             builder.UseSerilog((context, services, configuration) => configuration
-                //.ReadFrom.Configuration(context.Configuration)
-                .ReadFrom.Services(services)
-                .Enrich.FromLogContext()
-                .WriteTo.Console());
+                .ReadFrom.Configuration(context.Configuration)
+                .ReadFrom.Services(services));
         }
 
         public static void AddErrorHandling(this WebApplicationBuilder builder)
         {
-            builder.Services.AddProblemDetails(configure =>
-            {
-                configure.CustomizeProblemDetails = options =>
-                {
-                    options.ProblemDetails.Extensions.TryAdd("traceId", System.Diagnostics.Activity.Current?.Id);
-                };
-            });
-
+            builder.Services.AddProblemDetails();
             builder.Services.AddSingleton<IExceptionProblemDetailsMapper, ExceptionProblemDetailsMapper>();
             builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
         }
