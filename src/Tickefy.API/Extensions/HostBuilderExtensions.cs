@@ -34,7 +34,9 @@ namespace Tickefy.API.Extensions
         {
             builder.UseSerilog((context, services, configuration) => configuration
                 .ReadFrom.Configuration(context.Configuration)
-                .ReadFrom.Services(services));
+                .ReadFrom.Services(services),
+                preserveStaticLogger: false,
+                writeToProviders: true);
         }
 
         public static void AddErrorHandling(this WebApplicationBuilder builder)
