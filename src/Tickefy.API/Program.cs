@@ -1,3 +1,7 @@
+using Azure.Monitor.OpenTelemetry.AspNetCore;
+using OpenTelemetry;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Trace;
 using Serilog;
 using Tickefy.API.Extensions;
 using Tickefy.API.Options;
@@ -8,9 +12,27 @@ namespace Tickefy.API
     {
         public static void Main(string[] args)
         {
+            Serilog.Debugging.SelfLog.Enable(Console.Error);
+
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Logging.ClearProviders();
             builder.Host.AddSerilogLogging();
+
+            var otel = builder.Services.AddOpenTelemetry()
+                .WithTracing(t => t.AddAspNetCoreInstrumentation())
+                .WithMetrics(m => m.AddAspNetCoreInstrumentation())
+                .WithLogging();
+
+            if (builder.Environment.IsDevelopment())
+            {
+                otel.UseOtlpExporter();
+
+            }
+            else
+            {
+                otel.UseAzureMonitor();
+            }
 
             builder.AddErrorHandling();
 

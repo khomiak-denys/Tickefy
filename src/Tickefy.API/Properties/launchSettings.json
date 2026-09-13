@@ -26,7 +26,9 @@
       "launchUrl": "swagger",
       "applicationUrl": "https://localhost:5001",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "APPLICATIONINSIGHTS_CONNECTION_STRING": "InstrumentationKey=e3e44c87-6e52-4bb9-977e-e3d7b66c94f9;IngestionEndpoint=https://polandcentral-0.in.applicationinsights.azure.com/;LiveEndpoint=https://polandcentral.livediagnostics.monitor.azure.com/;ApplicationId=c9dc4c85-a5c6-47a6-8119-57ca267b4090",
+        "OTEL_EXPORTER_OTLP_ENDPOINT": "http://localhost:4317"
       }
     },
     "IIS Express": {
