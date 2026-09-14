@@ -27,6 +27,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Tickefy.Application\Tickefy.Application.csproj" />
     <ProjectReference Include="..\Tickefy.Infrastructure\Tickefy.Infrastructure.csproj" />
+    <ProjectReference Include="..\Tickefy.ServiceDefaults\Tickefy.ServiceDefaults.csproj" />
   </ItemGroup>
 
 </Project>

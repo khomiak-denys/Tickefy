@@ -16,23 +16,10 @@ namespace Tickefy.API
 
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.AddServiceDefaults();
+
             builder.Logging.ClearProviders();
             builder.Host.AddSerilogLogging();
-
-            var otel = builder.Services.AddOpenTelemetry()
-                .WithTracing(t => t.AddAspNetCoreInstrumentation())
-                .WithMetrics(m => m.AddAspNetCoreInstrumentation())
-                .WithLogging();
-
-            if (builder.Environment.IsDevelopment())
-            {
-                otel.UseOtlpExporter();
-
-            }
-            else
-            {
-                otel.UseAzureMonitor();
-            }
 
             builder.AddErrorHandling();
 
@@ -56,6 +43,8 @@ namespace Tickefy.API
             builder.AddSwagger();
 
             var app = builder.Build();
+
+            app.MapDefaultEndpoints();
 
             app.ApplyMigrations();
 

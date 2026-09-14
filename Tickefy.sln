@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36429.23
+# Visual Studio Version 18
+VisualStudioVersion = 18.6.11828.311 oobstable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tickefy.API", "src\Tickefy.API\Tickefy.API.csproj", "{FE42655B-99B0-40C8-1572-7FC052671076}"
 EndProject
@@ -22,6 +22,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tickefy.API.Tests", "tests\Tickefy.API.Tests\Tickefy.API.Tests.csproj", "{CF0841AC-421E-4986-AB64-7013EC329AC8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tickefy.Architecture.Tests", "tests\Tickefy.Architecture.Tests\Tickefy.Architecture.Tests.csproj", "{DBBA21AE-8FC4-4950-A8D8-ABEFD9381EFB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tickefy.AppHost", "src\Tickefy.AppHost\Tickefy.AppHost.csproj", "{FF3C0158-B22A-4896-9955-FD5E7DEBF63A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tickefy.ServiceDefaults", "src\Tickefy.ServiceDefaults\Tickefy.ServiceDefaults.csproj", "{7B81264E-E52D-2D97-3507-2E3A40AFCB2D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -129,6 +133,30 @@ Global
 		{DBBA21AE-8FC4-4950-A8D8-ABEFD9381EFB}.Release|x64.Build.0 = Release|Any CPU
 		{DBBA21AE-8FC4-4950-A8D8-ABEFD9381EFB}.Release|x86.ActiveCfg = Release|Any CPU
 		{DBBA21AE-8FC4-4950-A8D8-ABEFD9381EFB}.Release|x86.Build.0 = Release|Any CPU
+		{FF3C0158-B22A-4896-9955-FD5E7DEBF63A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF3C0158-B22A-4896-9955-FD5E7DEBF63A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF3C0158-B22A-4896-9955-FD5E7DEBF63A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FF3C0158-B22A-4896-9955-FD5E7DEBF63A}.Debug|x64.Build.0 = Debug|Any CPU
+		{FF3C0158-B22A-4896-9955-FD5E7DEBF63A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FF3C0158-B22A-4896-9955-FD5E7DEBF63A}.Debug|x86.Build.0 = Debug|Any CPU
+		{FF3C0158-B22A-4896-9955-FD5E7DEBF63A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF3C0158-B22A-4896-9955-FD5E7DEBF63A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF3C0158-B22A-4896-9955-FD5E7DEBF63A}.Release|x64.ActiveCfg = Release|Any CPU
+		{FF3C0158-B22A-4896-9955-FD5E7DEBF63A}.Release|x64.Build.0 = Release|Any CPU
+		{FF3C0158-B22A-4896-9955-FD5E7DEBF63A}.Release|x86.ActiveCfg = Release|Any CPU
+		{FF3C0158-B22A-4896-9955-FD5E7DEBF63A}.Release|x86.Build.0 = Release|Any CPU
+		{7B81264E-E52D-2D97-3507-2E3A40AFCB2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B81264E-E52D-2D97-3507-2E3A40AFCB2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B81264E-E52D-2D97-3507-2E3A40AFCB2D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7B81264E-E52D-2D97-3507-2E3A40AFCB2D}.Debug|x64.Build.0 = Debug|Any CPU
+		{7B81264E-E52D-2D97-3507-2E3A40AFCB2D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7B81264E-E52D-2D97-3507-2E3A40AFCB2D}.Debug|x86.Build.0 = Debug|Any CPU
+		{7B81264E-E52D-2D97-3507-2E3A40AFCB2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B81264E-E52D-2D97-3507-2E3A40AFCB2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B81264E-E52D-2D97-3507-2E3A40AFCB2D}.Release|x64.ActiveCfg = Release|Any CPU
+		{7B81264E-E52D-2D97-3507-2E3A40AFCB2D}.Release|x64.Build.0 = Release|Any CPU
+		{7B81264E-E52D-2D97-3507-2E3A40AFCB2D}.Release|x86.ActiveCfg = Release|Any CPU
+		{7B81264E-E52D-2D97-3507-2E3A40AFCB2D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -141,6 +169,8 @@ Global
 		{67A3BBAE-C783-47BA-908E-671DCCF01877} = {ECCA75EF-8B97-465A-939B-F15EC1FD221C}
 		{9DA02FB0-FD1E-4CC5-8162-24781305CD92} = {ECCA75EF-8B97-465A-939B-F15EC1FD221C}
 		{CF0841AC-421E-4986-AB64-7013EC329AC8} = {ECCA75EF-8B97-465A-939B-F15EC1FD221C}
+		{FF3C0158-B22A-4896-9955-FD5E7DEBF63A} = {273A9184-1E10-4FB6-87A1-0DBEBFFFCC4E}
+		{7B81264E-E52D-2D97-3507-2E3A40AFCB2D} = {273A9184-1E10-4FB6-87A1-0DBEBFFFCC4E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1F516B94-A885-420A-9FFC-8D2DC63ACBE2}
