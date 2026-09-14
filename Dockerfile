@@ -3,7 +3,6 @@ WORKDIR /app
 ENV HUSKY=0
 ENV CI=true
 
-
 COPY *.sln .
 COPY Directory.Build.props .
 COPY Directory.Build.targets .
@@ -13,12 +12,7 @@ COPY src/Tickefy.Infrastructure/*.csproj src/Tickefy.Infrastructure/
 COPY src/Tickefy.Domain/*.csproj src/Tickefy.Domain/
 COPY src/Tickefy.ServiceDefaults/*.csproj src/Tickefy.ServiceDefaults/
 
-COPY tests/Tickefy.API.Tests/*.csproj tests/Tickefy.API.Tests/
-COPY tests/Tickefy.Application.Tests/*.csproj tests/Tickefy.Application.Tests/
-COPY tests/Tickefy.Domain.Tests/*.csproj tests/Tickefy.Domain.Tests/
-COPY tests/Tickefy.Architecture.Tests/*.csproj tests/Tickefy.Architecture.Tests/
-
-RUN dotnet restore
+RUN dotnet restore src/Tickefy.API/Tickefy.API.csproj
 
 COPY . .
 
