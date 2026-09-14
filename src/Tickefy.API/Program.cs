@@ -16,10 +16,10 @@ namespace Tickefy.API
 
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.AddServiceDefaults();
-
             builder.Logging.ClearProviders();
             builder.Host.AddSerilogLogging();
+
+            builder.AddServiceDefaults();
 
             builder.AddErrorHandling();
 
