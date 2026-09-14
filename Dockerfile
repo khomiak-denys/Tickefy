@@ -11,6 +11,7 @@ COPY src/Tickefy.API/*.csproj src/Tickefy.API/
 COPY src/Tickefy.Application/*.csproj src/Tickefy.Application/
 COPY src/Tickefy.Infrastructure/*.csproj src/Tickefy.Infrastructure/
 COPY src/Tickefy.Domain/*.csproj src/Tickefy.Domain/
+COPY src/Tickefy.ServiceDefaults/*.csproj src/Tickefy.ServiceDefaults/
 
 COPY tests/Tickefy.API.Tests/*.csproj tests/Tickefy.API.Tests/
 COPY tests/Tickefy.Application.Tests/*.csproj tests/Tickefy.Application.Tests/
