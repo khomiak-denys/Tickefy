@@ -10,39 +10,18 @@ using Tickefy.API.Common.Models;
 
 namespace Tickefy.API.ActivityLog
 {
-    /// <summary>
-    /// Provides RESTful HTTP endpoints for querying system-wide audit trails, historical event records, and ticket lifecycle transitions.
-    /// </summary>
     [ApiController]
     [Route("api/v1/logs")]
     [Produces("application/json")]
     public class ActivityLogController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly ILogger<ActivityLogController> _logger;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ActivityLogController"/> class with required command mediation dependencies.
-        /// </summary>
-        /// <param name="mediator">The MediatR mediator instance used to dispatch activity log retrieval queries to application handlers.</param>
-        /// <param name="logger">The logger instance for structured logging.</param>
-        public ActivityLogController(IMediator mediator, ILogger<ActivityLogController> logger)
+        public ActivityLogController(IMediator mediator)
         {
             _mediator = mediator;
-            _logger = logger;
         }
 
-        /// <summary>
-        /// Retrieves a paginated and filtered list of activity audit logs across the entire platform for security and compliance monitoring.
-        /// </summary>
-        /// <param name="request">The query parameters specifying pagination offsets, limits, date ranges, and entity filters.</param>
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>
-        /// An HTTP 200 OK response containing a list of matching <see cref="LogResponse"/> records; or HTTP 403 Forbidden if the caller lacks administrative privileges.
-        /// </returns>
-        /// <remarks>
-        /// Due to high log ingestion volumes, callers should always specify appropriate page size and date filters to avoid excessive query execution times.
-        /// </remarks>
         [HttpGet]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(PaginationResponse<LogResponse>), StatusCodes.Status200OK)]
@@ -52,7 +31,6 @@ namespace Tickefy.API.ActivityLog
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllAsync([FromQuery] GetAllLogsRequest request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Retrieving all activity logs with page {Page}, pageSize {PageSize}", request.Page, request.PageSize);
             var query = request.ToQuery();
             var result = await _mediator.Send(query, cancellationToken);
             var response = new PaginationResponse<LogResponse>(result.Items.Select(LogResponse.FromResult).ToList(), result.Page, result.PageSize, result.TotalCount);
@@ -60,17 +38,6 @@ namespace Tickefy.API.ActivityLog
             return Ok(response);
         }
 
-        /// <summary>
-        /// Retrieves the complete audit history of all state changes, comments, and operator actions recorded against a specific support ticket.
-        /// </summary>
-        /// <param name="ticketId">The unique primary key GUID of the target ticket whose audit logs are being requested.</param>
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>
-        /// An HTTP 200 OK response containing the historical <see cref="LogResponse"/> timeline; HTTP 403 Forbidden if unauthorized; or HTTP 404 Not Found if the ticket does not exist.
-        /// </returns>
-        /// <remarks>
-        /// Currently restricted to system administrators for audit verification and dispute resolution.
-        /// </remarks>
         [HttpGet("ticket/{ticketId}")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(PaginationResponse<LogResponse>), StatusCodes.Status200OK)]
@@ -81,7 +48,6 @@ namespace Tickefy.API.ActivityLog
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetByIdAsync(Guid ticketId, [FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
         {
-            _logger.LogInformation("Retrieving activity logs for ticket {TicketId} with page {Page}, pageSize {PageSize}", ticketId, page, pageSize);
             var query = new GetLogsByTicketIdQuery(new TicketId(ticketId)) { Page = page, PageSize = pageSize };
             var result = await _mediator.Send(query, cancellationToken);
             var response = new PaginationResponse<LogResponse>(result.Items.Select(LogResponse.FromResult).ToList(), result.Page, result.PageSize, result.TotalCount);
