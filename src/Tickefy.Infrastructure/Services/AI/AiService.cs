@@ -62,8 +62,6 @@ namespace Tickefy.Infrastructure.Services.AI
                 throw new InvalidOperationException("AI returned empty response.");
             }
 
-            _logger.LogInformation("Raw AI JSON: {Json}", json);
-
             var parsed = JsonSerializer.Deserialize<AiResponse>(json, CaseInsensitiveOptions);
 
             if (parsed == null)
@@ -71,7 +69,6 @@ namespace Tickefy.Infrastructure.Services.AI
                 _logger.LogWarning("Invalid AI JSON Format.");
                 throw new InvalidOperationException("Invalid AI JSON format.");
             }
-            _logger.LogInformation("AI Response. Priority: {Priority}, category: {Category}", parsed.Priority, parsed.Category);
 
             return parsed;
         }
