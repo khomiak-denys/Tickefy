@@ -54,7 +54,6 @@ public class StartWorkTicketCommandHandler : ICommandHandler<StartWorkTicketComm
             "Agent started work on ticket.");
         _logRepository.Add(log);
         await _uow.SaveChangesAsync(cancellationToken);
-        _logger.LogInformation("Work started on ticket {TicketId} by agent {UserId}", ticket.Id.Value, command.UserId.Value);
 
         return Result.Success();
     }

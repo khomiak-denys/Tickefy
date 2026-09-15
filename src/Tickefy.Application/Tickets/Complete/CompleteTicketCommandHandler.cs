@@ -46,7 +46,6 @@ namespace Tickefy.Application.Tickets.Complete
                     "Ticket completed");
                 _logRepository.Add(log);
                 await _uow.SaveChangesAsync(cancellationToken);
-                _logger.LogInformation("Ticket {TicketId} completed successfully by user {UserId}", ticket.Id.Value, command.UserId.Value);
             }
             else
             {

@@ -30,8 +30,6 @@ namespace Tickefy.Application.Tickets.GetMy
 
             var result = PaginationResult<TicketResult>.Create(pagedTickets, request.Page, request.PageSize, pagedData.TotalCount);
 
-            _logger.LogInformation("Retrieved {Count} tickets for requester {UserId} (Total: {TotalCount}, Page: {Page}, PageSize: {PageSize})", pagedTickets.Count, request.UserId.Value, pagedData.TotalCount, request.Page, request.PageSize);
-
             return Result<PaginationResult<TicketResult>>.Success(result);
         }
     }

@@ -35,8 +35,6 @@ namespace Tickefy.Application.Users.Delete
 
             await _uow.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("User {UserId} deleted successfully", command.UserId.Value);
-
             return Result.Success();
         }
     }

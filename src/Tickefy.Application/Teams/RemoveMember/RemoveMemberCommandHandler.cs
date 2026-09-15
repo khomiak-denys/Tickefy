@@ -73,8 +73,6 @@ namespace Tickefy.Application.Teams.RemoveMember
 
             await _uow.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("User {MemberId} removed from team {TeamId} by manager {ManagerId}", command.MemberId.Value, command.TeamId.Value, command.ManagerId.Value);
-
             return Result.Success();
         }
     }

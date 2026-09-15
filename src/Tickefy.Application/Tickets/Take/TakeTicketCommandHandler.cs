@@ -82,7 +82,6 @@ namespace Tickefy.Application.Tickets.Take
                 "Agent assigned");
             _logRepository.Add(log);
             await _uow.SaveChangesAsync(cancellationToken);
-            _logger.LogInformation("Ticket {TicketId} successfully taken by agent {UserId} in team {TeamId}", ticket.Id.Value, user.Id.Value, team.Id.Value);
 
             return Result.Success();
         }

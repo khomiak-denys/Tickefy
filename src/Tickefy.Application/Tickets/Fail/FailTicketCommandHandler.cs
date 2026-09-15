@@ -46,7 +46,6 @@ public class FailTicketCommandHandler : ICommandHandler<FailTicketCommand, Resul
             var log = Domain.ActivityLogs.ActivityLog.Create(ticket.Id, command.UserId, EventType.StatusChanged, $"Ticket failed. Reason: {command.Reason}");
             _logRepository.Add(log);
             await _uow.SaveChangesAsync(cancellationToken);
-            _logger.LogInformation("Ticket {TicketId} failed by user {UserId}. Reason: {Reason}", ticket.Id.Value, command.UserId.Value, command.Reason);
         }
         else
         {

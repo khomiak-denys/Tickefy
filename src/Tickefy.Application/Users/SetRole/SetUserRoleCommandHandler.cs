@@ -51,8 +51,6 @@ namespace Tickefy.Application.Users.SetRole
 
             await _uow.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("Role for user {UserId} updated to {Role}", command.UserId.Value, role);
-
             return Result.Success();
         }
     }

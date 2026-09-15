@@ -30,8 +30,6 @@ namespace Tickefy.Application.Users.GetById
 
             var result = UserDetailsResult.FromEntity(user);
 
-            _logger.LogInformation("Retrieved user {UserId}", query.UserId.Value);
-
             return Result<UserDetailsResult>.Success(result);
         }
     }

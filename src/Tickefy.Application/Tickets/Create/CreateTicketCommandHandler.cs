@@ -64,8 +64,6 @@ namespace Tickefy.Application.Tickets.Create
 
             await _uow.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("Ticket {TicketId} created successfully with title {Title} by user {UserId}", ticket.Id.Value, ticket.Title, command.UserId.Value);
-
             return Result.Success();
         }
     }

@@ -36,8 +36,6 @@ namespace Tickefy.Application.Users.UpdateProfile
 
             await _uow.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("Profile updated successfully for user {UserId}", command.UserId.Value);
-
             return Result.Success();
         }
     }
