@@ -33,13 +33,13 @@ namespace Tickefy.Infrastructure.Database
 
         private static void IgnoreAllTypedIds(ModelBuilder modelBuilder)
         {
-            modelBuilder.Ignore(typeof(ActivityLogId));
-            modelBuilder.Ignore(typeof(AttachmentId));
-            modelBuilder.Ignore(typeof(CommentId));
-            modelBuilder.Ignore(typeof(TeamId));
-            modelBuilder.Ignore(typeof(TicketId));
-            modelBuilder.Ignore(typeof(UserId));
-            modelBuilder.Ignore(typeof(TokenId));
+            modelBuilder.Ignore<ActivityLogId>();
+            modelBuilder.Ignore<AttachmentId>();
+            modelBuilder.Ignore<CommentId>();
+            modelBuilder.Ignore<TeamId>();
+            modelBuilder.Ignore<TicketId>();
+            modelBuilder.Ignore<UserId>();
+            modelBuilder.Ignore<TokenId>();
         }
     }
 }
