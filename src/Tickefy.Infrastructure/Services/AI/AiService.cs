@@ -48,7 +48,8 @@ namespace Tickefy.Infrastructure.Services.AI
 
             var response = await _client.Models.GenerateContentAsync(
                 model: "gemini-2.0-flash",
-                contents: prompt
+                contents: prompt,
+                cancellationToken: cancellationToken
             );
 
             var json = string.Join("", response.Candidates?
