@@ -61,8 +61,6 @@ namespace Tickefy.Application.Teams.Delete
 
             await _uow.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("Team {TeamId} deleted successfully by manager {ManagerId}", command.TeamId.Value, command.ManagerId.Value);
-
             return Result.Success();
         }
     }

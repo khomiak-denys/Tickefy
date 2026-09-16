@@ -35,8 +35,6 @@ public class LogoutCommandHandler : ICommandHandler<LogoutCommand, Result>
         await _refreshTokenRepository.DeleteAsync(existingToken, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation("User logged out successfully, refresh token revoked");
-
         return Result.Success();
     }
 }

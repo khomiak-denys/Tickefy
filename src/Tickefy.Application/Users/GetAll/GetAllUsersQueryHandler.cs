@@ -29,8 +29,6 @@ namespace Tickefy.Application.Users.GetAll
 
             var result = PaginationResult<UserDetailsResult>.Create(pagedUsers, query.Page, query.PageSize, pagedData.TotalCount);
 
-            _logger.LogInformation("Retrieved {Count} users (Total: {TotalCount}, Page: {Page}, PageSize: {PageSize})", pagedUsers.Count, pagedData.TotalCount, query.Page, query.PageSize);
-
             return Result<PaginationResult<UserDetailsResult>>.Success(result);
         }
     }

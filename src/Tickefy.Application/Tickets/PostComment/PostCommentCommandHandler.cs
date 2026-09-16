@@ -52,7 +52,6 @@ namespace Tickefy.Application.Tickets.PostComment
             _logRepository.Add(log);
 
             await _uow.SaveChangesAsync(cancellationToken);
-            _logger.LogInformation("Comment posted on ticket {TicketId} by user {UserId}", command.TicketId.Value, command.UserId.Value);
 
             return Result.Success();
         }

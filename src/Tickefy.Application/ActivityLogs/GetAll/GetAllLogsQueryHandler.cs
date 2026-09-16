@@ -27,8 +27,6 @@ namespace Tickefy.Application.ActivityLogs.GetAll
                 .Select(LogResult.FromEntity)
                 .ToList();
 
-            _logger.LogInformation("Retrieved {Count} activity logs (Total: {TotalCount}, Page: {Page}, PageSize: {PageSize})", pagedLogs.Count, pagedData.TotalCount, query.Page, query.PageSize);
-
             return PaginationResult<LogResult>.Create(pagedLogs, query.Page, query.PageSize, pagedData.TotalCount);
         }
     }

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <!-- CA1848: LoggerMessage source-generator is a micro-optimisation that requires
@@ -15,8 +15,8 @@
 
   <ItemGroup>
 
-    <PackageReference Include="FluentValidation" Version="12.1.0" />
-    <PackageReference Include="MediatR" Version="13.1.0" />
+    <PackageReference Include="FluentValidation" Version="12.1.1" />
+    <PackageReference Include="MediatR" Version="14.2.0" />
   </ItemGroup>
 
   <ItemGroup>

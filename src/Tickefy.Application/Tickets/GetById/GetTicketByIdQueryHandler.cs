@@ -38,8 +38,6 @@ namespace Tickefy.Application.Tickets.GetById
                 .Where(act => act.CanExecute(ticket, query.UserId, query.Roles))
                 .Select(act => new TicketActionResult(act.ToString(), act.RequireReason()));
 
-            logger.LogInformation("Retrieved ticket {TicketId} for user {UserId}", query.TicketId.Value, query.UserId.Value);
-
             return Result<TicketDetailsResult>.Success(result);
         }
     }

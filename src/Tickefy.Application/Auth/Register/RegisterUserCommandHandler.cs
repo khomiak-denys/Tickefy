@@ -61,8 +61,6 @@ namespace Tickefy.Application.Auth.Register
 
             await _uow.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("User {Login} registered successfully with ID {UserId}", user.Login, user.Id.Value);
-
             return Result<LoginResult>.Success(new LoginResult(
                 user.Id.Value,
                 user.FirstName,

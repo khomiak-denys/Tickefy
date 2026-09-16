@@ -30,8 +30,6 @@ public class CreateDraftTicketCommandHandler : ICommandHandler<CreateDraftTicket
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation("Draft ticket {TicketId} created successfully for user {UserId}", ticket.Id.Value, command.UserId.Value);
-
         return Result.Success();
     }
 }

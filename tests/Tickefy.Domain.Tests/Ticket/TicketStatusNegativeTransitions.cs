@@ -153,7 +153,7 @@ public class TicketStatusNegativeTransitionsTests
     {
         result.IsSuccess.Should().BeFalse();
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().BeOfType(typeof(ForbiddenError));
+        result.Error.Should().BeOfType<ForbiddenError>();
         result.Error.Message.Should().Be(message);
     }
 

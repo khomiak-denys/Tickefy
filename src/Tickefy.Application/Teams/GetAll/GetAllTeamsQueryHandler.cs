@@ -30,8 +30,6 @@ namespace Tickefy.Application.Teams.GetAll
 
             var result = PaginationResult<TeamResult>.Create(pagedTeams, request.Page, request.PageSize, pagedData.TotalCount);
 
-            _logger.LogInformation("Retrieved {Count} teams (Total: {TotalCount}, Page: {Page}, PageSize: {PageSize})", pagedTeams.Count, pagedData.TotalCount, request.Page, request.PageSize);
-
             return Result<PaginationResult<TeamResult>>.Success(result);
         }
     }

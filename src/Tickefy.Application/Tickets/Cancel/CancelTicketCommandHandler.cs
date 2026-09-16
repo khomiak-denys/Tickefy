@@ -45,7 +45,6 @@ namespace Tickefy.Application.Tickets.Cancel
                 var log = Domain.ActivityLogs.ActivityLog.Create(ticket.Id, command.UserId, EventType.StatusChanged, $"Ticket canceled. Reason: {command.Reason}");
                 _logRepository.Add(log);
                 await _uow.SaveChangesAsync(cancellationToken);
-                _logger.LogInformation("Ticket {TicketId} cancelled successfully by user {UserId}. Reason: {Reason}", ticket.Id.Value, command.UserId.Value, command.Reason);
             }
             else
             {

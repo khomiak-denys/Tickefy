@@ -46,8 +46,6 @@ namespace Tickefy.Application.Auth.SetPassword
 
             await _uow.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("Password updated successfully for user {UserId}", user.Id.Value);
-
             return Result.Success();
         }
     }

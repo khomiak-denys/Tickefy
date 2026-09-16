@@ -31,8 +31,6 @@ namespace Tickefy.Application.Teams.GetById
 
             var result = TeamDetailsResult.FromEntity(team);
 
-            _logger.LogInformation("Retrieved team {TeamId}", query.TeamId.Value);
-
             return Result<TeamDetailsResult>.Success(result);
         }
     }

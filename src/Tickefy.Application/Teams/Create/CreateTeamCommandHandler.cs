@@ -61,8 +61,6 @@ namespace Tickefy.Application.Teams.Create
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("Team {TeamName} created successfully with manager {ManagerId}", team.Name, manager.Id.Value);
-
             return Result.Success();
         }
     }

@@ -82,8 +82,6 @@ public class PublishTicketCommandHandler : ICommandHandler<PublishTicketCommand,
         _activityLogRepository.Add(log);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation("Ticket {TicketId} published successfully with title {Title} by user {UserId}", command.TicketId.Value, command.Title, command.UserId.Value);
-
         return Result.Success();
     }
 }

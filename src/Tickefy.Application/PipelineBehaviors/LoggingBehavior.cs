@@ -5,7 +5,7 @@ using Tickefy.Domain.Common.Results;
 
 namespace Tickefy.Application.PipelineBehaviors
 {
-    public class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    public partial class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
     {
         private readonly ILogger<LoggingBehavior<TRequest, TResponse>> _logger;
@@ -22,7 +22,7 @@ namespace Tickefy.Application.PipelineBehaviors
         {
             var requestName = typeof(TRequest).Name;
 
-            _logger.LogInformation("Handling {RequestName}", requestName);
+            LogRequestStart(_logger, requestName);
 
             var stopwatch = Stopwatch.StartNew();
 
@@ -41,10 +41,7 @@ namespace Tickefy.Application.PipelineBehaviors
                 }
                 else
                 {
-                    _logger.LogInformation(
-                        "Handled {RequestName} successfully ({ElapsedMilliseconds} ms)",
-                        requestName,
-                        stopwatch.ElapsedMilliseconds);
+                    LogRequestFinish(_logger, requestName, stopwatch.ElapsedMilliseconds);
                 }
 
                 return response;
@@ -61,6 +58,12 @@ namespace Tickefy.Application.PipelineBehaviors
                 throw;
             }
         }
+
+        [LoggerMessage(Level = LogLevel.Information, Message = "Handling {RequestName}")]
+        public static partial void LogRequestStart(ILogger logger, string requestName);
+
+        [LoggerMessage(Level = LogLevel.Information, Message = "Handled {RequestName} successfully ({ElapsedMilliseconds} ms)")]
+        public static partial void LogRequestFinish(ILogger logger, string requestName, long elapsedMilliseconds);
     }
 }
 

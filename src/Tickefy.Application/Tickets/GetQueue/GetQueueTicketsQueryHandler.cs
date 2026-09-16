@@ -65,8 +65,6 @@ namespace Tickefy.Application.Tickets.GetQueue
 
             var result = PaginationResult<TicketResult>.Create(pagedTickets, query.Page, query.PageSize, pagedData.TotalCount);
 
-            _logger.LogInformation("Retrieved {Count} queue tickets for agent {UserId} in team {TeamId} (Total: {TotalCount})", pagedTickets.Count, query.UserId.Value, team.Id.Value, pagedData.TotalCount);
-
             return Result<PaginationResult<TicketResult>>.Success(result);
         }
     }

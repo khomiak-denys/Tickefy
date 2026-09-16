@@ -54,7 +54,6 @@ namespace Tickefy.Application.Tickets.Revise
                 $"Ticket reopened.Reason: {command.Reason}");
             _logRepository.Add(log);
             await _uow.SaveChangesAsync(cancellationToken);
-            _logger.LogInformation("Ticket {TicketId} reopened by user {UserId}. Reason: {Reason}", ticket.Id.Value, command.UserId.Value, command.Reason);
 
             return Result.Success();
         }

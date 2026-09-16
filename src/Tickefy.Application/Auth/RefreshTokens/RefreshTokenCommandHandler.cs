@@ -56,8 +56,6 @@ public class RefreshTokenCommandHandler : ICommandHandler<RefreshTokenCommand, R
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation("Refresh token renewed successfully for user {UserId}", token.User.Id.Value);
-
         return Result<LoginResult>.Success(new LoginResult
         (
             token.User.Id.Value,

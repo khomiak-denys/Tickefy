@@ -55,8 +55,6 @@ namespace Tickefy.Application.Teams.AddMember
 
             await uow.SaveChangesAsync(cancellationToken);
 
-            logger.LogInformation("User {MemberLogin} added to team {TeamId} by manager {ManagerId}", command.MemberLogin, command.TeamId.Value, command.ManagerId.Value);
-
             return Result.Success();
         }
     }

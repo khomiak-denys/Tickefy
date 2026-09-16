@@ -58,8 +58,6 @@ namespace Tickefy.Application.Auth.Login
             _refreshTokenRepository.Add(refreshTokenEntity);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("User {Login} with ID {UserId} logged in successfully", existingUser.Login, existingUser.Id.Value);
-
             return Result<LoginResult>.Success(new LoginResult
             (
                 existingUser.Id.Value,
